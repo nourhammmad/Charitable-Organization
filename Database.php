@@ -1,17 +1,37 @@
 <?php
-// database.php
+define('DB_HOST', 'localhost');      // Your database host, usually localhost
+define('DB_USER', 'root');  // Your MySQL username
+define('DB_PASS', '');  // Your MySQL password
+define('DB_NAME', 'charity_db'); // Name of the database you created
 
-$servername = "localhost"; // MySQL server
-$username = "root"; // Default username for XAMPP
-$password = ""; // Default password for XAMPP (usually empty)
-$dbname = "charityORG"; // Replace with your database name
+class Database {
+    private $host = DB_HOST;
+    private $user = DB_USER;
+    private $pass = DB_PASS;
+    private $dbname = DB_NAME;
+    private $dbh;
+    private $error;
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname,$port=3306);
+    public function __construct() {
+        // Set DSN (Data Source Name)
+        $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
+        $options = array(
+            PDO::ATTR_PERSISTENT => true,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        );
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+        // Create PDO instance
+        try {
+            $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
+        } catch (PDOException $e) {
+            $this->error = $e->getMessage();
+            echo $this->error;
+        }
+    }
+
+    // Method to get database handler (dbh)
+    public function getDbh() {
+        return $this->dbh;
+    }
 }
-echo "Connected successfully";
 ?>

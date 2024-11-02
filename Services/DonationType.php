@@ -1,0 +1,3 @@
+abstarct class DonationType{
+    
+}
