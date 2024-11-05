@@ -12,6 +12,8 @@ class Populate {
             "DROP TABLE IF EXISTS RegisteredUserType;",
             "DROP TABLE IF EXISTS Events;",
             "DROP TABLE IF EXISTS Tasks;",
+            "DROP TABLE IF EXISTS DonationType;",
+            "DROP TABLE IF EXISTS Donor;",
             "SET FOREIGN_KEY_CHECKS = 1;",
     
             "CREATE TABLE Users (
@@ -31,26 +33,26 @@ class Populate {
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
            " CREATE TABLE Tasks (
-                id INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each task, with auto-increment
-                name VARCHAR(255) NOT NULL, -- Name of the task
-                description TEXT NOT NULL, -- Detailed description of the task
-                requiredSkill VARCHAR(255), -- Skills required for the task
-                timeSlot VARCHAR(255), -- Time slot for the task
-                location VARCHAR(255) -- Location where the task will take place
-            );",
+                `id` INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each task, with auto-increment
+                `name` VARCHAR(255) NOT NULL, -- Name of the task
+                `description` TEXT NOT NULL, -- Detailed description of the task
+                `requiredSkill` VARCHAR(255), -- Skills required for the task
+                `timeSlot` VARCHAR(255), -- Time slot for the task
+                `location` VARCHAR(255) -- Location where the task will take place
+            )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+              "CREATE TABLE DonationType (
+                `donationId` CHAR(36) PRIMARY KEY,
+                `quantityDonated` INT NOT NULL
+                )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
 
-"INSERT INTO Users (id, types, created_at) VALUES
-            ('123e4567-e89b-12d3-a456-426614174000', 'RegisteredUserType', NOW()),
-           ('123e4567-e89b-12d3-a456-426614174001', 'RegisteredUserType', NOW()),
-             ('123e4567-e89b-12d3-a456-426614174002', 'RegisteredUserType', NOW()),
-             ('123e4567-e89b-12d3-a456-426614174003', 'Guest', NOW()),
-         ('123e4567-e89b-12d3-a456-426614174004', 'Guest', NOW());",
-
-    "INSERT INTO RegisteredUserType (id, email, userName, passwordHash, category) VALUES
-    ('123e4567-e89b-12d3-a456-426614174000', 'shahd@e.com', 'UserOne', '123', 'Org'),
-    ('123e4567-e89b-12d3-a456-426614174001', 'user2@example.com', 'UserTwo', '$2y$10$12344', 'Donar'),
-    ('123e4567-e89b-12d3-a456-426614174002', 'user3@example.com', 'UserThree', '$2y$10$22222','Org');"
+              "CREATE TABLE Donor (
+                 `donorId` CHAR(36) PRIMARY KEY,
+                    `donationId` CHAR(36), -- Foreign key to DonationType
+                    `roleDetails` TEXT,
+                    FOREIGN KEY (donationId) REFERENCES DonationType(donationId) ON DELETE SET NULL )
+                     DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     
             // "CREATE TABLE Donations (
