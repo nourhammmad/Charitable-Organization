@@ -28,6 +28,16 @@ class Populate {
                 PRIMARY KEY (id),
                 FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+           " CREATE TABLE Tasks (
+                id INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each task, with auto-increment
+                name VARCHAR(255) NOT NULL, -- Name of the task
+                description TEXT NOT NULL, -- Detailed description of the task
+                requiredSkill VARCHAR(255), -- Skills required for the task
+                timeSlot VARCHAR(255), -- Time slot for the task
+                location VARCHAR(255) -- Location where the task will take place
+            );"
+
     
             // "CREATE TABLE Donations (
             //     donationId INT AUTO_INCREMENT PRIMARY KEY,
