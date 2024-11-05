@@ -62,12 +62,7 @@ class UserModel {
             return $res;
     }
 
-    static public function get_by_email_and_password($email, $pass): User|null
-    {
 
-        $rows = Database::run_select_query("SELECT * FROM RegisteredUserType WHERE email = '$email' AND password = '$pass'");
-        return $rows->num_rows > 0 ? new UserModel($rows->fetch_assoc()) : null;
-    }
 
 
 }
