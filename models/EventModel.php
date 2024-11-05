@@ -1,5 +1,5 @@
 <?php
-require_once ('E:\brwana\Gam3a\Senoir 2\Design Patterns\Project\Charitable-Organization\Database.php');
+require_once "../Database.php";
 
 class Event {
     private $db;

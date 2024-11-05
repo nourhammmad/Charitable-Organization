@@ -1,27 +1,37 @@
 <?php
-require_once ('E:\brwana\Gam3a\Senoir 2\Design Patterns\Project\Charitable-Organization\models\UserModel.php');
+require_once "../models/UserModel.php";
 
-$userModel = new User();
+
+//$userModel = new User();
+function generate_uuid() {
+    $data = random_bytes(16);
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+}
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['create'])) {
+        $uuid=generate_uuid();
         // Create a new user
         $userName = $_POST['userName'];
         $password = $_POST['password'];
         $type = $_POST['type'];
-        $userModel->createUser($userName, $password, $type);
-    } elseif (isset($_POST['update'])) {
-        // Update user information
-        $id = $_POST['id'];
-        $userName = $_POST['userName'];
-        $password = $_POST['password'];
-        $userModel->updateUser($id, $userName, $password);
-    } elseif (isset($_POST['delete'])) {
-        // Delete a user
-        $id = $_POST['id'];
-        $userModel->deleteUser($id);
+        User::createDefaultUser($uuid, $type);
+        
     }
+    // } elseif (isset($_POST['update'])) {
+    //     // Update user information
+    //     $id = $_POST['id'];
+    //     $userName = $_POST['userName'];
+    //     $password = $_POST['password'];
+    //     $userModel->updateUser($id, $userName, $password);
+    // } elseif (isset($_POST['delete'])) {
+    //     // Delete a user
+    //     $id = $_POST['id'];
+    //     $userModel->deleteUser($id);
+    // }
 }
 
 // Retrieve all users to display

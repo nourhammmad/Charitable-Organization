@@ -1,47 +1,68 @@
 <?php
-require_once ('E:\brwana\Gam3a\Senoir 2\Design Patterns\Project\Charitable-Organization\Database.php');
+require_once "../Database.php";
 
-class User {
-    private $db;
+class UserModel {
 
-    public function __construct() {
-        $this->db = (new Database())->getDbh();
+
+    // private function __construct($properties)
+    // {
+    //     foreach ($properties as $prop => $value) {
+    //         $this->{$prop} = $value;
+    //     }
+    // }
+
+    // private static function getDb() {
+    //     return (new Database())->getDbh();
+    // }
+
+
+    // FARAH:: i added this func to be the defualt here with no username or password 
+    public static function createDefaultUser($id,$types): bool{
+        
+        $query = "INSERT INTO Users (id, types) VALUES ($id,$types)";
+        $res =Database::run_query(query:$query);
+        return $res;
     }
 
-    // Create a new user
-    public function createUser($userName, $password, $type) {
-        $query = 'INSERT INTO Users (userName, password, type) VALUES (:userName, :password, :type)';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':userName', $userName);
-        $stmt->bindParam(':password', $password);
-        $stmt->bindParam(':type', $type);
-        return $stmt->execute();
-    }
+    // // Create a new user
+    // public static function createUser($userName, $password, $type) {
+    //     $db = self::getDb();
+    //     $query = 'INSERT INTO Users (userName, password, type) VALUES (:userName, :password, :type)';
+    //     $stmt = $db->prepare($query);
+    //     $stmt->bindParam(':userName', $userName);
+    //     $stmt->bindParam(':password', $password);
+    //     $stmt->bindParam(':type', $type);
+    //     return $stmt->execute();
+    // }
 
     // Retrieve a user by ID
-    public function getUserById($id) {
-        $query = 'SELECT * FROM Users WHERE id = :id';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    public static function getUserById($id) {
+        $query = "SELECT * FROM Users WHERE id = $id";
+        $res =Database::run_select_query(query:$query);
+        return $res;
     }
 
-    // Update user information
-    public function updateUser($id, $userName, $password) {
-        $query = 'UPDATE Users SET userName = :userName, password = :password WHERE id = :id';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':userName', $userName);
-        $stmt->bindParam(':password', $password);
-        return $stmt->execute();
-    }
+
+
+    // // Update user information
+    // public static function updateUser($id, $userName, $password) {
+    //     $db = self::getDb();
+    //     $query = 'UPDATE Users SET userName = :userName, password = :password WHERE id = :id';
+    //     $stmt = $db->prepare($query);
+    //     $stmt->bindParam(':id', $id);
+    //     $stmt->bindParam(':userName', $userName);
+    //     $stmt->bindParam(':password', $password);
+    //     return $stmt->execute();
+    // }
 
     // Delete a user
     public function deleteUser($id) {
-        $query = 'DELETE FROM Users WHERE id = :id';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+            $query = "DELETE FROM Users WHERE id = $id";
+            $res =Database::run_query(query:$query);
+            return $res;
     }
+
+
 }
+// echo User::createDefaultUser('Guest',979766);
+// echo User::getUserById(979766);
