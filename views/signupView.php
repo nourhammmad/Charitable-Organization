@@ -1,9 +1,10 @@
+<!-- signupView.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Signup</title>
+    <title>Sign Up</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
@@ -24,7 +25,7 @@
         h2 {
             text-align: center;
         }
-        input[type="text"], input[type="password"], input[type="email"] {
+        input[type="text"], input[type="password"], input[type="email"], select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -54,16 +55,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>Login</h2>
-        <?php if (isset($login_error)) echo "<p class='error'>$login_error</p>"; ?>
-        <form method="post">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit" name="login">Login</button>
-        </form>
-
         <h2>Sign Up</h2>
-        <?php if (isset($signup_success)) echo "<p class='success'>$signup_success</p>"; ?>
         <?php if (isset($signup_error)) echo "<p class='error'>$signup_error</p>"; ?>
         <form method="post">
             <input type="email" name="signup_email" placeholder="Email" required>
@@ -75,11 +67,6 @@
                 <option value="Donar">Donor</option>
             </select>
             <button type="submit" name="signup">Sign Up</button>
-        </form>
-
-        <h2>Or Login as Guest</h2>
-        <form method="post">
-            <button type="submit" name="guest">Continue as Guest</button>
         </form>
     </div>
 </body>

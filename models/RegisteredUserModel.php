@@ -1,7 +1,7 @@
 <?php
 
-require_once "../Database.php";
-require_once "../models/UserModel.php";
+require_once "./Database.php";
+require_once "./models/UserModel.php";
 
 class RegisterUserTypeModel {
     private $id;
@@ -9,21 +9,22 @@ class RegisterUserTypeModel {
     private $userName;
     private $passwordHash;
     private $createdAt;
+    private $category;
+    
 
-    public function __construct($id, $email, $userName, $passwordHash, $createdAt) {
+    public function __construct($id, $email, $userName, $passwordHash,$category ,$createdAt) {
         $this->id = $id;
         $this->email = $email;
         $this->userName = $userName;
         $this->passwordHash = $passwordHash;
         $this->createdAt = $createdAt;
+        $this->category=$category;
     }
 
-    public static function save($email, $userName, $passwordHash) {
-        $id = uniqid(); 
+    public static function save($id,$email, $userName, $passwordHash,$category) { 
         $type = 'RegisteredUserType';
-        
         if (UserModel::createDefaultUser($id,$type)) {
-            $insertRegisteredUserQuery = "INSERT INTO RegisteredUserType (id, email, userName, passwordHash) VALUES ('$id', '$email', '$userName', '$passwordHash')";
+            $insertRegisteredUserQuery = "INSERT INTO RegisteredUserType (`id`, `email`, `userName`, `passwordHash`,`category`) VALUES ('$id', '$email', '$userName', '$passwordHash','$category')";
             return Database::run_query($insertRegisteredUserQuery);
         }
         return false;
@@ -38,7 +39,7 @@ class RegisterUserTypeModel {
 
         if ($result && $result->num_rows > 0) {
             $data = $result->fetch_assoc();
-            return new self($data['id'], $data['email'], $data['userName'], $data['passwordHash'], $data['created_at']);
+            return new self($data['id'], $data['email'], $data['userName'], $data['passwordHash'],$data['category'] ,$data['created_at']);
         }
         return null; 
     }
@@ -52,7 +53,7 @@ class RegisterUserTypeModel {
 
         if ($result && $result->num_rows > 0) {
             $data = $result->fetch_assoc();
-            return new self($data['id'], $data['email'], $data['userName'], $data['passwordHash'], $data['created_at']);
+            return new self($data['id'], $data['email'], $data['userName'], $data['passwordHash'],$data['category'], $data['created_at']);
         }
         return null; 
     }

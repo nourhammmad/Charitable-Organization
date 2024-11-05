@@ -1,5 +1,5 @@
 <?php
-require_once "../Database.php";
+require_once "./Database.php";
 
 class UserModel {
 
@@ -18,9 +18,11 @@ class UserModel {
 
     // FARAH:: i added this func to be the defualt here with no username or password 
     public static function createDefaultUser($id,$types): bool{
+        // return run_query("INSERT INTO $configs->DB_NAME.$configs->DB_CART_ITEMS_TABLE (`cart_id`, `item_id`, `quantity`) VALUES ($cart_id, $item_id, 1)")
         
-        $query = "INSERT INTO Users (id, types) VALUES ($id,$types)";
+        $query = "INSERT INTO Users (`id`, `types`) VALUES ('$id','$types')";
         $res =Database::run_query(query:$query);
+        echo $res;
         return $res;
     }
 
@@ -64,5 +66,5 @@ class UserModel {
 
 
 }
-// echo User::createDefaultUser('Guest',979766);
-// echo User::getUserById(979766);
+
+

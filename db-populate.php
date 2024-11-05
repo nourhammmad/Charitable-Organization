@@ -2,15 +2,8 @@
 require_once "Database.php";
 
 class Populate {
-    private $db;
-
-    public function __construct($db) {
-        $this->db = $db;
-    }
-    public function populate() {
-
-
-        $this->db->run_queries(
+    public static function populate() {
+        Database::run_queries(
          [
             "SET FOREIGN_KEY_CHECKS = 0;",
             "DROP TABLE IF EXISTS Users;",
@@ -21,16 +14,17 @@ class Populate {
             "SET FOREIGN_KEY_CHECKS = 1;",
     
             "CREATE TABLE Users (
-                id CHAR(36) NOT NULL PRIMARY KEY,
-                types ENUM('Guest', 'RegisteredUserType'),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                `id` CHAR(36) NOT NULL PRIMARY KEY,
+                `types` ENUM('Guest', 'RegisteredUserType'),
+                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
     
             "CREATE TABLE RegisteredUserType (
-                id CHAR(36) NOT NULL,
-                email VARCHAR(50) UNIQUE NOT NULL,
-                userName VARCHAR(50) UNIQUE NOT NULL,
-                passwordHash VARCHAR(255) NOT NULL,
+                `id` CHAR(36) NOT NULL,
+                `email` VARCHAR(50) UNIQUE NOT NULL,
+                `userName` VARCHAR(50) UNIQUE NOT NULL,
+                `passwordHash` VARCHAR(255) NOT NULL,
+                `category` Enum('Org','Donar'),
                 PRIMARY KEY (id),
                 FOREIGN KEY (id) REFERENCES Users(`id`) ON DELETE CASCADE
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",

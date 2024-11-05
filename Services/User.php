@@ -1,6 +1,6 @@
 <?php
 
-require_once "../models/UserModel.php";
+require_once "./models/UserModel.php";
 
 abstract class  user{
     protected $id;
