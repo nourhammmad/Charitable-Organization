@@ -30,13 +30,17 @@ class Populate {
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
            " CREATE TABLE Tasks (
-                id INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each task, with auto-increment
-                name VARCHAR(255) NOT NULL, -- Name of the task
-                description TEXT NOT NULL, -- Detailed description of the task
-                requiredSkill VARCHAR(255), -- Skills required for the task
-                timeSlot VARCHAR(255), -- Time slot for the task
-                location VARCHAR(255) -- Location where the task will take place
-            );"
+                `id` INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each task, with auto-increment
+                `name` VARCHAR(255) NOT NULL, -- Name of the task
+                `description` TEXT NOT NULL, -- Detailed description of the task
+                `requiredSkill` VARCHAR(255), -- Skills required for the task
+                `timeSlot` VARCHAR(255), -- Time slot for the task
+                `location` VARCHAR(255) -- Location where the task will take place
+            )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+              "CREATE TABLE DonationType (
+                `donationId` CHAR(36) PRIMARY KEY,
+                `quantityDonated` INT NOT NULL
+                )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
 
     
             // "CREATE TABLE Donations (
