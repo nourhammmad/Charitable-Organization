@@ -14,6 +14,10 @@ class Populate {
             "DROP TABLE IF EXISTS Tasks;",
             "DROP TABLE IF EXISTS DonationType;",
             "DROP TABLE IF EXISTS Donor;",
+            "DROP TABLE IF EXISTS Organization;",
+            "DROP TABLE IF EXISTS OrganizationDonor;",
+
+
             "SET FOREIGN_KEY_CHECKS = 1;",
     
             "CREATE TABLE Users (
@@ -47,12 +51,26 @@ class Populate {
                 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
 
-              "CREATE TABLE Donor (
-                 `donorId` CHAR(36) PRIMARY KEY,
-                    `donationId` CHAR(36), -- Foreign key to DonationType
+                "CREATE TABLE Donor (
+                    `donorId` CHAR(36) PRIMARY KEY,
+                    `donationId` CHAR(36),
                     `roleDetails` TEXT,
-                    FOREIGN KEY (donationId) REFERENCES DonationType(donationId) ON DELETE SET NULL )
-                     DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                    FOREIGN KEY (donationId) REFERENCES DonationType(donationId) ON DELETE SET NULL
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                "CREATE TABLE Organization (
+                    `organizationId` CHAR(36) PRIMARY KEY,
+                    `organizationName` VARCHAR(255) NOT NULL
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                
+                "CREATE TABLE OrganizationDonor (
+                    `organizationId` CHAR(36),
+                    `donorId` CHAR(36),
+                    PRIMARY KEY (organizationId, donorId),
+                    FOREIGN KEY (organizationId) REFERENCES Organization(organizationId) ON DELETE CASCADE,
+                    FOREIGN KEY (donorId) REFERENCES Donor(donorId) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+
 
     
             // "CREATE TABLE Donations (
