@@ -1,21 +1,21 @@
 <?php
 
-require_once './controllers/loginController.php';
-require_once './Database.php';
-require_once './db-populate.php';
+require_once "../Charitable-Organization/Database.php";
+require_once "../Charitable-Organization/controllers/loginController.php";
+require_once "../Charitable-Organization/db-populate.php";
+
+require_once "../Charitable-Organization/models/UserModel.php";
+
+// Initialize the database connection
+$db = new Database();
+Populate::populate();
 
 
-$db = new Database;
-    // Populate the database if necessary
-    // Populate::populate();
-// Check and verify the database connection
 if ($db->getConnection()) {
-
-     //echo "$db->getConnection()";
-    // Handle the request through LoginController
     $controller = new LoginController();
     $controller->handleRequest();
 } else {
     echo "Failed to connect to the database.";
 }
+
 ?>

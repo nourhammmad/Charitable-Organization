@@ -23,9 +23,11 @@ class RegisterUser extends user{
         //header("Location: dashboard.php");//REDIRECT
         exit();
 
- }
+    }
 
 
 
 
 }
+
+
