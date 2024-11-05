@@ -11,6 +11,9 @@ class Populate {
             "DROP TABLE IF EXISTS Donations;",
             "DROP TABLE IF EXISTS RegisteredUserType;",
             "DROP TABLE IF EXISTS Events;",
+            "DROP TABLE IF EXISTS Tasks;",
+            "DROP TABLE IF EXISTS DonationType;",
+            "DROP TABLE IF EXISTS Donor;",
             "SET FOREIGN_KEY_CHECKS = 1;",
     
             "CREATE TABLE Users (
@@ -37,10 +40,19 @@ class Populate {
                 `timeSlot` VARCHAR(255), -- Time slot for the task
                 `location` VARCHAR(255) -- Location where the task will take place
             )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
               "CREATE TABLE DonationType (
                 `donationId` CHAR(36) PRIMARY KEY,
                 `quantityDonated` INT NOT NULL
-                )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+
+              "CREATE TABLE Donor (
+                 `donorId` CHAR(36) PRIMARY KEY,
+                    `donationId` CHAR(36), -- Foreign key to DonationType
+                    `roleDetails` TEXT,
+                    FOREIGN KEY (donationId) REFERENCES DonationType(donationId) ON DELETE SET NULL )
+                     DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     
             // "CREATE TABLE Donations (
