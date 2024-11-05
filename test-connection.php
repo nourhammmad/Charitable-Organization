@@ -2,13 +2,12 @@
 
 require_once "Database.php";
 require_once "db-populate.php";
+new Database();
 
-$database = new Database();
-if ($database->conn) {
-    $populate = new Populate($database);
+if (Database::$conn) {
+    $populate = new Populate();
     $populate->populate();
     echo "Database connected and populated successfully!";
 } else {
-    echo "Failed to connect to the database.";
+    echo "Failed to connect to the database.";
 }
-

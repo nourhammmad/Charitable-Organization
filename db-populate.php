@@ -2,15 +2,8 @@
 require_once "Database.php";
 
 class Populate {
-    private $db;
-
-    public function __construct($db) {
-        $this->db = $db;
-    }
-    public function populate() {
-
-
-        $this->db->run_queries(
+    public static function populate() {
+        Database::run_queries(
          [
             "SET FOREIGN_KEY_CHECKS = 0;",
             "DROP TABLE IF EXISTS Users;",
@@ -31,8 +24,9 @@ class Populate {
                 email VARCHAR(50) UNIQUE NOT NULL,
                 userName VARCHAR(50) UNIQUE NOT NULL,
                 passwordHash VARCHAR(255) NOT NULL,
+                category Enum('Org','Donar'),
                 PRIMARY KEY (id),
-                FOREIGN KEY (id) REFERENCES Users(`id`) ON DELETE CASCADE
+                FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
     
             // "CREATE TABLE Donations (
@@ -143,6 +137,6 @@ class Populate {
             // );
         ],
         true
-    ); 
-    }
+);
+}
 }

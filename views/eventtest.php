@@ -1,5 +1,5 @@
 <?php
-require_once ('E:\brwana\Gam3a\Senoir 2\Design Patterns\Project\Charitable-Organization\models\EventModel.php');
+//require_once ('E:\brwana\Gam3a\Senoir 2\Design Patterns\Project\Charitable-Organization\models\EventModel.php');
 
 $event = new Event();
 

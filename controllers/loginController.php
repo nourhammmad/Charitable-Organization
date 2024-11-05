@@ -1,20 +1,22 @@
 <?php
-require_once "../models/UserModel.php";
-require_once "../models/RegisteredUserModel.php";
-require_once "../Services/Guest.php";
+require_once __DIR__ . '/../models/UserModel.php';
+require_once __DIR__ . '/../models/RegisteredUserModel.php';
+require_once __DIR__ . '/../Services/Guest.php';
+require_once __DIR__ . '/../Services/ContextAuthenticator.php';
+
 
 class LoginController {
     public function handleRequest() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST['login'])) {
-                //$this->loginRegisteredUser($_POST['email'], $_POST['password']);
+                $this->loginRegisteredUser($_POST['email'], $_POST['password']);
             } elseif (isset($_POST['signup'])) {
               //  $this->registerNewUser($_POST['signup_email'], $_POST['signup_userName'], $_POST['signup_password']);
             } elseif (isset($_POST['guest'])) {
                 $this->loginGuestUser();
             }
         }
-        require_once "../views/loginView.php";
+        require_once "./views/loginView.php";
     }
 
     // private function loginRegisteredUser($email, $password) {
@@ -27,6 +29,33 @@ class LoginController {
     //         echo "Invalid credentials!";
     //     }
     // }
+
+    public function loginRegisteredUser()
+    {
+        $msg = '';
+        if (isset($_POST['login'])) {
+            if (!empty($_POST['email']) && !empty($_POST['password'])) {
+                $context = new ContextAuthenticator();
+                $user = $context->login($_POST['email'], $_POST['password']);
+                echo $user;
+                if ($user) {
+
+                   echo"<strong>User  found  yaaaay.</strong><br/><br/><!--deng-->";
+
+                    exit();
+                } else {
+                   // $msg .= 
+                    echo"<strong>User not found.</strong><br/><br/><!--deng-->";
+                }
+            } else {
+                $msg .= '<strong>Error: Please enter email and password.</strong>';
+            }
+            }
+            exit();
+        }
+      
+    
+
 
     // private function registerNewUser($email, $userName, $password) {
     //     $id = uniqid();
