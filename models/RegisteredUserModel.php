@@ -1,5 +1,6 @@
 <?php
 
+
 require_once "./Database.php";
 require_once "./models/UserModel.php";
 
@@ -22,6 +23,7 @@ class RegisterUserTypeModel {
     }
 
     public static function save($id,$email, $userName, $passwordHash,$category) { 
+       $id = uniqid();
         $type = 'RegisteredUserType';
         if (UserModel::createDefaultUser($id,$type)) {
             $insertRegisteredUserQuery = "INSERT INTO RegisteredUserType (`id`, `email`, `userName`, `passwordHash`,`category`) VALUES ('$id', '$email', '$userName', '$passwordHash','$category')";
@@ -61,10 +63,10 @@ class RegisterUserTypeModel {
     static public function get_by_email_and_password($email, $pass): User|null
     {
 
-        $rows = Database::run_select_query("SELECT * FROM RegisteredUserType WHERE `email` = '$email' AND `passwordhash` = '$pass'");
-        echo $email;
-        echo "     ";
-        echo $pass;
-        return $rows->num_rows > 0 ? new UserModel($rows->fetch_assoc()) : null;
+        $rows = Database::run_select_query("SELECT * FROM RegisteredUserType WHERE `email` = '$email' AND `passwordHash` = '$pass'");
+        // echo $email;
+        // echo "     ";
+        // echo $pass;
+        return $rows->num_rows > 0 ? new RegisterUser($rows->fetch_assoc()) : null;
     }
 }

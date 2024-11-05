@@ -11,6 +11,7 @@ class Populate {
             "DROP TABLE IF EXISTS Donations;",
             "DROP TABLE IF EXISTS RegisteredUserType;",
             "DROP TABLE IF EXISTS Events;",
+            "DROP TABLE IF EXISTS Tasks;",
             "SET FOREIGN_KEY_CHECKS = 1;",
     
             "CREATE TABLE Users (
@@ -36,7 +37,20 @@ class Populate {
                 requiredSkill VARCHAR(255), -- Skills required for the task
                 timeSlot VARCHAR(255), -- Time slot for the task
                 location VARCHAR(255) -- Location where the task will take place
-            );"
+            );",
+
+
+"INSERT INTO Users (id, types, created_at) VALUES
+            ('123e4567-e89b-12d3-a456-426614174000', 'RegisteredUserType', NOW()),
+           ('123e4567-e89b-12d3-a456-426614174001', 'RegisteredUserType', NOW()),
+             ('123e4567-e89b-12d3-a456-426614174002', 'RegisteredUserType', NOW()),
+             ('123e4567-e89b-12d3-a456-426614174003', 'Guest', NOW()),
+         ('123e4567-e89b-12d3-a456-426614174004', 'Guest', NOW());",
+
+    "INSERT INTO RegisteredUserType (id, email, userName, passwordHash, category) VALUES
+    ('123e4567-e89b-12d3-a456-426614174000', 'shahd@e.com', 'UserOne', '123', 'Org'),
+    ('123e4567-e89b-12d3-a456-426614174001', 'user2@example.com', 'UserTwo', '$2y$10$12344', 'Donar'),
+    ('123e4567-e89b-12d3-a456-426614174002', 'user3@example.com', 'UserThree', '$2y$10$22222','Org');"
 
     
             // "CREATE TABLE Donations (

@@ -4,6 +4,7 @@ require_once "./models/RegisteredUserModel.php";
 require_once "./Services/Guest.php";
 require_once "./Services/RegisterUser.php";
 require_once "./Database.php"; 
+require_once "./Services/ContextAuthenticator.php";
 
 
 
@@ -47,15 +48,14 @@ class LoginController {
             if (!empty($_POST['email']) && !empty($_POST['password'])) {
                 $context = new ContextAuthenticator();
                 $user = $context->login($_POST['email'], $_POST['password']);
-                echo $user;
                 if ($user) {
 
-                   echo"<strong>User  found  yaaaay.</strong><br/><br/><!--deng-->";
+                    require_once "./views/Home.php";
 
                     exit();
                 } else {
-                   // $msg .= 
-                    echo"<strong>User not found.</strong><br/><br/><!--deng-->";
+                    require_once "./views/loginView.php";
+                   
                 }
             } else {
                 $msg .= '<strong>Error: Please enter email and password.</strong>';
