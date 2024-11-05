@@ -26,7 +26,7 @@ class Populate {
                 `passwordHash` VARCHAR(255) NOT NULL,
                 `category` Enum('Org','Donar'),
                 PRIMARY KEY (id),
-                FOREIGN KEY (id) REFERENCES Users(`id`) ON DELETE CASCADE
+                FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
     
             // "CREATE TABLE Donations (
@@ -137,6 +137,6 @@ class Populate {
             // );
         ],
         true
-    ); 
-    }
+);
+}
 }

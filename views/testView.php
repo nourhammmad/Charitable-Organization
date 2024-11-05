@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userName = $_POST['userName'];
         $password = $_POST['password'];
         $type = $_POST['type'];
-        User::createDefaultUser($uuid, $type);
+        UserModel::createDefaultUser($uuid, $type);
         
     }
     // } elseif (isset($_POST['update'])) {
@@ -35,11 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Retrieve all users to display
-$users = [];
-$query = 'SELECT * FROM Users';
-$stmt = (new Database())->getDbh()->prepare($query);
-$stmt->execute();
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// $users = [];
+// $query = 'SELECT * FROM Users';
+// $stmt = (new Database())->getDbh()->prepare($query);
+// $stmt->execute();
+// $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>

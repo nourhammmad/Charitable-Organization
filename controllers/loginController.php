@@ -19,18 +19,13 @@ class LoginController {
     public function handleRequest() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST['login'])) {
-                // $this->loginRegisteredUser($_POST['email'], $_POST['password']);
-            } 
-            // elseif (isset($_POST['signup_submit'])) {
-            //     $this->registerNewUser($_POST['signup_email'], $_POST['signup_userName'], $_POST['signup_password'], $_POST['category']);
-            // } 
-            // Display sign-up view
+                $this->loginRegisteredUser($_POST['email'], $_POST['password']);
+            }
             elseif (isset($_POST['signup'])) {
                 echo $_POST['category'];
 
                 $this->registerNewUser($_POST['signup_email'], $_POST['signup_userName'], $_POST['signup_password'], $_POST['category']);
-                // require_once "./views/signupView.php"; 
-                // return; // Stop further processing to display the sign-up form
+
             } 
             // Handle guest login
             elseif (isset($_POST['guest'])) {
@@ -41,17 +36,36 @@ class LoginController {
         require_once "./views/loginView.php";
     }
     
+    
 
-    // private function loginRegisteredUser($email, $password) {
-    //     // Find user by email and verify password
-    //     $user = UserModel::findByEmail($email);
-    //     if ($user && password_verify($password, $user->passwordHash)) {
-    //         $registeredUser = new RegisteredUserType($user->id, $email, $user->userName, $user->passwordHash);
-    //         $registeredUser->login();
-    //     } else {
-    //         echo "Invalid credentials!";
-    //     }
-    // }
+
+
+    public function loginRegisteredUser()
+    {
+        $msg = '';
+        if (isset($_POST['login'])) {
+            if (!empty($_POST['email']) && !empty($_POST['password'])) {
+                $context = new ContextAuthenticator();
+                $user = $context->login($_POST['email'], $_POST['password']);
+                echo $user;
+                if ($user) {
+
+                   echo"<strong>User  found  yaaaay.</strong><br/><br/><!--deng-->";
+
+                    exit();
+                } else {
+                   // $msg .= 
+                    echo"<strong>User not found.</strong><br/><br/><!--deng-->";
+                }
+            } else {
+                $msg .= '<strong>Error: Please enter email and password.</strong>';
+            }
+            }
+            exit();
+        }
+      
+    
+
 
        private function registerNewUser($email, $userName, $password,$category) {
         $id = $this->generate_uuid();

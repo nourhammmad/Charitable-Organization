@@ -10,6 +10,7 @@ class Database {
     private static $instance = null;
     private static $conn;
 
+
     public function __construct() {
         self::$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
         if (self::$conn->connect_error) {
