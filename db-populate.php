@@ -28,7 +28,7 @@ class Populate {
                 PRIMARY KEY (id),
                 FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-    
+            
             "INSERT INTO Users (id, types, created_at) VALUES
             ('123e4567-e89b-12d3-a456-426614174000', 'RegisteredUserType', NOW()),
            ('123e4567-e89b-12d3-a456-426614174001', 'RegisteredUserType', NOW()),
