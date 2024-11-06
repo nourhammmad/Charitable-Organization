@@ -18,38 +18,35 @@ class Populate {
             "DROP TABLE IF EXISTS OrganizationDonor;",
             "DROP TABLE IF EXISTS DonationItem;",
             "DROP TABLE IF EXISTS DonationManagement;",
-"DROP TABLE IF EXISTS Clothes;",
-"DROP TABLE IF EXISTS Books;",
+            "DROP TABLE IF EXISTS Clothes;",
+            "DROP TABLE IF EXISTS Books;",
 
-"DROP TABLE IF EXISTS Money;",
-"DROP TABLE IF EXISTS IPayment;",
-"DROP TABLE IF EXISTS Cash;",
+            "DROP TABLE IF EXISTS Money;",
+            "DROP TABLE IF EXISTS IPayment;",
+            "DROP TABLE IF EXISTS Cash;",
 
-"DROP TABLE IF EXISTS Visa;",
-"DROP TABLE IF EXISTS Instapay;",
-"DROP TABLE IF EXISTS DonationItem;",
-"DROP TABLE IF EXISTS DonationManagement;",
-"DROP TABLE IF EXISTS DonationType;",
-"DROP TABLE IF EXISTS Organization;",
+            "DROP TABLE IF EXISTS Visa;",
+            "DROP TABLE IF EXISTS Instapay;",
+            "DROP TABLE IF EXISTS DonationType;",
+            "DROP TABLE IF EXISTS Organization;",
 
-
-
-            //"SET FOREIGN_KEY_CHECKS = 1;",
+            "SET FOREIGN_KEY_CHECKS = 1;",
     
             "CREATE TABLE Users (
                 `id` CHAR(36) NOT NULL PRIMARY KEY,
                 `types` ENUM('Guest', 'RegisteredUserType'),
                 `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-    
-"CREATE TABLE RegisteredUserType (
-        `id` CHAR(36) NOT NULL,
-        `email` VARCHAR(50) UNIQUE NOT NULL,
-        `userName` VARCHAR(50) UNIQUE NOT NULL,
-        `passwordHash` VARCHAR(255) NOT NULL,
-        PRIMARY KEY (id),
-        FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE
-    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                
+            "CREATE TABLE RegisteredUserType (
+                    `id` CHAR(36) NOT NULL,
+                    `email` VARCHAR(50) UNIQUE NOT NULL,
+                    `userName` VARCHAR(50) UNIQUE NOT NULL,
+                    `passwordHash` VARCHAR(255) NOT NULL,
+                    `category` Enum('Org','Donar'),
+                    PRIMARY KEY (id),
+                    FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
            " CREATE TABLE Tasks (
                 `id` INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each task, with auto-increment
@@ -60,111 +57,125 @@ class Populate {
                 `location` VARCHAR(255) -- Location where the task will take place
             )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-              "CREATE TABLE DonationType (
-                `donationId` CHAR(36) PRIMARY KEY,
-                `quantityDonated` INT NOT NULL
-                )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+            "CREATE TABLE DonationType (
+            `donationId` CHAR(36) PRIMARY KEY,
+            `quantityDonated` INT NOT NULL
+            )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
 
-"CREATE TABLE Donor (
-    `donorId` CHAR(36) PRIMARY KEY,
-    `donationId` CHAR(36),
-    `roleDetails` TEXT,
-    `registeredUserId` CHAR(36) NOT NULL,
-    FOREIGN KEY (donationId) REFERENCES DonationType(donationId) ON DELETE SET NULL,
-    FOREIGN KEY (registeredUserId) REFERENCES RegisteredUserType(id) ON DELETE CASCADE
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-
-                  "  CREATE TABLE Organization (
-                        `organizationId` CHAR(36) PRIMARY KEY,
-                        `organizationName` VARCHAR(255) NOT NULL,
-                        `registeredUserId` CHAR(36) NOT NULL,
-                        FOREIGN KEY (registeredUserId) REFERENCES RegisteredUserType(id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-
-                
-                "CREATE TABLE OrganizationDonor (
-                    `organizationId` CHAR(36),
-                    `donorId` CHAR(36),
-                    PRIMARY KEY (organizationId, donorId),
-                    FOREIGN KEY (organizationId) REFERENCES Organization(organizationId) ON DELETE CASCADE,
-                    FOREIGN KEY (donorId) REFERENCES Donor(donorId) ON DELETE CASCADE
-                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-
-                "CREATE TABLE Events (
-                eventId INT AUTO_INCREMENT PRIMARY KEY,
-                date DATE NOT NULL,
-                address VARCHAR(255) NOT NULL,
-                EventAttendanceCapacity INT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            "CREATE TABLE Donor (
+                `donorId` CHAR(36) PRIMARY KEY,
+                `donationId` CHAR(36),
+                `roleDetails` TEXT,
+                `registeredUserId` CHAR(36) NOT NULL,
+                FOREIGN KEY (donationId) REFERENCES DonationType(donationId) ON DELETE SET NULL,
+                FOREIGN KEY (registeredUserId) REFERENCES RegisteredUserType(id) ON DELETE CASCADE
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-           " CREATE TABLE DonationManagement (
+            "CREATE TABLE Organization (
+                `organizationId` CHAR(36) PRIMARY KEY,
+                `organizationName` VARCHAR(255) NOT NULL,
+                `registeredUserId` CHAR(36) NOT NULL,
+                FOREIGN KEY (registeredUserId) REFERENCES RegisteredUserType(id) ON DELETE CASCADE
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+            
+            "CREATE TABLE OrganizationDonor (
+                `organizationId` CHAR(36),
+                `donorId` CHAR(36),
+                PRIMARY KEY (organizationId, donorId),
+                FOREIGN KEY (organizationId) REFERENCES Organization(organizationId) ON DELETE CASCADE,
+                FOREIGN KEY (donorId) REFERENCES Donor(donorId) ON DELETE CASCADE
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+            "CREATE TABLE Events (
+            eventId INT AUTO_INCREMENT PRIMARY KEY,
+            date DATE NOT NULL,
+            address VARCHAR(255) NOT NULL,
+            EventAttendanceCapacity INT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+            " CREATE TABLE DonationManagement (
             `donationManagementId` INT AUTO_INCREMENT PRIMARY KEY,
-            `organizationId` INT NOT NULL,
+            `organizationId` CHAR(36) NOT NULL,
             `donationTypeId` CHAR(36) NOT NULL,
             FOREIGN KEY (`organizationId`) REFERENCES Organization(`organizationId`) ON DELETE CASCADE,
             FOREIGN KEY (`donationTypeId`) REFERENCES DonationType(`donationId`) ON DELETE CASCADE
-        ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             "CREATE TABLE DonationItem (
-        `donationItemId` INT AUTO_INCREMENT PRIMARY KEY,
-        `donationManagementId` INT NOT NULL,
-        `quantity` INT NOT NULL,
-        FOREIGN KEY (`donationManagementId`) REFERENCES DonationManagement(`donationManagementId`) ON DELETE CASCADE
-    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-    
-    "CREATE TABLE Clothes (
-    `clothesId` CHAR(36) PRIMARY KEY,
-    `donationId` CHAR(36) NOT NULL,  -- Foreign key to DonationType
-    `clothingDescription` VARCHAR(255),
-    FOREIGN KEY (`donationId`) REFERENCES DonationType(`donationId`) ON DELETE CASCADE
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+            `donationItemId` INT AUTO_INCREMENT PRIMARY KEY,
+            `donationManagementId` INT NOT NULL,
+            `quantity` INT NOT NULL,
+            FOREIGN KEY (`donationManagementId`) REFERENCES DonationManagement(`donationManagementId`) ON DELETE CASCADE
+             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+            
+            "CREATE TABLE Clothes (
+            `clothesId` CHAR(36) PRIMARY KEY,
+            `donationId` CHAR(36) NOT NULL,  
+            `clothingDescription` VARCHAR(255),
+            FOREIGN KEY (`donationId`) REFERENCES DonationType(`donationId`) ON DELETE CASCADE
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-"CREATE TABLE Books (
-    `bookId` CHAR(36) PRIMARY KEY,
-    `donationId` CHAR(36) NOT NULL,  -- Foreign key to DonationType
-    `bookTitle` VARCHAR(255),
-    `bookAuthor` VARCHAR(255),
-    FOREIGN KEY (`donationId`) REFERENCES DonationType(`donationId`) ON DELETE CASCADE
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+            "CREATE TABLE Books (
+            `bookId` CHAR(36) PRIMARY KEY,
+            `donationId` CHAR(36) NOT NULL, 
+            `bookTitle` VARCHAR(255),
+            `bookAuthor` VARCHAR(255),
+            FOREIGN KEY (`donationId`) REFERENCES DonationType(`donationId`) ON DELETE CASCADE
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-"CREATE TABLE Money (
-    `moneyId` CHAR(36) PRIMARY KEY,
-    `donationId` CHAR(36) NOT NULL,  -- Foreign key to DonationType
-    `amount` DECIMAL(10, 2) NOT NULL,
-    `paymentId` CHAR(36),  -- Foreign key to IPayment
-    FOREIGN KEY (`donationId`) REFERENCES DonationType(`donationId`) ON DELETE CASCADE,
-    FOREIGN KEY (`paymentId`) REFERENCES IPayment(`paymentId`) ON DELETE SET NULL
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+            "CREATE TABLE IPayment (
+                `paymentId` CHAR(36) PRIMARY KEY,
+                `paymentMethod` VARCHAR(255) NOT NULL
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-"CREATE TABLE IPayment (
-    `paymentId` CHAR(36) PRIMARY KEY,
-    `paymentMethod` VARCHAR(255) NOT NULL
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+            "CREATE TABLE Money (
+            `moneyId` CHAR(36) PRIMARY KEY,
+            `donationId` CHAR(36) NOT NULL,  
+            `amount` DECIMAL(10, 2) NOT NULL,
+            `paymentId` CHAR(36),  
+            FOREIGN KEY (`donationId`) REFERENCES DonationType(`donationId`) ON DELETE CASCADE,
+            FOREIGN KEY (`paymentId`) REFERENCES IPayment(`paymentId`) ON DELETE SET NULL
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-"CREATE TABLE Cash (
-    `cashId` CHAR(36) PRIMARY KEY,
-    `paymentId` CHAR(36) NOT NULL,  -- Foreign key to IPayment
-    `cashAmount` DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (`paymentId`) REFERENCES IPayment(`paymentId`) ON DELETE CASCADE
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-"CREATE TABLE Visa (
-    `visaId` CHAR(36) PRIMARY KEY,
-    `paymentId` CHAR(36) NOT NULL,  -- Foreign key to IPayment
-    `cardNumber` VARCHAR(16) NOT NULL,
-    `expiryDate` DATE NOT NULL,
-    FOREIGN KEY (`paymentId`) REFERENCES IPayment(`paymentId`) ON DELETE CASCADE
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-"CREATE TABLE Instapay (
-    `instapayId` CHAR(36) PRIMARY KEY,
-    `paymentId` CHAR(36) NOT NULL,  -- Foreign key to IPayment
-    `username` VARCHAR(255) NOT NULL,
-    `transactionId` CHAR(36) NOT NULL,
-    FOREIGN KEY (`paymentId`) REFERENCES IPayment(`paymentId`) ON DELETE CASCADE
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+            "CREATE TABLE Cash (
+                `cashId` CHAR(36) PRIMARY KEY,
+                `paymentId` CHAR(36) NOT NULL,  -- Foreign key to IPayment
+                `cashAmount` DECIMAL(10, 2) NOT NULL,
+                FOREIGN KEY (`paymentId`) REFERENCES IPayment(`paymentId`) ON DELETE CASCADE
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+            "CREATE TABLE Visa (
+                `visaId` CHAR(36) PRIMARY KEY,
+                `paymentId` CHAR(36) NOT NULL,  -- Foreign key to IPayment
+                `cardNumber` VARCHAR(16) NOT NULL,
+                `expiryDate` DATE NOT NULL,
+                FOREIGN KEY (`paymentId`) REFERENCES IPayment(`paymentId`) ON DELETE CASCADE
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+            "CREATE TABLE Instapay (
+                `instapayId` CHAR(36) PRIMARY KEY,
+                `paymentId` CHAR(36) NOT NULL,  -- Foreign key to IPayment
+                `username` VARCHAR(255) NOT NULL,
+                `transactionId` CHAR(36) NOT NULL,
+                FOREIGN KEY (`paymentId`) REFERENCES IPayment(`paymentId`) ON DELETE CASCADE
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+            "INSERT INTO Users (id, types, created_at) VALUES
+            ('123e4567-e89b-12d3-a456-426614174000', 'RegisteredUserType', NOW()),
+            ('123e4567-e89b-12d3-a456-426614174001', 'RegisteredUserType', NOW()),
+            ('123e4567-e89b-12d3-a456-426614174002', 'RegisteredUserType', NOW()),
+            ('123e4567-e89b-12d3-a456-426614174003', 'Guest', NOW()),
+            ('123e4567-e89b-12d3-a456-426614174004', 'Guest', NOW());",
+
+            "INSERT INTO RegisteredUserType (id, email, userName, passwordHash, category) VALUES
+            ('123e4567-e89b-12d3-a456-426614174000', 'user1@example.com', 'UserOne', '123', 'Org'),
+            ('123e4567-e89b-12d3-a456-426614174001', 'user2@example.com', 'UserTwo', '$2y$10$12344', 'Donar'),
+            ('123e4567-e89b-12d3-a456-426614174002', 'user3@example.com', 'UserThree', '$2y$10$22222', 'Org');",
 
 
 

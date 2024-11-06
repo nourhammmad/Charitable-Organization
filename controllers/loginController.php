@@ -50,9 +50,7 @@ class LoginController {
                 $context = new ContextAuthenticator();
                 $user = $context->login($_POST['email'], $_POST['password']);
                 if ($user) {
-
                     require_once "./views/Home.php";
-
                     exit();
                 } else {
                     require_once "./views/loginView.php";

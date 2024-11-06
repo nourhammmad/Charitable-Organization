@@ -27,8 +27,7 @@ class PasswordAuth implements IAuthenticationProvider
 {
     public function login(String $email, String $password): User|null
     {
-        echo "Authenticating user with email: $email with database...<br/>";
-        //$run = User::createUser($email,$password);
+       // echo "Authenticating user with email: $email with database...<br/>";
         return RegisterUserTypeModel::get_by_email_and_password($email, $password);
     }
 }

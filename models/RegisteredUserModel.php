@@ -23,7 +23,6 @@ class RegisterUserTypeModel {
     }
 
     public static function save($id,$email, $userName, $passwordHash,$category) { 
-       $id = uniqid();
         $type = 'RegisteredUserType';
         if (UserModel::createDefaultUser($id,$type)) {
             $insertRegisteredUserQuery = "INSERT INTO RegisteredUserType (`id`, `email`, `userName`, `passwordHash`,`category`) VALUES ('$id', '$email', '$userName', '$passwordHash','$category')";
@@ -64,9 +63,6 @@ class RegisterUserTypeModel {
     {
 
         $rows = Database::run_select_query("SELECT * FROM RegisteredUserType WHERE `email` = '$email' AND `passwordHash` = '$pass'");
-        // echo $email;
-        // echo "     ";
-        // echo $pass;
         return $rows->num_rows > 0 ? new RegisterUser($rows->fetch_assoc()) : null;
     }
 }
