@@ -50,27 +50,51 @@ class Populate {
                 `quantityDonated` INT NOT NULL
                 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-
                 "CREATE TABLE Donor (
                     `donorId` CHAR(36) PRIMARY KEY,
                     `donationId` CHAR(36),
                     `roleDetails` TEXT,
                     FOREIGN KEY (donationId) REFERENCES DonationType(donationId) ON DELETE SET NULL
-                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-                    
-                    "CREATE TABLE Organization (
-                        `organizationId` INT AUTO_INCREMENT PRIMARY KEY,
-                        `organizationName` VARCHAR(255) NOT NULL
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;", 
 
-                
-                "CREATE TABLE OrganizationDonor (
-                    `organizationId` CHAR(36),
+                    "CREATE TABLE Organization (
+                    `organizationId` INT AUTO_INCREMENT PRIMARY KEY,
+                    `organizationName` VARCHAR(255) NOT NULL
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+                ",
+
+                    "CREATE TABLE OrganizationDonor (
+                    `organizationId` INT,  -- Changed to INT to match Organization's primary key type
                     `donorId` CHAR(36),
                     PRIMARY KEY (organizationId, donorId),
                     FOREIGN KEY (organizationId) REFERENCES Organization(organizationId) ON DELETE CASCADE,
                     FOREIGN KEY (donorId) REFERENCES Donor(donorId) ON DELETE CASCADE
-                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                // "CREATE TABLE Donor (
+                //     `donorId` CHAR(36) PRIMARY KEY,
+                //     `donationId` CHAR(36),
+                //     `roleDetails` TEXT,
+                //     FOREIGN KEY (donationId) REFERENCES DonationType(donationId) ON DELETE SET NULL
+                // ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                //    "CREATE TABLE Donor (
+                //         donorId CHAR(36) PRIMARY KEY,
+                //         donorName VARCHAR(255) NOT NULL
+                //     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;", 
+                    
+                // "CREATE TABLE Organization (
+                //         organizationId CHAR(36) PRIMARY KEY,
+                //         organizationName VARCHAR(255) NOT NULL
+                //     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                
+                // "CREATE TABLE OrganizationDonor (
+                //     `organizationId` CHAR(36),
+                //     `donorId` CHAR(36),
+                //     PRIMARY KEY (organizationId, donorId),
+                //     FOREIGN KEY (organizationId) REFERENCES Organization(organizationId) ON DELETE CASCADE,
+                //     FOREIGN KEY (donorId) REFERENCES Donor(donorId) ON DELETE CASCADE
+                // ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
 
 
     
