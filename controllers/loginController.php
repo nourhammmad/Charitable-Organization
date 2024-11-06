@@ -4,6 +4,7 @@ require_once "./models/RegisteredUserModel.php";
 require_once "./Services/Guest.php";
 require_once "./Services/RegisterUser.php";
 require_once "./Database.php"; 
+require_once "./Services/ContextAuthenticator.php" ;
 
 
 

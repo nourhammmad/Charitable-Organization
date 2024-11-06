@@ -29,6 +29,21 @@ class Populate {
                 FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
     
+            "INSERT INTO Users (id, types, created_at) VALUES
+            ('123e4567-e89b-12d3-a456-426614174000', 'RegisteredUserType', NOW()),
+           ('123e4567-e89b-12d3-a456-426614174001', 'RegisteredUserType', NOW()),
+             ('123e4567-e89b-12d3-a456-426614174002', 'RegisteredUserType', NOW()),
+             ('123e4567-e89b-12d3-a456-426614174003', 'Guest', NOW()),
+         ('123e4567-e89b-12d3-a456-426614174004', 'Guest', NOW());",
+
+    "INSERT INTO RegisteredUserType (id, email, userName, passwordHash, category) VALUES
+    ('123e4567-e89b-12d3-a456-426614174000', 'user1@example.com', 'UserOne', '$2y$10$123', 'Org'),
+    ('123e4567-e89b-12d3-a456-426614174001', 'user2@example.com', 'UserTwo', '$2y$10$12344', 'Donar'),
+    ('123e4567-e89b-12d3-a456-426614174002', 'user3@example.com', 'UserThree', '$2y$10$22222', 'Org');"
+
+
+
+    
             // "CREATE TABLE Donations (
             //     donationId INT AUTO_INCREMENT PRIMARY KEY,
             //     userId CHAR(36),
