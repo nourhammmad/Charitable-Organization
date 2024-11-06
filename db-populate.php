@@ -57,11 +57,12 @@ class Populate {
                     `roleDetails` TEXT,
                     FOREIGN KEY (donationId) REFERENCES DonationType(donationId) ON DELETE SET NULL
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                    
+                    "CREATE TABLE Organization (
+                        `organizationId` INT AUTO_INCREMENT PRIMARY KEY,
+                        `organizationName` VARCHAR(255) NOT NULL
+                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                "CREATE TABLE Organization (
-                    `organizationId` CHAR(36) PRIMARY KEY,
-                    `organizationName` VARCHAR(255) NOT NULL
-                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
                 
                 "CREATE TABLE OrganizationDonor (
                     `organizationId` CHAR(36),
