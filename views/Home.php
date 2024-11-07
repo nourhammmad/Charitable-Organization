@@ -56,6 +56,10 @@
             font-size: 2.5rem;
             color: #4CAF50;
         }
+        .user-info {
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
@@ -76,5 +80,32 @@
             <a href="donateClothes.php">Donate Clothes</a>
         </div>
     </div>
+
+    <div class="user-info">
+        <p id="user-id-display">User ID: Not loaded</p>
+        <button id="get-id-button">Get User ID</button>
+    </div>
+
+    <script>
+        $path = './controllers/DonationDetails.php'
+        document.getElementById("get-id-button").addEventListener("click", function () {
+            fetch($path, {  
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "getid=true"
+            })
+            .then(response => response.text())  // Expect plain text response
+            .then(data => {
+                const display = document.getElementById("user-id-display");
+                display.innerText = data;  // Display the response (User ID or error message)
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("user-id-display").innerText = "An error occurred.";
+            });
+        });
+    </script>
 </body>
 </html>
