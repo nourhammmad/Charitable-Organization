@@ -1,5 +1,5 @@
 <?php
-require_once ("E:\brwana\Gam3a\Senoir 2\Design Patterns\charityyy\Charitable-Organization\Database.php");  // Include your Database class
+require_once ("./Database.php");  // Include your Database class
 Database::getInstance();
 
 class EventModel {
@@ -28,8 +28,8 @@ class EventModel {
             echo "No database connection established.";
             return false;
         }
-        var_dump($addressId); // Check what addressId is being passed
-        var_dump($date, $EventAttendanceCapacity, $tickets); // Check all other parameters
+        //var_dump($addressId); // Check what addressId is being passed
+        //var_dump($date, $EventAttendanceCapacity, $tickets); // Check all other parameters
 
 
         // Query to insert a new event
@@ -134,8 +134,8 @@ if ($db->getConnection() === null) {
 }
 
 // Example of Address ID from the Address table (make sure this addressId exists in your DB)
-$addressId = 'bkjbkjbkjb';  // Replace this with an actual UUID from the Address table
-$date = '2024-12-01';
+$addressId = '29959131-9d80-11ef-b1d4-902e1627f5db  ';  // Replace this with an actual UUID from the Address table
+$date = '$2024-12-01';
 $EventAttendanceCapacity = 100;
 $tickets = 50;
 
@@ -147,7 +147,7 @@ if (EventModel::createEvent($date, $addressId, $EventAttendanceCapacity, $ticket
 }
 
 // Test retrieving an event by ID (Assuming the eventId is 1)
-$eventId = 1;
+$eventId = 3;
 $event = EventModel::getEventById($eventId);
 if ($event) {
     echo "Event found: " . $event->$date . "<br/>";
@@ -156,7 +156,7 @@ if ($event) {
 }
 
 // Test updating an event
-$newDate = '2024-12-05';
+$newDate = '$2024-12-05';
 $newEventAttendanceCapacity = 150;
 $newTickets = 100;
 if (EventModel::updateEvent($eventId, $newDate, $addressId, $newEventAttendanceCapacity, $newTickets)) {
