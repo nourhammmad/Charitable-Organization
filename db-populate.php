@@ -6,7 +6,9 @@ class Populate {
         Database::run_queries(
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
-                "DROP TABLE IF EXISTS event,eventvolunteer,address,Users, bookdonation, clothesdonation, moneydonation, Payments, Donations, RegisteredUserType, Events, Tasks, DonationType, Donor, Organization, DonationItem, DonationManagement, Clothes, Books, Money, IPayment, Cash, Visa, Instapay;",
+                "DROP TABLE IF EXISTS event,eventvolunteer,address,Users, bookdonation, clothesdonation, moneydonation, Payments, Donations, 
+                RegisteredUserType, Events, Tasks, DonationType, Donor, Organization, DonationItem, 
+                DonationManagement, Clothes, Books, Money, IPayment, Cash, Visa, Instapay,Volunteer,DonationTypes;",
                 "SET FOREIGN_KEY_CHECKS = 1;", 
 
                 // Create Users Table
@@ -193,10 +195,10 @@ class Populate {
                     (1, 200.00, 'Visa', 'Completed'),
                     (1, 300.00, 'Instapay', 'Pending');",
                     // Insert Payments into Payments Table
-"INSERT INTO Payments (`donor_id`, `amount`, `payment_method`, `status`) VALUES
-(1, 500.00, 'Cash', 'Completed'),
-(1, 200.00, 'Visa', 'Completed'),
-(1, 300.00, 'Instapay', 'Pending');",
+                    "INSERT INTO Payments (`donor_id`, `amount`, `payment_method`, `status`) VALUES
+                    (1, 500.00, 'Cash', 'Completed'),
+                    (1, 200.00, 'Visa', 'Completed'),
+                    (1, 300.00, 'Instapay', 'Pending');",
 
 // Insert into Cash Table
 "INSERT INTO Cash (`payment_id`, `transaction_id`) VALUES
@@ -210,30 +212,41 @@ class Populate {
 // Insert into Instapay Table
 "INSERT INTO Instapay (`payment_id`, `transaction_reference`, `account_number`) VALUES
 (3, 'INSTAPAY112233', '9876543210');",
-   "CREATE TABLE Address (
-    addressId CHAR(36) PRIMARY KEY,
-    street VARCHAR(255),
-    floor INT,
-    apartment INT,
-    city VARCHAR(100)
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-// Insert sample address
-"INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
-    (UUID(), '123 Main St', 5, 101, 'New York');",
-                "CREATE TABLE Event (
-                        eventId INT AUTO_INCREMENT PRIMARY KEY,
-                        date DATE NOT NULL,
-                        addressId CHAR(36),
-                        EventAttendanceCapacity INT NOT NULL,
-                        tickets INT,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (addressId) REFERENCES Address(addressId) ON DELETE SET NULL
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT = 1;",
- 
+                "CREATE TABLE Address (
+                    addressId CHAR(36) PRIMARY KEY,
+                    street VARCHAR(255),
+                    floor INT,
+                    apartment INT,
+                    city VARCHAR(100)
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+            // Insert sample address
+            "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
+                (UUID(), '123 Main St', 5, 101, 'New York');",
+
+        "CREATE TABLE Event (
+            eventId INT AUTO_INCREMENT PRIMARY KEY,
+            date DATE NOT NULL,
+            addressId CHAR(36),  -- No foreign key constraint
+            EventAttendanceCapacity INT NOT NULL,
+            tickets INT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT = 1;",
+
+                               
                     // Insert test Event
                     "INSERT INTO Event (date, addressId, EventAttendanceCapacity, tickets) VALUES
                         ('2024-12-01', (SELECT addressId FROM Address LIMIT 1), 100, 50);",
+
+                        "INSERT INTO Event (date, addressId, EventAttendanceCapacity, tickets) 
+                        VALUES 
+                            ('2024-12-01', (SELECT addressId FROM Address LIMIT 1), 6, 5);",
+
+                            "INSERT INTO Event (date, addressId, EventAttendanceCapacity, tickets) 
+                            VALUES ('2024-12-01', 'some-random-address-id', 100, 50);",
+                            
+                     
  
                     // Create EventVolunteer Table to link Events and Volunteers
                     "CREATE TABLE EventVolunteer (
@@ -253,7 +266,10 @@ class Populate {
                  
 
 
+            
             ],true,
+       
+
         );
     }
 }
