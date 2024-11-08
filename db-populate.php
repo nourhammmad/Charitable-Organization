@@ -162,7 +162,6 @@ class Populate {
                         (1, 1);"
                 ], true
             );
-            echo "Database populated successfully!";
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage();
         }
