@@ -3,168 +3,193 @@ require_once "Database.php";
 
 class Populate {
     public static function populate() {
-        try {
-            Database::run_queries(
-                [
-                    // Disable foreign key checks
-                    "SET FOREIGN_KEY_CHECKS = 0;",
+        Database::run_queries(
+            [
+                "SET FOREIGN_KEY_CHECKS = 0;",
+                "DROP TABLE IF EXISTS Users, bookdonation, clothesdonation, moneydonation, Payments, Donations, RegisteredUserType, Events, Tasks, DonationType, Donor, Organization, DonationItem, DonationManagement, Clothes, Books, Money, IPayment, Cash, Visa, Instapay;",
+                "SET FOREIGN_KEY_CHECKS = 1;", 
 
-                    // Drop existing tables if they exist
-                    "DROP TABLE IF EXISTS Users, RegisteredUserType, Organization, Volunteer, Donor,
-                     DonationManagement, DonationTypes, DonationItem, Address, Event, EventVolunteer;",
+                // Create Users Table
+                "CREATE TABLE Users (
+                    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    `types` ENUM('Guest', 'RegisteredUserType'),
+                    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    // Enable foreign key checks
-                    "SET FOREIGN_KEY_CHECKS = 1;",
+                // Insert sample users
+                "INSERT INTO Users (`types`) VALUES 
+                    ('RegisteredUserType'), 
+                    ('Guest');",
 
-                    // Create Users Table
-                    "CREATE TABLE Users (
-                        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                        types ENUM('Guest', 'RegisteredUserType'),
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create RegisteredUserType Table
+                "CREATE TABLE RegisteredUserType (
+                    `id` INT NOT NULL,
+                    `email` VARCHAR(50) UNIQUE NOT NULL,
+                    `userName` VARCHAR(50) UNIQUE NOT NULL,
+                    `passwordHash` VARCHAR(255) NOT NULL,
+                    `category` ENUM('Volunteer', 'Donor'),
+                    PRIMARY KEY (`id`),
+                    FOREIGN KEY (`id`) REFERENCES Users(`id`) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    // Insert sample users
-                    "INSERT INTO Users (types) VALUES 
-                        ('RegisteredUserType'), 
-                        ('Guest');",
+                // Insert sample RegisteredUserType
+                "INSERT INTO RegisteredUserType (`id`, `email`, `userName`, `passwordHash`, `category`) VALUES 
+                    (1, 'john.doe@example.com', 'john_doe', 'hashedpassword1', 'Donor'),
+                    (2, 'jane.smith@example.com', 'jane_smith', 'hashedpassword2', 'Volunteer');",
 
-                    // Create RegisteredUserType Table
-                    "CREATE TABLE RegisteredUserType (
-                        id INT NOT NULL,
-                        email VARCHAR(50) UNIQUE NOT NULL,
-                        userName VARCHAR(50) UNIQUE NOT NULL,
-                        passwordHash VARCHAR(255) NOT NULL,
-                        category ENUM('Volunteer', 'Donor'),
-                        PRIMARY KEY (id),
-                        FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create Organization Table
+                "CREATE TABLE Organization (
+                    `id` INT NOT NULL DEFAULT 1 PRIMARY KEY,
+                    `name` VARCHAR(100) NOT NULL,
+                    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    CONSTRAINT unique_organization UNIQUE (`id`)
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    // Insert sample RegisteredUserType data
-                    "INSERT INTO RegisteredUserType (id, email, userName, passwordHash, category) VALUES 
-                        (1, 'john.doe@example.com', 'john_doe', 'hashedpassword1', 'Donor'),
-                        (2, 'jane.smith@example.com', 'jane_smith', 'hashedpassword2', 'Volunteer');",
+                // Insert into Organization
+                "INSERT INTO Organization (`name`) VALUES ('My Charitable Organization');",
 
-                    // Create Organization Table
-                    "CREATE TABLE Organization (
-                        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                        name VARCHAR(100) NOT NULL,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create Volunteer Table
+                "CREATE TABLE Volunteer (
+                    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    `registered_user_id` INT NOT NULL,  
+                    `organization_id` INT,  
+                    `other_volunteer_specific_field` VARCHAR(255),  
+                    FOREIGN KEY (`registered_user_id`) REFERENCES RegisteredUserType(`id`) ON DELETE CASCADE,
+                    FOREIGN KEY (`organization_id`) REFERENCES Organization(`id`) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    // Insert into Organization
-                    "INSERT INTO Organization (name) VALUES ('My Charitable Organization');",
+                // Insert into Volunteer Table
+                "INSERT INTO Volunteer (`registered_user_id`, `organization_id`, `other_volunteer_specific_field`) VALUES 
+                    (2, 1, 'Event Coordinator');",
 
-                    // Create Volunteer Table
-                    "CREATE TABLE Volunteer (
-                        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                        registered_user_id INT NOT NULL,
-                        organization_id INT,
-                        other_volunteer_specific_field VARCHAR(255),
-                        FOREIGN KEY (registered_user_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
-                        FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create Donor Table
+                "CREATE TABLE Donor (
+                    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    `registered_user_id` INT NOT NULL,  
+                    `organization_id` INT,  
+                    `donation_details` TEXT,  
+                    FOREIGN KEY (`registered_user_id`) REFERENCES RegisteredUserType(`id`) ON DELETE CASCADE,
+                    FOREIGN KEY (`organization_id`) REFERENCES Organization(`id`) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;", 
 
-                    // Insert into Volunteer Table
-                    "INSERT INTO Volunteer (registered_user_id, organization_id, other_volunteer_specific_field) VALUES 
-                        (2, 1, 'Event Coordinator');",
+                // Insert into Donor Table
+                "INSERT INTO Donor (`registered_user_id`, `organization_id`, `donation_details`) VALUES
+                    (1, 1, 'Donation of $1000 for charity event');",
 
-                    // Create Donor Table
-                    "CREATE TABLE Donor (
-                        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                        registered_user_id INT NOT NULL,
-                        organization_id INT,
-                        donation_details TEXT,
-                        FOREIGN KEY (registered_user_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
-                        FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create DonationManagement Table
+                "CREATE TABLE DonationManagement (
+                    `donation_management_id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `organization_id` INT,
+                    `donation_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE,
+                    UNIQUE (`organization_id`)
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    // Insert into Donor Table
-                    "INSERT INTO Donor (registered_user_id, organization_id, donation_details) VALUES
-                        (1, 1, 'Donation of $1000 for charity event');",
+                // Insert a single DonationManagement record for the organization
+                "INSERT INTO DonationManagement (`organization_id`) VALUES
+                    (1);",
 
-                    // Create DonationManagement Table
-                    "CREATE TABLE DonationManagement (
-                        donation_management_id INT AUTO_INCREMENT PRIMARY KEY,
-                        organization_id INT,
-                        donation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create DonationTypes Table (Parent Table)
+                "CREATE TABLE DonationTypes (
+                    `donation_type_id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `type_name` ENUM('Money', 'Books', 'Clothes') NOT NULL
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    // Insert a single DonationManagement record
-                    "INSERT INTO DonationManagement (organization_id) VALUES (1);",
+                // Insert DonationTypes (Money, Books, Clothes)
+                "INSERT INTO DonationTypes (`type_name`) VALUES 
+                    ('Money'),
+                    ('Books'),
+                    ('Clothes');",
 
-                    // Create DonationTypes Table
-                    "CREATE TABLE DonationTypes (
-                        donation_type_id INT AUTO_INCREMENT PRIMARY KEY,
-                        type_name VARCHAR(255) NOT NULL
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create Money Table (Child Table)
+                "CREATE TABLE Money (
+                    `money_id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `donation_type_id` INT,
+                    `donation_management_id` INT,
+                    `amount` DECIMAL(10, 2) NOT NULL,
+                    `currency` VARCHAR(10) DEFAULT 'USD',
+                    `date_donated` DATETIME,
+                    FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id) ON DELETE CASCADE,
+                    FOREIGN KEY (donation_management_id) REFERENCES DonationManagement(donation_management_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    // Insert sample donation types
-                    "INSERT INTO DonationTypes (type_name) VALUES 
-                        ('Clothes'), 
-                        ('Books');",
+                // Insert Money Donation
+                "INSERT INTO Money (`donation_type_id`, `donation_management_id`, `amount`, `currency`, `date_donated`) VALUES
+                    (1, 1, 1000.00, 'USD', '2024-11-01 12:00:00');",
 
-                    // Create DonationItem Table
-                    "CREATE TABLE DonationItem (
-                        donation_item_id INT AUTO_INCREMENT PRIMARY KEY,
-                        donation_management_id INT,
-                        donation_type_id INT,
-                        description TEXT,
-                        date_donated DATETIME,
-                        FOREIGN KEY (donation_management_id) REFERENCES DonationManagement(donation_management_id),
-                        FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id)
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create Books Table (Child Table)
+                "CREATE TABLE Books (
+                    `book_id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `donation_type_id` INT,
+                    `donation_management_id` INT,
+                    `book_title` VARCHAR(255),
+                    `author` VARCHAR(255),
+                    `publication_year` INT,
+                    `quantity` INT,
+                    `date_donated` DATETIME,
+                    FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id) ON DELETE CASCADE,
+                    FOREIGN KEY (donation_management_id) REFERENCES DonationManagement(donation_management_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    // Insert Donation Items
-                    "INSERT INTO DonationItem (donation_management_id, donation_type_id, description, date_donated) VALUES
-                        (1, 1, 'Donation of 20 winter jackets', '2024-11-01 12:00:00'),
-                        (1, 2, 'Donation of 50 books for the children\'s library', '2024-11-01 12:00:00');",
+                // Insert Books Donation
+                "INSERT INTO Books (`donation_type_id`, `donation_management_id`, `book_title`, `author`, `publication_year`, `quantity`, `date_donated`) VALUES
+                    (2, 1, 'The Great Gatsby', 'F. Scott Fitzgerald', 1925, 10, '2024-11-01 12:00:00');",
 
-                    // Create Address Table
-                    "CREATE TABLE Address (
-                        addressId CHAR(36) PRIMARY KEY,
-                        street VARCHAR(255),
-                        floor INT,
-                        apartment INT,
-                        city VARCHAR(100)
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create Clothes Table (Child Table)
+                "CREATE TABLE Clothes (
+                    `clothes_id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `donation_type_id` INT,
+                    `donation_management_id` INT,
+                    `clothes_type` VARCHAR(100),
+                    `size` VARCHAR(50),
+                    `color` VARCHAR(50),
+                    `quantity` INT,
+                    `date_donated` DATETIME,
+                    FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id) ON DELETE CASCADE,
+                    FOREIGN KEY (donation_management_id) REFERENCES DonationManagement(donation_management_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    // Insert sample address
-                    "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
-                        (UUID(), '123 Main St', 5, 101, 'New York');",
+                // Insert Clothes Donation
+                "INSERT INTO Clothes (`donation_type_id`, `donation_management_id`, `clothes_type`, `size`, `color`, `quantity`, `date_donated`) VALUES
+                    (3, 1, 'Winter Jacket', 'L', 'Red', 20, '2024-11-01 12:00:00');",
 
-                    // Create Event Table
-                    "CREATE TABLE Event (
-                        eventId INT AUTO_INCREMENT PRIMARY KEY,
-                        date DATE NOT NULL,
-                        addressId CHAR(36),
-                        EventAttendanceCapacity INT NOT NULL,
-                        tickets INT,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (addressId) REFERENCES Address(addressId) ON DELETE SET NULL
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT = 1;",
+                // Create DonationItem Table
+                "CREATE TABLE DonationItem (
+                    `donation_item_id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `donation_management_id` INT,
+                    `donation_type_id` INT,
+                    `description` TEXT,
+                    `date_donated` DATETIME,
+                    FOREIGN KEY (donation_management_id) REFERENCES DonationManagement(donation_management_id) ON DELETE CASCADE,
+                    FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id)
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    // Insert test Event
-                    "INSERT INTO Event (date, addressId, EventAttendanceCapacity, tickets) VALUES 
-                        ('2024-12-01', (SELECT addressId FROM Address LIMIT 1), 100, 50);",
+                // Create Event Table
+                "CREATE TABLE Event (
+                    eventId INT AUTO_INCREMENT PRIMARY KEY,
+                    date DATE NOT NULL,
+                    addressId CHAR(36),
+                    EventAttendanceCapacity INT NOT NULL,
+                    tickets INT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (addressId) REFERENCES Address(addressId) ON DELETE SET NULL
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT = 1;",
 
-                    // Create EventVolunteer Table to link Events and Volunteers
-                    "CREATE TABLE EventVolunteer (
-                        eventId INT,
-                        volunteerId INT,
-                        PRIMARY KEY (eventId, volunteerId),
-                        FOREIGN KEY (eventId) REFERENCES Event(eventId) ON DELETE CASCADE,
-                        FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Insert test Event
+                "INSERT INTO Event (date, addressId, EventAttendanceCapacity, tickets) VALUES
+                    ('2024-12-01', (SELECT addressId FROM Address LIMIT 1), 100, 50);",
 
-                    // Insert a Volunteer association with the Event
-                    "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES 
-                        (1, 1);"
-                ], true
-            );
-        } catch (Exception $e) {
-            echo "Error: " . $e->getMessage();
-        }
+                // Create EventVolunteer Table to link Events and Volunteers
+                "CREATE TABLE EventVolunteer (
+                    eventId INT,
+                    volunteerId INT,
+                    PRIMARY KEY (eventId, volunteerId),
+                    FOREIGN KEY (eventId) REFERENCES Event(eventId) ON DELETE CASCADE,
+                    FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
+                );"
+            ],true,
+        );
     }
 }
+
 ?>
