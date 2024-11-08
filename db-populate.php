@@ -25,13 +25,24 @@ class Populate {
                 PRIMARY KEY (`id`),
                 FOREIGN KEY (`id`) REFERENCES Users(`id`) ON DELETE CASCADE
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+            "CREATE TABLE Organization (
+                `id` INT NOT NULL DEFAULT 1 PRIMARY KEY,
+                `name` VARCHAR(100) NOT NULL,
+                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+"INSERT INTO Organization (`name`)
+VALUES ('My Charitable Organization');
 "
-INSERT INTO Users (`types`)
-VALUES ('Guest'),
-       ('RegisteredUserType');",
-      " INSERT INTO RegisteredUserType (`email`, `userName`, `passwordHash`, `category`, `id`)
-       VALUES ('donor@example.com', 'DonorUser', 'hashedpassword2', 'Donor', LAST_INSERT_ID());
-      "
+
+// "
+// INSERT INTO Users (`types`)
+// VALUES ('Guest'),
+//        ('RegisteredUserType');",
+//       " INSERT INTO RegisteredUserType (`email`, `userName`, `passwordHash`, `category`, `id`)
+//        VALUES ('donor@example.com', 'DonorUser', 'hashedpassword2', 'Donor', LAST_INSERT_ID());
+//       "
 
             // // Insert into DonationType Table
             // "INSERT INTO DonationType (donationId, quantityDonated) VALUES 
