@@ -6,7 +6,7 @@ class Populate {
         Database::run_queries(
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
-                "DROP TABLE IF EXISTS Users, bookdonation, clothesdonation, moneydonation, Payments, Donations, RegisteredUserType, Events, Tasks, DonationType, Donor, Organization, DonationItem, DonationManagement, Clothes, Books, Money, IPayment, Cash, Visa, Instapay;",
+                "DROP TABLE IF EXISTS event,eventvolunteer,address,Users, bookdonation, clothesdonation, moneydonation, Payments, Donations, RegisteredUserType, Events, Tasks, DonationType, Donor, Organization, DonationItem, DonationManagement, Clothes, Books, Money, IPayment, Cash, Visa, Instapay;",
                 "SET FOREIGN_KEY_CHECKS = 1;", 
 
                 // Create Users Table
@@ -153,43 +153,108 @@ class Populate {
                 "INSERT INTO Clothes (`donation_type_id`, `donation_management_id`, `clothes_type`, `size`, `color`, `quantity`, `date_donated`) VALUES
                     (3, 1, 'Winter Jacket', 'L', 'Red', 20, '2024-11-01 12:00:00');",
 
-                // Create DonationItem Table
-                "CREATE TABLE DonationItem (
-                    `donation_item_id` INT AUTO_INCREMENT PRIMARY KEY,
-                    `donation_management_id` INT,
-                    `donation_type_id` INT,
-                    `description` TEXT,
-                    `date_donated` DATETIME,
-                    FOREIGN KEY (donation_management_id) REFERENCES DonationManagement(donation_management_id) ON DELETE CASCADE,
-                    FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id)
+                // Create Payment Table
+                "CREATE TABLE Payments (
+                    `payment_id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `donor_id` INT,
+                    `payment_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    `amount` DECIMAL(10, 2) NOT NULL,
+                    `payment_method` ENUM('Cash', 'Visa', 'Instapay') NOT NULL,
+                    `status` ENUM('Pending', 'Completed', 'Failed') NOT NULL,
+                    FOREIGN KEY (`donor_id`) REFERENCES Donor(`id`) ON DELETE CASCADE
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                // Create Event Table
+                // Create Cash Table
+                "CREATE TABLE Cash (
+                    `payment_id` INT NOT NULL,
+                    `transaction_id` VARCHAR(100) UNIQUE,
+                    FOREIGN KEY (`payment_id`) REFERENCES Payments(`payment_id`) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                // Create Visa Table
+                "CREATE TABLE Visa (
+                    `payment_id` INT NOT NULL,
+                    `transaction_number` VARCHAR(100) UNIQUE,
+                    `card_number` VARCHAR(50),
+                    FOREIGN KEY (`payment_id`) REFERENCES Payments(`payment_id`) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                // Create Instapay Table
+                "CREATE TABLE Instapay (
+                    `payment_id` INT NOT NULL,
+                    `transaction_reference` VARCHAR(100) UNIQUE,
+                    `account_number` VARCHAR(50),
+                    FOREIGN KEY (`payment_id`) REFERENCES Payments(`payment_id`) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                // Insert Payments into Payments Table
+                "INSERT INTO Payments (`donor_id`, `amount`, `payment_method`, `status`) VALUES
+                    (1, 500.00, 'Cash', 'Completed'),
+                    (1, 200.00, 'Visa', 'Completed'),
+                    (1, 300.00, 'Instapay', 'Pending');",
+                    // Insert Payments into Payments Table
+"INSERT INTO Payments (`donor_id`, `amount`, `payment_method`, `status`) VALUES
+(1, 500.00, 'Cash', 'Completed'),
+(1, 200.00, 'Visa', 'Completed'),
+(1, 300.00, 'Instapay', 'Pending');",
+
+// Insert into Cash Table
+"INSERT INTO Cash (`payment_id`, `transaction_id`) VALUES
+(1, 'TXN12345'),
+(2, 'TXN67890');",
+
+// Insert into Visa Table
+"INSERT INTO Visa (`payment_id`, `transaction_number`, `card_number`) VALUES
+(2, 'VISA78901', '4111111111111111');",
+
+// Insert into Instapay Table
+"INSERT INTO Instapay (`payment_id`, `transaction_reference`, `account_number`) VALUES
+(3, 'INSTAPAY112233', '9876543210');",
+   "CREATE TABLE Address (
+    addressId CHAR(36) PRIMARY KEY,
+    street VARCHAR(255),
+    floor INT,
+    apartment INT,
+    city VARCHAR(100)
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+// Insert sample address
+"INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
+    (UUID(), '123 Main St', 5, 101, 'New York');",
                 "CREATE TABLE Event (
-                    eventId INT AUTO_INCREMENT PRIMARY KEY,
-                    date DATE NOT NULL,
-                    addressId CHAR(36),
-                    EventAttendanceCapacity INT NOT NULL,
-                    tickets INT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (addressId) REFERENCES Address(addressId) ON DELETE SET NULL
-                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT = 1;",
+                        eventId INT AUTO_INCREMENT PRIMARY KEY,
+                        date DATE NOT NULL,
+                        addressId CHAR(36),
+                        EventAttendanceCapacity INT NOT NULL,
+                        tickets INT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (addressId) REFERENCES Address(addressId) ON DELETE SET NULL
+                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT = 1;",
+ 
+                    // Insert test Event
+                    "INSERT INTO Event (date, addressId, EventAttendanceCapacity, tickets) VALUES
+                        ('2024-12-01', (SELECT addressId FROM Address LIMIT 1), 100, 50);",
+ 
+                    // Create EventVolunteer Table to link Events and Volunteers
+                    "CREATE TABLE EventVolunteer (
+                        eventId INT,
+                        volunteerId INT,
+                        PRIMARY KEY (eventId, volunteerId),
+                        FOREIGN KEY (eventId) REFERENCES Event(eventId) ON DELETE CASCADE,
+                        FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
+                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+ 
+                    // Insert a Volunteer association with the Event
+                    "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
+                        (1, 1);",
+                    // Create Address Table... by Brwana ahmed mourad mohamed inrahim ali farhan 20P1346
 
-                // Insert test Event
-                "INSERT INTO Event (date, addressId, EventAttendanceCapacity, tickets) VALUES
-                    ('2024-12-01', (SELECT addressId FROM Address LIMIT 1), 100, 50);",
+                   // Create Address Table
+                 
 
-                // Create EventVolunteer Table to link Events and Volunteers
-                "CREATE TABLE EventVolunteer (
-                    eventId INT,
-                    volunteerId INT,
-                    PRIMARY KEY (eventId, volunteerId),
-                    FOREIGN KEY (eventId) REFERENCES Event(eventId) ON DELETE CASCADE,
-                    FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
-                );"
+
             ],true,
         );
     }
 }
-
 ?>
