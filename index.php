@@ -8,7 +8,7 @@ require_once "../Charitable-Organization/models/UserModel.php";
 
 // Initialize the database connection
 $db = new Database();
-//Populate::populate();
+Populate::populate();
 
 
 if ($db->getConnection()) {

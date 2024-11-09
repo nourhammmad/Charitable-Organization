@@ -1,10 +1,13 @@
 <?php
+session_start();
+
 require_once "./models/UserModel.php";
 require_once "./models/RegisteredUserModel.php";
 require_once "./Services/Guest.php";
 require_once "./Services/RegisterUser.php";
-require_once "./Database.php"; 
+require_once "./Database.php";
 require_once "./Services/ContextAuthenticator.php";
+
 
 
 
@@ -37,33 +40,37 @@ class LoginController {
         require_once "./views/loginView.php";
     }
     
+
+
+
+
+  
     
 
-
-
-    public function loginRegisteredUser()
-    {
-        $msg = '';
-        if (isset($_POST['login'])) {
-            if (!empty($_POST['email']) && !empty($_POST['password'])) {
-                $context = new ContextAuthenticator();
-                $user = $context->login($_POST['email'], $_POST['password']);
-                if ($user) {
-
-                    require_once "./views/Home.php";
-
-                    exit();
+    
+   
+    
+        public function loginRegisteredUser() {
+            $msg = '';
+            if (isset($_POST['login'])) {
+                if (!empty($_POST['email']) && !empty($_POST['password'])) {
+                    $context = new ContextAuthenticator();
+                    $user = $context->login($_POST['email'], $_POST['password']);
+                    if ($user) {
+                        $_SESSION['user_id'] = $user->getId();  // Store the user ID in session
+                        require_once "./views/Home.php";
+                        exit();
+                    } else {
+                        require_once "./views/loginView.php";
+                    }
                 } else {
-                    require_once "./views/loginView.php";
-                   
+                    $msg .= '<strong>Error: Please enter email and password.</strong>';
                 }
-            } else {
-                $msg .= '<strong>Error: Please enter email and password.</strong>';
             }
-            }
-            exit();
         }
-      
+    
+    
+
     
 
 

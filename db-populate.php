@@ -4,97 +4,86 @@ require_once "Database.php";
 class Populate {
     public static function populate() {
         Database::run_queries(
-         [
-            "SET FOREIGN_KEY_CHECKS = 0;",
-            "DROP TABLE IF EXISTS Users;",
-            "DROP TABLE IF EXISTS Payments;",
-            "DROP TABLE IF EXISTS Donations;",
-            "DROP TABLE IF EXISTS RegisteredUserType;",
-            "DROP TABLE IF EXISTS Events;",
-            "DROP TABLE IF EXISTS Tasks;",
-            "DROP TABLE IF EXISTS DonationType;",
-            "DROP TABLE IF EXISTS Donor;",
-            "DROP TABLE IF EXISTS Organization;",
-            "DROP TABLE IF EXISTS OrganizationDonor;",
+            [
+                "SET FOREIGN_KEY_CHECKS = 0;",
+                "DROP TABLE IF EXISTS donationtypes, address, books, clothes, event, eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor, organization, ipayment, cash, visa, instapay;",
+                "SET FOREIGN_KEY_CHECKS = 1;", 
 
+                // Create Users Table
+                "CREATE TABLE Users (
+                    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    `types` ENUM('Guest', 'RegisteredUserType'),
+                    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-            "SET FOREIGN_KEY_CHECKS = 1;",
-    
-            "CREATE TABLE Users (
-                `id` CHAR(36) NOT NULL PRIMARY KEY,
-                `types` ENUM('Guest', 'RegisteredUserType'),
-                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-    
-            "CREATE TABLE RegisteredUserType (
-                `id` CHAR(36) NOT NULL,
-                `email` VARCHAR(50) UNIQUE NOT NULL,
-                `userName` VARCHAR(50) UNIQUE NOT NULL,
-                `passwordHash` VARCHAR(255) NOT NULL,
-                `category` Enum('Org','Donar'),
-                PRIMARY KEY (id),
-                FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE
-            ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Insert sample users
+                "INSERT INTO Users (`types`) VALUES 
+                    ('RegisteredUserType'), 
+                    ('Guest');",
 
-           " CREATE TABLE Tasks (
-                `id` INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each task, with auto-increment
-                `name` VARCHAR(255) NOT NULL, -- Name of the task
-                `description` TEXT NOT NULL, -- Detailed description of the task
-                `requiredSkill` VARCHAR(255), -- Skills required for the task
-                `timeSlot` VARCHAR(255), -- Time slot for the task
-                `location` VARCHAR(255) -- Location where the task will take place
-            )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create RegisteredUserType Table
+                "CREATE TABLE RegisteredUserType (
+                    `id` INT NOT NULL,
+                    `email` VARCHAR(50) UNIQUE NOT NULL,
+                    `userName` VARCHAR(50) UNIQUE NOT NULL,
+                    `passwordHash` VARCHAR(255) NOT NULL,
+                    `category` ENUM('Volunteer', 'Donor'),
+                    PRIMARY KEY (`id`),
+                    FOREIGN KEY (`id`) REFERENCES Users(`id`) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                // Insert sample RegisteredUserType
+                "INSERT INTO RegisteredUserType (`id`, `email`, `userName`, `passwordHash`, `category`) VALUES 
+                    (1, 'john.doe@example.com', 'john_doe', 'hashedpassword1', 'Donor'),
+                    (2, 'jane.smith@example.com', 'jane_smith', 'hashedpassword2', 'Volunteer');",
+
+                // Create Organization Table
+                "CREATE TABLE Organization (
+                    `id` INT NOT NULL DEFAULT 1 PRIMARY KEY,  
+                    `name` VARCHAR(100) NOT NULL,
+                    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    CONSTRAINT unique_organization UNIQUE (`id`)  
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                // Insert into Organization
+                "INSERT INTO Organization (`name`) VALUES ('My Charitable Organization');",
+
+                // Create Volunteer Table
+                "CREATE TABLE Volunteer (
+                    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    `registered_user_id` INT NOT NULL,  
+                    `organization_id` INT,  
+                    `other_volunteer_specific_field` VARCHAR(255),  
+                    FOREIGN KEY (`registered_user_id`) REFERENCES RegisteredUserType(`id`) ON DELETE CASCADE,
+                    FOREIGN KEY (`organization_id`) REFERENCES Organization(`id`) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
               "CREATE TABLE DonationType (
                 `donationId` CHAR(36) PRIMARY KEY,
                 `quantityDonated` INT NOT NULL
                 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
+
                 "CREATE TABLE Donor (
                     `donorId` CHAR(36) PRIMARY KEY,
                     `donationId` CHAR(36),
                     `roleDetails` TEXT,
                     FOREIGN KEY (donationId) REFERENCES DonationType(donationId) ON DELETE SET NULL
-                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;", 
-
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                    
                     "CREATE TABLE Organization (
-                    `organizationId` INT AUTO_INCREMENT PRIMARY KEY,
-                    `organizationName` VARCHAR(255) NOT NULL
-                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-                ",
+                        `organizationId` INT AUTO_INCREMENT PRIMARY KEY,
+                        `organizationName` VARCHAR(255) NOT NULL
+                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    "CREATE TABLE OrganizationDonor (
-                    `organizationId` INT,  -- Changed to INT to match Organization's primary key type
+                
+                "CREATE TABLE OrganizationDonor (
+                    `organizationId` CHAR(36),
                     `donorId` CHAR(36),
                     PRIMARY KEY (organizationId, donorId),
                     FOREIGN KEY (organizationId) REFERENCES Organization(organizationId) ON DELETE CASCADE,
                     FOREIGN KEY (donorId) REFERENCES Donor(donorId) ON DELETE CASCADE
-                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-
-                // "CREATE TABLE Donor (
-                //     `donorId` CHAR(36) PRIMARY KEY,
-                //     `donationId` CHAR(36),
-                //     `roleDetails` TEXT,
-                //     FOREIGN KEY (donationId) REFERENCES DonationType(donationId) ON DELETE SET NULL
-                // ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-                //    "CREATE TABLE Donor (
-                //         donorId CHAR(36) PRIMARY KEY,
-                //         donorName VARCHAR(255) NOT NULL
-                //     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;", 
-                    
-                // "CREATE TABLE Organization (
-                //         organizationId CHAR(36) PRIMARY KEY,
-                //         organizationName VARCHAR(255) NOT NULL
-                //     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-
-                
-                // "CREATE TABLE OrganizationDonor (
-                //     `organizationId` CHAR(36),
-                //     `donorId` CHAR(36),
-                //     PRIMARY KEY (organizationId, donorId),
-                //     FOREIGN KEY (organizationId) REFERENCES Organization(organizationId) ON DELETE CASCADE,
-                //     FOREIGN KEY (donorId) REFERENCES Donor(donorId) ON DELETE CASCADE
-                // ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
 
 
     
@@ -209,3 +198,4 @@ class Populate {
 );
 }
 }
+?>
