@@ -1,15 +1,14 @@
 <?php
 
 define('DB_HOST', 'localhost');     
-define('DB_PORT', '3307');          
+define('DB_PORT', '3306');          
 define('DB_USER', 'root');          
 define('DB_PASS', '');              
-define('DB_NAME', 'charity_db');    
+define('DB_NAME', 'charityy_db');    
 
 class Database {
     private static $instance = null;
     private static $conn;
-
 
     public function __construct() {
         self::$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
@@ -29,6 +28,15 @@ class Database {
         return self::$conn;
     }
 
+    public static function get_connection() {
+        // Ensure connection is established, then return it
+        if (!self::$conn) {
+            self::getInstance();
+        }
+        return self::$conn;
+    }
+
+    // Run multiple queries at once
     public static function run_queries(array $queries, $echo = false): array {
         $results = [];
         if (self::$conn) {
@@ -47,6 +55,7 @@ class Database {
         return $results;
     }
 
+    // Run a single query and return true/false
     public static function run_query($query, $echo = false): bool {
         if (self::$conn) {
             $result = self::$conn->query($query);
@@ -59,10 +68,9 @@ class Database {
             echo "No database connection established.";
             return false;
         }
-
-
     }
 
+    // Run a select query and return the result
     public static function run_select_query($query, $echo = false): mysqli_result|bool {
         if (self::$conn) {
             $result = self::$conn->query($query);
@@ -82,5 +90,10 @@ class Database {
             echo "No database connection established.";
             return false;
         }
+    }
+
+    // Get the last inserted ID
+    public static function get_last_inserted_id(): int {
+        return self::$conn->insert_id;
     }
 }
