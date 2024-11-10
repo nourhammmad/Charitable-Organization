@@ -71,7 +71,7 @@
             <input type="password" name="signup_password" placeholder="Password" required>
             <select name="category" required>
                 <option value="">Select Category</option>
-                <option value="Org">Organization</option>
+                <option value="Volunteer">Volunteer</option>
                 <option value="Donar">Donor</option>
             </select>
             <button type="submit" name="signup">Sign Up</button>

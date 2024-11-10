@@ -5,21 +5,25 @@ require_once "./Services/User.php";
 
 
 
+
 class Guest extends user{
 
-    //private DonationType $donation;
 
-    public function __construct($id) {
-        parent::__construct($id, 'Guest');
+    public function __construct() {
+        parent::__construct('Guest');
     }
 
+    public function getUserType() {
+    return $this->type;
+    }
+   
     public function login() {
         $_SESSION['user_id'] = $this->id;
         $_SESSION['user_type'] = $this->type;
-        //header("Location: dashboard.php");//REDIRECT
+        header("Location: ./views/HomeView.php");
         exit();
     }
-
+    
    
     // public function getDonationType() {
     //     return $this->donation;

@@ -1,10 +1,10 @@
 <?php
-require_once "./Database.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
 
 class UserModel {
 
-    public static function createDefaultUser($id,$types): bool{        
-        $query = "INSERT INTO Users (`id`, `types`) VALUES ('$id','$types')";
+    public static function createDefaultUser($types): bool{        
+        $query = "INSERT INTO Users (`types`) VALUES ('$types')";
         $res =Database::run_query(query:$query);
         return $res;
     }
@@ -15,6 +15,19 @@ class UserModel {
         $res =Database::run_select_query(query:$query);
         return $res;
     }
+
+    public static function getLastInsertId() {
+        $query = "SELECT `id` FROM `Users` ORDER BY `id` DESC LIMIT 1;";
+        $res = Database::run_select_query(query: $query);
+        if ($res && $res->num_rows > 0) {
+            $row = $res->fetch_assoc();
+            return $row['id'];  
+        }
+        return null;  
+    }
+    
+
+
 
 
 

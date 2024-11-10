@@ -25,10 +25,9 @@ require_once ('./Services/IAuthenticationProvider.php');
 
 class PasswordAuth implements IAuthenticationProvider
 {
-    public function login(String $email, String $password): User|null
+    public function login(String $email, String $password): RegisterUser|null
     {
-       // echo "Authenticating user with email: $email with database...<br/>";
-        return RegisterUserTypeModel::get_by_email_and_password($email, $password);
+        return RegisterUserTypeModel::get_by_email_and_password($email, $password); 
     }
 }
 
@@ -43,7 +42,7 @@ class ContextAuthenticator
     {
         $this->strategy = $strategy;
     }
-    public function login(String $email, String $password): User|null
+    public function login(String $email, String $password): RegisterUser|null
     {
         return $this->strategy->login($email, $password);
     }

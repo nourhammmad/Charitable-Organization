@@ -23,8 +23,8 @@ class EventModel {
     // Create a new event
     public static function createEvent($date ,$EventAttendanceCapacity, $tickets) {
         // Ensure the connection is established
-        $db = Database::getInstance();
-        if ($db->getConnection() === null) {
+        //$db = Database::getInstance();
+        if (Database::get_connection() === null) {
             echo "No database connection established.";
             return false;
         }
@@ -42,7 +42,7 @@ class EventModel {
     public static function getEventById($eventId) {
         // Ensure the connection is established
         $db = Database::getInstance();
-        if ($db->getConnection() === null) {
+        if (Database::get_connection()) {
             echo "No database connection established.";
             return null;
         }
@@ -67,8 +67,8 @@ class EventModel {
     // Update an event's details
     public static function updateEvent($eventId, $date, $addressId, $EventAttendanceCapacity, $tickets) {
         // Ensure the connection is established
-        $db = Database::getInstance();
-        if ($db->getConnection() === null) {
+        //$db = Database::getInstance();
+        if (Database::get_connection() === null) {
             echo "No database connection established.";
             return false;
         }
@@ -83,8 +83,8 @@ class EventModel {
     // Delete an event
     public static function deleteEvent($eventId) {
         // Ensure the connection is established
-        $db = Database::getInstance();
-        if ($db->getConnection() === null) {
+       // $db = Database::getInstance();
+        if (Database::get_connection() === null) {
             echo "No database connection established.";
             return false;
         }
@@ -97,8 +97,8 @@ class EventModel {
     // Associate a volunteer with an event
     public static function addVolunteerToEvent($eventId, $volunteerId) {
         // Ensure the connection is established
-        $db = Database::getInstance();
-        if ($db->getConnection() === null) {
+        //$db = Database::getInstance();
+        if (Database::get_connection()=== null) {
             echo "No database connection established.";
             return false;
         }
@@ -112,8 +112,8 @@ class EventModel {
     // Get the event's associated volunteers
     public static function getVolunteersByEvent($eventId) {
         // Ensure the connection is established
-        $db = Database::getInstance();
-        if ($db->getConnection() === null) {
+       // $db = Database::getInstance();
+        if (Database::get_connection() === null) {
             echo "No database connection established.";
             return null;
         }
@@ -127,8 +127,8 @@ class EventModel {
 // Testing the EventModel functionality
 
 // Ensure database connection is established
-$db = Database::getInstance();
-if ($db->getConnection() === null) {
+//$db = Database::getInstance();
+if (Database::get_connection() === null) {
     echo "No database connection established.";
     exit;
 }

@@ -1,11 +1,11 @@
 <?php
-require_once "./Database.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
 
 class DonationModel {
 
-    // Create a donation record (includes Money, Books, Clothes)
+
     private static function insertDonationItem($donationManagementId, $donationTypeId, $descriptionn): bool {
-        // Remove "date_donated=NULL" and use NOW() for current timestamp
+
         $descriptionn = mysqli_real_escape_string(Database::get_connection(), $descriptionn);
 
         $queryDonationItem = "INSERT INTO DonationItem (donation_management_id, donation_type_id, description, date_donated)
@@ -14,7 +14,6 @@ class DonationModel {
         echo "$descriptionn";
         
         if (!$result) {
-            // Log or print error
             echo "Donation Type ID: $donationTypeId";
 
         }

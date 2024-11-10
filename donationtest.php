@@ -1,9 +1,9 @@
 <?php
-require_once "./DonationModel.php";
-require_once "./Database.php";
-require_once "./db-populate.php";
+require_once "../Charitable-Organization/models/DonationModel.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/db-populate.php";
 try {
-    $db = new Database();
+    $db =  Database::getInstance();
     Populate::populate();
 } catch (Exception $e) {
     echo "Error initializing Database: " . $e->getMessage();
