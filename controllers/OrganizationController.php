@@ -6,6 +6,7 @@
 
 require_once "D:/SDP/project/Charitable-Organization/models/OrganizationModel.php";
 require_once "D:/SDP/project/Charitable-Organization/models/EventModel.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/DonationManagement.php";
 
 
 
@@ -72,6 +73,9 @@ public function handleRequest() {
     elseif(isset($_POST['createvent'])){
          $this->createEvent($_POST['date'],null,$_POST['att'], $_POST['tickets']);
     }
+    elseif(isset($_POST['track_books']) OR isset($_POST['track_clothes']) OR isset($_POST['track_money'])  ){
+        DonationManagement::handelTrack();
+   }
     require_once "D:/SDP/project/Charitable-Organization/views/testOrganization.php";
 }
 
