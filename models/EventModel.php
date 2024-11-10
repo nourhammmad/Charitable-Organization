@@ -1,5 +1,5 @@
 <?php
-require_once ("./Database.php");  // Include your Database class
+require_once "../Database.php";  
 Database::getInstance();
 
 class EventModel {

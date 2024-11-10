@@ -1,23 +1,39 @@
 <?php
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
+require_once "../Database.php";
 
 class DonationModel {
 
 
     private static function insertDonationItem($donationManagementId, $donationTypeId, $descriptionn): bool {
+        if (Database::get_connection()) {
+            $descriptionn = mysqli_real_escape_string(Database::get_connection(), $descriptionn);
 
-        $descriptionn = mysqli_real_escape_string(Database::get_connection(), $descriptionn);
+            $queryDonationItem = "INSERT INTO DonationItem (donation_management_id, donation_type_id, description, date_donated)
+                                VALUES ('$donationManagementId', '$donationTypeId', '$descriptionn', NOW())";
+            $result = Database::run_query(query: $queryDonationItem);
+            echo "$descriptionn";
+            
+            if (!$result) {
+                echo "Donation Type ID: $donationTypeId";
 
-        $queryDonationItem = "INSERT INTO DonationItem (donation_management_id, donation_type_id, description, date_donated)
-                              VALUES ('$donationManagementId', '$donationTypeId', '$descriptionn', NOW())";
-        $result = Database::run_query(query: $queryDonationItem);
-        echo "$descriptionn";
-        
-        if (!$result) {
-            echo "Donation Type ID: $donationTypeId";
-
+            }
+            return $result;
         }
-        return $result;
+        else{
+            echo "no connection";
+            return false;
+        }
+
+    }
+    public static function getDonationDescription(){
+        $query="SELECT description FROM DonationItem ORDER BY date_donated DESC LIMIT 1";
+        $result= Database::run_select_query($query);
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['description'];
+        } else {
+            return null;
+        }
     }
     
 
@@ -72,14 +88,13 @@ class DonationModel {
                 return false;
         }
     }
-//    (1, 2, '10 books including The Great Gatsby', '2024-11-01 12:00:00'),
 
 
 
     // Function for book donations
     public static function createBookDonation($donationTypeId=2,$donationManagementId, $bookTitle, $author, $publicationYear, $quantity): bool { 
         $description = "$quantity copies of '$bookTitle' by $author";
-        self::insertDonationItem($donationManagementId, 2, $description);  // DonationType for Books is 2
+        self::insertDonationItem($donationManagementId, 2, $description);  
     
         $queryBooks = "INSERT INTO Books (donation_type_id,donation_management_id, book_title, author, publication_year, quantity, date_donated) 
                        VALUES ('$donationTypeId','$donationManagementId', '$bookTitle', '$author', '$publicationYear', '$quantity', NOW())";

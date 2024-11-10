@@ -2,6 +2,7 @@
 
 require_once "./Services/User.php";
 require_once "../Charitable-Organization/models/RegisteredUserModel.php";
+require_once "../Charitable-Organization/models/DonorModel.php";
 
 
 class RegisterUser extends user {
@@ -28,8 +29,8 @@ class RegisterUser extends user {
     public function signUp(){
         $_SESSION['user_id'] = $this->id;
         $_SESSION['user_type'] = $this->type;
-        if(RegisterUserTypeModel::createDonor($this->id,1)){
-           $donorId = RegisterUserTypeModel::getLastInsertDonorId();
+        if(DonarModel::createDonor($this->id,1)){
+           $donorId = DonarModel::getLastInsertDonorId();
            header("Location: ./views/HomeView.php?donor_id=$donorId");
         exit();
         }

@@ -1,10 +1,10 @@
 <?php
 
 define('DB_HOST', 'localhost');     
-define('DB_PORT', '3306');          
+define('DB_PORT', '3307');          
 define('DB_USER', 'root');          
 define('DB_PASS', '');              
-define('DB_NAME', 'charityy_db');    
+define('DB_NAME', 'charity_db');    
 
 class Database {
     private static $instance = null;
@@ -54,13 +54,12 @@ class Database {
         return $results;
     }
 
-    // Run a single query and return true/false
-    // Run a single query and return true/false
     public static function run_query($query, $echo = false): bool {
-        if (self::$conn) {
-            $result = self::$conn->query($query);
+        $conn = self::get_connection(); 
+        if ($conn) {
+            $result = $conn->query($query);
             if ($echo) {
-                echo $result ? "Query ran successfully<br/>" : "Error: " . self::$conn->error;
+                echo $result ? "Query ran successfully<br/>" : "Error: " . $conn->error;
                 echo "<hr/>";
             }
             return (bool)$result;
@@ -69,12 +68,11 @@ class Database {
             return false;
         }
     }
-
-    // Run a select query and return the result
-    // Run a select query and return the result
+    
     public static function run_select_query($query, $echo = false): mysqli_result|bool {
-        if (self::$conn) {
-            $result = self::$conn->query($query);
+        $conn = self::get_connection(); 
+        if ($conn) {
+            $result = $conn->query($query);
             if ($echo) {
                 echo '<pre>' . $query . '</pre>';
                 if ($result && $result->num_rows > 0) {
@@ -92,6 +90,7 @@ class Database {
             return false;
         }
     }
+    
 
     // Get the last inserted ID
     public static function get_last_inserted_id(): int {
