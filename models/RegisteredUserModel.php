@@ -4,6 +4,7 @@
 require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
 require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/UserModel.php";
 
+
 class RegisterUserTypeModel {
     private $id;
     private $email;
