@@ -42,10 +42,8 @@ class OrganizationModel {
     }
 
     // Retrieve donors associated with a specific organization
-    public static function getDonorsByOrganizationId($organizationId) {
-        $query = "SELECT Donor.* FROM Donor 
-                  JOIN OrganizationDonor ON Donor.donorId = OrganizationDonor.donorId 
-                  WHERE OrganizationDonor.organizationId = '$organizationId'";
+    public static function getDonors() {
+        $query = "SELECT Donor.* FROM Donor ";
         $res = Database::run_select_query(query: $query);
         return $res;
     }
