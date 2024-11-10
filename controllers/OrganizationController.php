@@ -37,14 +37,14 @@ class OrganizationController{
 
 
 
-    // public function createEvent( $date, $EventAttendanceCapacity, $tickets){
-    //   $event=EventModel::createEvent($date, $EventAttendanceCapacity, $tickets);
-    //   if($event){
-    //     require_once "./views/yay.php";
-    // } else {
-    //     echo "No organization found.";
-    //   }
-    // }
+    public function createEvent( $date, $address ,$EventAttendanceCapacity, $tickets){
+      $event=EventModel::createEvent($date, $address ,$EventAttendanceCapacity, $tickets);
+      if($event){
+        require_once "./views/yay.php";
+    } else {
+        echo "No organization found.";
+      }
+    }
 
 
 
@@ -69,9 +69,9 @@ public function handleRequest() {
     elseif (isset($_POST['get_donors'])){
         $this->showDonors();
     }
-    // elseif(isset($_POST['create_event'])){
-    //      $this->createEvent($_POST['date'], $_POST['att'], $_POST['tickets']);
-    // }
+    elseif(isset($_POST['createvent'])){
+         $this->createEvent($_POST['date'],null,$_POST['att'], $_POST['tickets']);
+    }
     require_once "D:/SDP/project/Charitable-Organization/views/testOrganization.php";
 }
 

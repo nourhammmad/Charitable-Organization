@@ -56,6 +56,14 @@
         <button type="submit" name="get_donors">Get Donors</button>
     </form>
 
+    <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" style="margin-top: 10px;">
+    <input type="text" name="date" placeholder="date">
+    <!-- <input type="text" name ="add">address</input>    -->
+    <input type="text" name="att" placeholder="attendanceCap">  
+    <input type="text" name="tickets" placeholder="tickets"> 
+    <button type="submit" name="createvent">Create Event</button>
+    </form>
+
  
 </div>
 

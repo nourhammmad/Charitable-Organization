@@ -86,14 +86,14 @@
         }
     }
 
-    // if(isset($event)){
-    //     if (!empty($event)) {
-    //           echo "created successfully";
-    //        }
-    //        else{
-    //         echo "oops, something went wrong";
-    //        }
-    //    }
+    if(isset($event)){
+        if (($event)) {
+             require_once "D:/SDP/project/Charitable-Organization/views/Home.php";
+           }
+           else{
+            require_once "D:/SDP/project/Charitable-Organization/views/loginView.php";
+           }
+       }
 
     
          ?>

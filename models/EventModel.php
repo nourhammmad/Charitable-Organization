@@ -21,7 +21,7 @@ class EventModel {
     }
 
     // Create a new event
-    public static function createEvent($date, $addressId, $EventAttendanceCapacity, $tickets) {
+    public static function createEvent($date ,$EventAttendanceCapacity, $tickets) {
         // Ensure the connection is established
         $db = Database::getInstance();
         if ($db->getConnection() === null) {
@@ -31,10 +31,10 @@ class EventModel {
         //var_dump($addressId); // Check what addressId is being passed
         //var_dump($date, $EventAttendanceCapacity, $tickets); // Check all other parameters
 
-
+        $addressId = '70ea9c2c-9f01-11ef-a964-1cbfc07800ee'; 
         // Query to insert a new event
-        $query = "INSERT INTO Event (`date`, `addressId`, `EventAttendanceCapacity`, `tickets`) 
-                  VALUES ('$date', '$addressId', '$EventAttendanceCapacity', '$tickets')";
+        $query = "INSERT INTO Event (`date`, `EventAttendanceCapacity`, `tickets`) 
+                  VALUES ('$date', '$EventAttendanceCapacity', '$tickets')";
         return Database::run_query($query);
     }
 
