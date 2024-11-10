@@ -1,7 +1,7 @@
 <?php
 require_once "../Charitable-Organization/models/DonationModel.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/db-populate.php";
+require_once "D:/SDP/project/Charitable-Organization/Database.php";
+require_once "D:/SDP/project/Charitable-Organization/db-populate.php";
 try {
     $db =  Database::getInstance();
     Populate::populate();

@@ -1,8 +1,8 @@
 <?php
 
 
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/UserModel.php";
+require_once "D:/SDP/project/Charitable-Organization/Database.php";
+require_once "D:/SDP/project/Charitable-Organization/models/UserModel.php";
 
 class RegisterUserTypeModel {
     private $id;
@@ -99,8 +99,9 @@ class RegisterUserTypeModel {
     }
 
     public static function getDonorById($donorId) {
-        $query = "SELECT * FROM Donor WHERE id = ?";
+        $query = "SELECT * FROM donor WHERE id = '$donorId'";
         $result = Database::run_select_query($query);
+        echo "   $result  ";
         if ($result && $result->num_rows > 0) {
             $row = $result->fetch_assoc();
             return new Donor(

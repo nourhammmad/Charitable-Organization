@@ -48,7 +48,7 @@ $events = $event->getAllEvents();
     </form>
 
     <h2>All Events</h2>
-    <table border="1">
+    <table >
         <thead>
             <tr>
                 <th>Event ID</th>
