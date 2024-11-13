@@ -26,6 +26,29 @@ class BooksDonation extends DonationType {
     }
 }
 
+
+class ClothesDonation extends DonationType {
+    private $clothesType;
+    private $size;
+    private $color;
+
+    public function __construct($clothesType,$size,$color,$quantity)
+    {
+        parent::__construct(3,$quantity);
+        $this->clothesType=$clothesType;
+        $this->size=$size;
+        $this->color=$color; 
+    }
+
+    public function donate():bool {
+        if(DonationModel::createClothesDonation(2,1,$this->clothesType,$this->size,$this->color,$this->getQuantity())){
+            return true;
+        }
+        return false;
+
+    }
+}
+
 // class FeesDonation implements Donation {
 //     public function donate($donorId, $amount) {
 //         // Logic for donating fees
@@ -34,44 +57,6 @@ class BooksDonation extends DonationType {
 //     }
 // }
 
-// class ClothesDonation implements Donation {
-//     public function donate($donorId, $quantity) {
-//         // Logic for donating clothes
-//         DonationModel::createDonationType($donorId, $quantity);
-//         // Any additional logic for clothes
-//     }
-// }
-
-
-
-// class ClothesDonation extends Donation {
-//     private $clothesType;
-
-//     public function __construct($donationId, $quantityDonated, $clothesType) {
-//         parent::__construct($donationId, $quantityDonated);
-//         $this->clothesType = $clothesType;
-//     }
-
-//     public function donate($donorId, $quantity) {
-        
-//         DonationModel::createDonationType($donorId, $quantity);
-//         // Any additional logic for books
-//     }
-// }
-
-// class BooksDonation extends Donation {
-//     private $genre;
-
-//     public function __construct($donationId, $quantityDonated, $genre) {
-//         parent::__construct($donationId, $quantityDonated);
-//         $this->genre = $genre;
-//     }
-
-//     public function donate(): bool {
-//         echo "Donating " . $this->quantityDonated . " books of genre: " . $this->genre . ".\n";
-//         return true;
-//     }
-// }
 
 // class FeesDonation extends Donation {
 //     private $purpose;

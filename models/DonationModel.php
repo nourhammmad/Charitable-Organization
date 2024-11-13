@@ -11,12 +11,11 @@ class DonationModel {
             $queryDonationItem = "INSERT INTO DonationItem (donation_management_id, donation_type_id, description, date_donated)
                                 VALUES ('$donationManagementId', '$donationTypeId', '$descriptionn', NOW())";
             $result = Database::run_query(query: $queryDonationItem);
-            echo "$descriptionn";
             
-            if (!$result) {
-                echo "Donation Type ID: $donationTypeId";
+            // if (!$result) {
+            //     echo "Donation Type ID: $donationTypeId";
 
-            }
+            // }
             return $result;
         }
         else{

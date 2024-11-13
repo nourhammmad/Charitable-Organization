@@ -21,7 +21,15 @@ class RegisterUser extends user {
     public function login() {
         $_SESSION['user_id'] = $this->id;
         $_SESSION['user_type'] = $this->type;
-        //$regUser=RegisterUserTypeModel::findById($this->id);
+        if($this->category=='Donor'){
+            $res=DonarModel::getDonorByRegisteredId($_SESSION['user_id']);
+            if($res){
+                $donorId = $res->getId();
+                header("Location: ./views/HomeView.php?donor_id=$donorId");
+             exit();
+            }
+        }
+        exit();
 
         exit();
     }

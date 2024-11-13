@@ -7,8 +7,16 @@ class Donor {
     private $id;
     private DonationType $Dt;
 
+    public function __construct($id)
+    {
+        $this->id =$id;   
+    }
+
     public function setDonationStrategy(DonationType $donationStrategy) {
         $this->Dt = $donationStrategy;
+    }
+    public function getId(){
+        return $this->id;
     }
 
     public function donate($donarID) {

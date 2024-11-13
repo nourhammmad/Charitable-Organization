@@ -36,12 +36,11 @@ class DonarModel{
         $result = Database::run_select_query($query);
 
         if ($result === false) {
-            echo "Error: Failed to execute the query.";
+           // echo "Error: Failed to execute the query.";
             return null;
         }
 
         if ($result->num_rows > 0) {
-            echo "Success query \n";
             $row = $result->fetch_assoc();
             return new Donor(
                 $row['id'],
@@ -50,10 +49,34 @@ class DonarModel{
                 $row['donation_details']
             );
         } else {
-            echo "No donor found with the given ID.";
+            //echo "No donor found with the given ID.";
             return null; 
         }
-}
+    }
+    public static function getDonorByRegisteredId($regdonorId) {
+
+        $query = "SELECT * FROM Donor WHERE `registered_user_id` = $regdonorId";
+        $result = Database::run_select_query($query);
+
+        if ($result === false) {
+           // echo "Error: Failed to execute the query.";
+            return null;
+        }
+
+        if ($result->num_rows > 0) {
+
+            $row = $result->fetch_assoc();
+            return new Donor(
+                $row['id'],
+                $row['registered_user_id'],
+                $row['organization_id'],
+                $row['donation_details']
+            );
+        } else {
+           // echo "No donor found with the given ID.";
+            return null; 
+        }
+    }
 
 public static function addDescription($des, $id) {
 
@@ -64,10 +87,8 @@ public static function addDescription($des, $id) {
     $result = Database::run_query($query);
 
     if ($result) {
-        echo "Description added successfully";
         return true;
     } else {
-        echo "Failed to add description";
         return false;
     }
     
@@ -78,13 +99,3 @@ public static function addDescription($des, $id) {
 
 }
 
-// try {
-//     $db =  Database::getInstance();
-//     Populate::populate();
-// } catch (Exception $e) {
-//     echo "Error initializing Database: " . $e->getMessage();
-//     exit;
-// }
-// $obj=DonarModel::createDonor(1,1);
-// $res=DonarModel::getDonorById(1);
-// echo $res ? "Money donation created successfully.\n" : "Money donation creation failed.\n";

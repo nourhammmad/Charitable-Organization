@@ -6,7 +6,7 @@ require_once "../Charitable-Organization/db-populate.php";
 require_once "../Charitable-Organization/controllers/OrganizationController.php";
 require_once "../Charitable-Organization/models/UserModel.php";
 
-// Initialize the database connection
+
 $db = Database::getInstance();
 Populate::populate();
 
