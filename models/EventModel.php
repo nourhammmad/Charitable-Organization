@@ -37,6 +37,30 @@ class EventModel {
                   VALUES ('$date', '$EventAttendanceCapacity', '$tickets')";
         return Database::run_query($query);
     }
+    public function getEventId() {
+        return $this->eventId;
+    }
+
+    public function getDate() {
+        return $this->date;
+    }
+
+    public function getAddressId() {
+        return $this->addressId;
+    }
+
+    public function getEventAttendanceCapacity() {
+        return $this->EventAttendanceCapacity;
+    }
+
+    public function getTickets() {
+        return $this->tickets;
+    }
+
+    public function getCreatedAt() {
+        return $this->createdAt;
+    }
+
 
     // Retrieve event by ID
     public static function getEventById($eventId) {
@@ -62,6 +86,32 @@ class EventModel {
             );
         }
         return null;
+    }
+
+    public static function getAllEvents() {
+        if (Database::get_connection() === null) {
+            echo "No database connection established.";
+            return [];
+        }
+
+        // Query to retrieve all events
+        $query = "SELECT * FROM Event";
+        $result = Database::run_select_query($query);
+
+        $events = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $events[] = new self(
+                    $row['eventId'],
+                    $row['date'],
+                    $row['addressId'],
+                    $row['EventAttendanceCapacity'],
+                    $row['tickets'],
+                    $row['created_at']
+                );
+            }
+        }
+        return $events;
     }
 
     // Update an event's details

@@ -1,32 +1,78 @@
 <?php
-require_once "./models/RegisteredUserModel.php";
-require_once "./controllers/VolunteerAssignemtnController.php";
+require_once "./models/RegisteredUserTypeModel.php";
+require_once "./controllers/VolunteerCotroller.php";
+require_once "controllers/VolunteeEventAssignmentController.php";
 
-class VolunteerModel extends RegisterUserModel {
+
+class VolunteerModel extends RegisterUserTypeModel {
     private $skills;
-    private $assignEventController;
+    private const ALLOWED_SKILLS = ['Cooking', 'Teaching', 'Building'];
 
-    public function __construct($id, $email, $userName, $passwordHash, $category, $createdAt, $skills = []) {
-        // Pass all required parameters to the parent constructor
+    // Constructor that initializes volunteer-specific data, plus inherited data
+    public function __construct($id, $email, $userName, $passwordHash, $category, $createdAt, $skills = null) {
         parent::__construct($id, $email, $userName, $passwordHash, $category, $createdAt);
-        
-        // Initialize Volunteer-specific attributes
-        $this->skills = $skills;
-        $this->assignEventController = new VolunteerAssignemtnController();
+        $this->setSkills($skills);  // Initialize the skills with validation
+        $this->assignEventController = new VolunteeEventAssignmentController();
     }
 
-    // Get the volunteer's skills
+    // Set skills with validation against ENUM values
+   
+
+    // Validate and set skills
+    public function setSkills($skills) {
+        if (in_array($skills, self::ALLOWED_SKILLS, true)) {
+            $this->skills = $skills;
+        } else {
+            throw new InvalidArgumentException("Invalid skill provided. Allowed values are: " . implode(", ", self::ALLOWED_SKILLS));
+        }
+    }
+
     public function getSkills() {
         return $this->skills;
     }
 
-    // Fetch available events through the AssignEventVolunteerController
-    public function fetchAvailableEvents() {
-        return $this->assignEventController->getAvailableEvents();
+    // Static methods for database operations
+
+    // Save skills to the database
+    public static function saveSkills($volunteerId, $skills) {
+        if (!in_array($skills, self::ALLOWED_SKILLS, true)) {
+            throw new InvalidArgumentException("Invalid skill provided.");
+        }
+        $query = "UPDATE Volunteer SET skills = '$skills' WHERE id = '$volunteerId'";
+        return Database::run_query($query);
     }
 
-    // Apply for a specific event
-    public function applyForEvent($eventId) {
-        return $this->assignEventController->assignVolunteer($this->getId(), $eventId);
+    public static function createVolunteer($registeredUserId, $organizationId, $specificField = null, $skills = 'Cooking') {
+        $specificField = $specificField ? "'$specificField'" : "NULL";
+        $query = "INSERT INTO Volunteer (`registered_user_id`, `organization_id`, `other_volunteer_specific_field`, `skills`) 
+                  VALUES ('$registeredUserId', '$organizationId', $specificField, '$skills')";
+        return Database::run_query($query);
     }
+
+    public static function getVolunteerById($volunteerId) {
+        $query = "SELECT * FROM Volunteer WHERE `id` = $volunteerId";
+        $result = Database::run_select_query($query);
+
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return new Volunteer(
+                $row['id'],
+                $row['registered_user_id'],
+                $row['organization_id'],
+                $row['other_volunteer_specific_field'],
+                $row['skills']
+            );
+        }
+        return null;
+    }
+
+    public static function addDescription($description, $volunteerId) {
+        $escapedDescription = mysqli_real_escape_string(Database::get_connection(), $description);
+        $query = "UPDATE Volunteer 
+                  SET other_volunteer_specific_field = CONCAT(COALESCE(other_volunteer_specific_field, ''), '$escapedDescription\n') 
+                  WHERE id = $volunteerId";
+        return Database::run_query($query);
+    }
+
+    // Additional data management methods could go here if needed
 }
