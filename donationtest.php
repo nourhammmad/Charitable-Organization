@@ -10,108 +10,110 @@ try {
     exit;
 }
 
-// Test the createDonation method (for all donation types)
-function testCreateDonation() {
-    // Set up donation management ID (assumed to exist in your database)
-    $donationManagementId = 1;
+class DonationModelTest {
 
-    // Test Money Donation
-    $resultMoney = DonationModel::createDonation(1, $donationManagementId, 1000.00, 'USD');
-    if ($resultMoney) {
-        echo "Money donation created successfully.\n";
-    } else {
-        echo "Failed to create money donation.\n";
+    // Test function to create a Money Donation
+    public static function testCreateMoneyDonation() {
+        $donationManagementId = 1; // Example ID
+        $amount = 3300;
+        $currency = 'USD';
+        $paymentMethod = 'Visa'; // Example payment method
+        $paymentDetails = [
+            'donor_id' => 1, // Example donor ID
+            'transaction_number' => 'VISA67891', // Example transaction ID
+            'card_number'=>'1234-5678-9876-5435',
+        ];
+        
+        $result = DonationModel::createMoneyDonation($donationManagementId, $amount, $currency, $paymentMethod, $paymentDetails);
+        
+        // Assuming run_query returns true on success
+        echo $result ? "Money donation created successfully.\n" : "Money donation creation failed.\n";
     }
 
-    // Test Books Donation
-    $resultBooks = DonationModel::createDonation(2, $donationManagementId, null, null, 'The Great Gatsby', 'F. Scott Fitzgerald', 1925, 10);
-    if ($resultBooks) {
-        echo "Books donation created successfully.\n";
-    } else {
-        echo "Failed to create books donation.\n";
+    // Test function to create a Book Donation
+    public static function testCreateBookDonation() {
+        $donationManagementId = 1; // Example ID for the donation management record
+        $bookTitle = 'ma3rafsh Book';
+        $author = 'John Do skdjfne';
+        $publicationYear = 2020;
+        $quantity = 50;
+        
+        // Call the createBookDonation method
+        $result = DonationModel::createBookDonation(2,$donationManagementId, $bookTitle, $author, $publicationYear, $quantity);
+        
+        // Assuming run_query returns true on success
+        echo $result ? "Book donation created successfully.\n" : "Book donation creation failed.\n";
+    }
+    
+    // Test function to create a Clothes Donation
+    public static function testCreateClothesDonation() {
+        $donationManagementId = 1; // Example ID for the donation management record
+        $clothesType = 'T-shirt';
+        $size = 'XL';
+        $color = 'Reed';
+        $quantity = 10;
+        
+        // Call the createClothesDonation method
+        $result = DonationModel::createClothesDonation(3,$donationManagementId, $clothesType, $size, $color, $quantity);
+        
+        // Assuming run_query returns true on success
+        echo $result ? "Clothes donation created successfully.\n" : "Clothes donation creation failed.\n";
+    }
+    
+    // Test function to get donations by donation type (Money)
+    public static function testGetDonationsByTypeMoney() {
+        $donationTypeId = 1; // ID for Money donation type
+        
+        $result = DonationModel::getDonationsByType($donationTypeId);
+        
+        if ($result) {
+            echo "Money donations retrieved successfully:\n";
+            print_r($result); // Assuming result is an array or object
+        } else {
+            echo "No money donations found.\n";
+        }
     }
 
-    // Test Clothes Donation
-    $resultClothes = DonationModel::createDonation(3, $donationManagementId, null, null, null, null, null, 20, 'Winter Jacket', 'L', 'Red');
-    if ($resultClothes) {
-        echo "Clothes donation created successfully.\n";
-    } else {
-        echo "Failed to create clothes donation.\n";
+    // Test function to get donations by donation management ID
+    public static function testGetDonationsByManagementId() {
+        $donationManagementId = 1; // Example donation management ID
+        
+        $result = DonationModel::getDonationsByManagementId($donationManagementId);
+        
+        if ($result) {
+            echo "Donations for management ID $donationManagementId retrieved successfully:\n";
+            print_r($result);
+        } else {
+            echo "No donations found for management ID $donationManagementId.\n";
+        }
+    }
+
+    // Test function to update a donation (update quantity for books)
+    public static function testUpdateDonation() {
+        $donationItemId = 1; // Example donation item ID
+        $newQuantity = 7; // New quantity to set
+        
+        $result = DonationModel::updateDonation($donationItemId, null, $newQuantity);
+        
+        echo $result ? "Donation updated successfully.\n" : "Donation update failed.\n";
+    }
+
+    // Test function to delete a donation item
+    public static function testDeleteDonation() {
+        $donationItemId = 1; // Example donation item ID
+        
+        $result = DonationModel::deleteDonation($donationItemId);
+        
+        echo $result ? "Donation deleted successfully.\n" : "Donation deletion failed.\n";
     }
 }
 
-// Test the getDonationsByType method
-function testGetDonationsByType() {
-    // Test if Money donations are retrieved
-    $moneyDonations = DonationModel::getDonationsByType(1);
-    if (!empty($moneyDonations)) {
-        echo "Money donations retrieved successfully.\n";
-    } else {
-        echo "No money donations found.\n";
-    }
-
-    // Test if Books donations are retrieved
-    $booksDonations = DonationModel::getDonationsByType(2);
-    if (!empty($booksDonations)) {
-        echo "Books donations retrieved successfully.\n";
-    } else {
-        echo "No books donations found.\n";
-    }
-
-    // Test if Clothes donations are retrieved
-    $clothesDonations = DonationModel::getDonationsByType(3);
-    if (!empty($clothesDonations)) {
-        echo "Clothes donations retrieved successfully.\n";
-    } else {
-        echo "No clothes donations found.\n";
-    }
-}
-
-// Test the getDonationsByManagementId method
-function testGetDonationsByManagementId() {
-    $donationManagementId = 1;
-    $donations = DonationModel::getDonationsByManagementId($donationManagementId);
-    if (!empty($donations)) {
-        echo "Donations by management ID retrieved successfully.\n";
-    } else {
-        echo "No donations found for this management ID.\n";
-    }
-}
-
-// Test the updateDonation method
-function testUpdateDonation() {
-    // Test updating a money donation amount
-    $donationItemId = 1;
-    $updatedAmount = 1500.00;
-    $result = DonationModel::updateDonation($donationItemId, $updatedAmount);
-    if ($result) {
-        echo "Donation updated successfully.\n";
-    } else {
-        echo "Failed to update donation.\n";
-    }
-}
-
-// Test the deleteDonation method
-function testDeleteDonation() {
-    // Test deleting a donation by its ID
-    $donationItemId = 1;
-    $result = DonationModel::deleteDonation($donationItemId);
-    if ($result) {
-        echo "Donation deleted successfully.\n";
-    } else {
-        echo "Failed to delete donation.\n";
-    }
-}
-
-// Run tests
-echo "Testing createDonation...\n";
-testCreateDonation();
-echo "\nTesting getDonationsByType...\n";
-testGetDonationsByType();
-echo "\nTesting getDonationsByManagementId...\n";
-testGetDonationsByManagementId();
-echo "\nTesting updateDonation...\n";
-testUpdateDonation();
-echo "\nTesting deleteDonation...\n";
-testDeleteDonation();
+// Run all the tests
+DonationModelTest::testCreateMoneyDonation();
+DonationModelTest::testCreateBookDonation();
+DonationModelTest::testCreateClothesDonation();
+DonationModelTest::testGetDonationsByTypeMoney();
+DonationModelTest::testGetDonationsByManagementId();
+DonationModelTest::testUpdateDonation();
+DonationModelTest::testDeleteDonation();
 ?>
