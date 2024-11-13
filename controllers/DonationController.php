@@ -14,12 +14,12 @@ if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
         case 'book':
             $donationStrategy = new BooksDonation($_POST['bookTitle'], $_POST['author'], $_POST['publicationYear'], $_POST['quantity']);
             break;
-        // case 'fees':
-        //     $donationStrategy = new FeesDonation($_POST['amount']);
-        //     break;
-        // default:
-        //     echo "Invalid donation type.";
-        //     exit;
+        case 'clothes':
+            $donationStrategy = new ClothesDonation($_POST['type'],$_POST['size'],$_POST['color'],$_POST['quantity']);
+            break;
+        default:
+            echo "Invalid donation type.";
+            exit;
     }
     if ($donationStrategy) {
         $donor = DonarModel::getDonorById($donorId);

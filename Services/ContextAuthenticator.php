@@ -44,6 +44,7 @@ class ContextAuthenticator
     }
     public function login(String $email, String $password): RegisterUser|null
     {
+        
         return $this->strategy->login($email, $password);
     }
 }

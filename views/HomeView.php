@@ -151,8 +151,12 @@
                     <input type="number" id="amount" placeholder="Amount" required>
                 </div>
                 <!-- Clothes fields -->
+               <!-- Clothes fields -->
                 <div id="clothesFields" style="display: none;">
                     <input type="text" id="size" placeholder="Size (e.g., M, L)" required>
+                    <input type="number" id="clothesQuantity" placeholder="Quantity" required>
+                    <input type="text" id="clothesType" placeholder="Type of Clothes (e.g., Shirt, Jacket)" required>
+                    <input type="text" id="clothesColor" placeholder="Color" required>
                 </div>
                 <button type="button" onclick="submitDonationForm()">Donate</button>
             </form>
@@ -189,10 +193,13 @@
                 formData.append("amount", document.getElementById("amount").value);
             } else if (selectedType === "clothes") {
                 formData.append("size", document.getElementById("size").value);
+                formData.append("quantity", document.getElementById("clothesQuantity").value);
+                formData.append("type", document.getElementById("clothesType").value);
+                formData.append("color", document.getElementById("clothesColor").value);
             }
+
             console.log("Selected Type:", selectedType);
             console.log("Form Data:", formData.toString());
-
 
             fetch("../controllers/DonationController.php", {
                 method: 'POST',
@@ -206,6 +213,7 @@
             })
             .catch(error => console.error('Error:', error));
         }
+
     </script>
 </body>
 </html>

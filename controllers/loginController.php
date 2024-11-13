@@ -41,11 +41,7 @@ class LoginController {
                     $context = new ContextAuthenticator();
                     $reguser = $context->login($_POST['email'], $_POST['password']);
                     if ($reguser) {
-                        $_SESSION['user_id'] = $reguser->getId(); 
-                        if($reguser->getCategory()=='Donor'){
-                            require_once "./views/HomeView.php";
-                        }
-                        exit();
+                       $reguser->login();
                     } else {
                         require_once "./views/loginView.php";
                     }
