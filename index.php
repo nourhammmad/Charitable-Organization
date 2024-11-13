@@ -7,13 +7,13 @@ require_once "../Charitable-Organization/controllers/OrganizationController.php"
 require_once "../Charitable-Organization/models/UserModel.php";
 
 // Initialize the database connection
-$db = new Database();
+$db = Database::getInstance();
 Populate::populate();
 
 
-if ($db->getConnection()) {
-     $controller = new OrganizationController('My Charitable Organization');
-     $controller->handleRequest();
+if (Database::get_connection()) {
+    $controller = new LoginController();
+    $controller->handleRequest();
 } else {
     echo "Failed to connect to the database.";
 }

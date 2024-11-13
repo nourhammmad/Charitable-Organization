@@ -1,6 +1,6 @@
 <?php
 interface IAuthenticationProvider
 {
-    public function login(String $email, String $password): user|null;
+    public function login(String $email, String $password): RegisterUser|null;
 }
 ?>

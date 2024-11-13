@@ -10,15 +10,8 @@ require_once "./Services/ContextAuthenticator.php";
 
 
 
-
 class LoginController {
 
-    private function generate_uuid() {
-        $data = random_bytes(16);
-        $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
-        $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
-        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-    }
     
     public function handleRequest() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -41,24 +34,17 @@ class LoginController {
     }
     
 
-
-
-
-  
-    
-
-    
-   
-    
         public function loginRegisteredUser() {
             $msg = '';
             if (isset($_POST['login'])) {
                 if (!empty($_POST['email']) && !empty($_POST['password'])) {
                     $context = new ContextAuthenticator();
-                    $user = $context->login($_POST['email'], $_POST['password']);
-                    if ($user) {
-                        $_SESSION['user_id'] = $user->getId();  // Store the user ID in session
-                        require_once "./views/Home.php";
+                    $reguser = $context->login($_POST['email'], $_POST['password']);
+                    if ($reguser) {
+                        $_SESSION['user_id'] = $reguser->getId(); 
+                        if($reguser->getCategory()=='Donor'){
+                            require_once "./views/HomeView.php";
+                        }
                         exit();
                     } else {
                         require_once "./views/loginView.php";
@@ -68,26 +54,25 @@ class LoginController {
                 }
             }
         }
-    
-    
-
-    
-
-
-       private function registerNewUser($email, $userName, $password,$category) {
-        $id = $this->generate_uuid();
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        RegisterUserTypeModel::save($id, $email, $userName, $passwordHash,$category);
-        $regUser = new RegisterUser($id);
-        $regUser->signUp();
-    }
+        private function registerNewUser($email, $userName, $password, $category) {
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+            $regUser = new RegisterUser($email, $userName, $category);
+            if (RegisterUserTypeModel::save($email, $userName, $passwordHash, $category)) {
+                $regUser->setId(UserModel::getLastInsertId());
+                $regUser->signUp();
+            } else {
+                echo "Error registering new user.";
+            }
+        }
+        
 
 
 
     private function loginGuestUser() {
-        $id = $this->generate_uuid();
-        UserModel::createDefaultUser($id, 'Guest');
-        $guest = new Guest($id);
+        $guest = new Guest();
+        UserModel::createDefaultUser('Guest');
+        $guestId = UserModel::getLastinsertId();
+        $guest->setId($guestId);
         $guest->login();
     }
 }

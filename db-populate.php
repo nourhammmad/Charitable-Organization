@@ -483,7 +483,7 @@ class Populate {
                 // Insert into Donor Table
                 "INSERT INTO Donor (registered_user_id, organization_id, donation_details) VALUES
                     (1, 1, 'Donation of $1000 for charity event');",
- 
+
                 // Create DonationManagement Table
                 "CREATE TABLE DonationManagement (
                     donation_management_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -502,13 +502,13 @@ class Populate {
                     donation_type_id INT AUTO_INCREMENT PRIMARY KEY,
                     type_name ENUM('Money', 'Books', 'Clothes') NOT NULL
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
- 
+
                 // Insert DonationTypes (Money, Books, Clothes)
                 "INSERT INTO DonationTypes (type_name) VALUES
                     ('Money'),
                     ('Books'),
                     ('Clothes');",
- 
+
                 // Create Money Table (Child Table)
                 "CREATE TABLE Money (
                     money_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -538,11 +538,11 @@ class Populate {
                     FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id) ON DELETE CASCADE,
                     FOREIGN KEY (donation_management_id) REFERENCES DonationManagement(donation_management_id) ON DELETE CASCADE
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
- 
+
                 // Insert Books Donation
                 "INSERT INTO Books (donation_type_id, donation_management_id, book_title, author, publication_year, quantity, date_donated) VALUES
                     (2, 1, 'The Great Gatsby', 'F. Scott Fitzgerald', 1925, 10, '2024-11-01 12:00:00');",
- 
+
                 // Create Clothes Table (Child Table)
                 "CREATE TABLE Clothes (
                     clothes_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -556,11 +556,11 @@ class Populate {
                     FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id) ON DELETE CASCADE,
                     FOREIGN KEY (donation_management_id) REFERENCES DonationManagement(donation_management_id) ON DELETE CASCADE
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
- 
+
                 // Insert Clothes Donation
                 "INSERT INTO Clothes (donation_type_id, donation_management_id, clothes_type, size, color, quantity, date_donated) VALUES
                     (3, 1, 'Winter Jacket', 'L', 'Red', 20, '2024-11-01 12:00:00');",
- 
+
                 // Create DonationItem Table
                 "CREATE TABLE DonationItem (
                     donation_item_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -571,13 +571,13 @@ class Populate {
                     FOREIGN KEY (donation_management_id) REFERENCES DonationManagement(donation_management_id) ON DELETE CASCADE,
                     FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id)
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
- 
+
                 // Insert data into DonationItem table
                 "INSERT INTO DonationItem (donation_management_id, donation_type_id, description, date_donated) VALUES
                     (1, 1, 'Cash donation of $1000 for charity event', '2024-11-01 12:00:00'),
                     (1, 2, '10 books including The Great Gatsby', '2024-11-01 12:00:00'),
                     (1, 3, '20 winter jackets', '2024-11-01 12:00:00');",
-                   
+                    
                     "CREATE TABLE Address (
                         addressId CHAR(36) PRIMARY KEY,
                         street VARCHAR(255),
@@ -614,11 +614,11 @@ class Populate {
                         PRIMARY KEY (eventId, volunteerId),
                         FOREIGN KEY (eventId) REFERENCES Event(eventId) ON DELETE CASCADE,
                         FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-                    
-                    -- Inserting a test volunteer-event association
-                    INSERT INTO EventVolunteer (eventId, volunteerId) VALUES (1, 1);"
-                    
+                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+ 
+                    // Insert a Volunteer association with the Event
+                    "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
+                        (1, 1);"
             ]
         );
     }
