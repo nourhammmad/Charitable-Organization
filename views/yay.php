@@ -1,7 +1,3 @@
-<?php
-// yay.php
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,16 +51,9 @@
     <div class="container">
         <h2>Organization and Donors Details</h2>
 
-     
-
-
- 
-
-
         <?php
         // Check if organization data is available
-        if(isset($organization)){
-        if ( !empty($organization)) {
+        if (isset($organization) && !empty($organization)) {
             echo "<div class='organization-info'>";
             echo "<h3>Organization Name: " . htmlspecialchars($organization['name']) . "</h3>";
             echo "<p><strong>Date:</strong> " . htmlspecialchars($organization['created_at']) . "</p>";
@@ -73,31 +62,37 @@
         } else {
             echo "<p>No organization data available.</p>";
         }
-    }
 
         // Check if donors data is available
-      
-    if(isset($donorsData)){
-     if (!empty($donorsData)) {
-        foreach (($donorsData) as $column){
-            echo "<p><strong>id:</strong> " . htmlspecialchars($donorsData[0]['id']) . "</p>";
-            echo "<p><strong>details:</strong> " . htmlspecialchars($donorsData[0]['donation_details']) . "</p>";
+        if (isset($donorsData) && !empty($donorsData)) {
+            echo "<div class='donor-info'>";
+            echo "<h3>Donors:</h3>";
+            echo "<table>";
+            echo "<tr><th>ID</th><th>Donation Details</th></tr>";
+            foreach ($donorsData as $donor) {
+                echo "<tr>";
+                echo "<td>" . htmlspecialchars($donor['id']) . "</td>";
+                echo "<td>" . htmlspecialchars($donor['donation_details']) . "</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+            echo "</div>";
+        } else {
+            echo "<p>No donor data available.</p>";
         }
-        }
-    }
 
-    if(isset($event)){
-        if (($event)) {
-             require_once "D:/SDP/project/Charitable-Organization/views/Home.php";
-           }
-           else{
-            require_once "D:/SDP/project/Charitable-Organization/views/loginView.php";
-           }
-       }
+        // Check if event data is available
+        if ($event && is_array($event)) : ?>
+            <h1>Event Details</h1>
+            <p><strong>Event Name:</strong> <?php echo htmlspecialchars($event['name'] ?? 'N/A'); ?></p>
+            <p><strong>Date:</strong> <?php echo htmlspecialchars($event['date'] ?? 'N/A'); ?></p>
+            <p><strong>Location:</strong> <?php echo htmlspecialchars($event['addressId'] ?? 'Unknown Location'); ?></p>
+            <p><strong>Tickets Available:</strong> <?php echo htmlspecialchars($event['tickets'] ?? '0'); ?></p>
+        <?php else : ?>
+            <p>Event details not found.</p>
+        <?php endif; ?>
+        
 
-    
-         ?>
-  
         <!-- Add a button to go back to the previous page or to the homepage -->
         <form action="index.php" method="get">
             <button type="submit">Back to Home</button>
