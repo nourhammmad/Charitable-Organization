@@ -64,6 +64,32 @@ class EventModel {
         return null;
     }
 
+    public static function getAllEvents() {
+        if (Database::get_connection() === null) {
+            echo "No database connection established.";
+            return [];
+        }
+
+        // Query to retrieve all events
+        $query = "SELECT * FROM Event";
+        $result = Database::run_select_query($query);
+
+        $events = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $events[] = new self(
+                    $row['eventId'],
+                    $row['date'],
+                    $row['addressId'],
+                    $row['EventAttendanceCapacity'],
+                    $row['tickets'],
+                    $row['created_at']
+                );
+            }
+        }
+        return $events;
+    }
+
     // Update an event's details
     public static function updateEvent($eventId, $date, $addressId, $EventAttendanceCapacity, $tickets) {
         // Ensure the connection is established
