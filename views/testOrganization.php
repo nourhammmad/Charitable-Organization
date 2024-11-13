@@ -82,7 +82,7 @@
 
     <!-- Button to fetch organization data -->
     <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
-        <button class="button" type="submit" name="get_registered_org">Get Organization</button>
+        <button class="button" type="submit" name="get_org">Get Organization</button>
     </form>
 
     <!-- Button to fetch donors data -->
