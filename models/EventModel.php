@@ -1,7 +1,8 @@
 <?php
 
 $server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server.'./Database.php';
+require_once "E:\brwana\Gam3a\Senoir 2\Design Patterns\charityyy\Charitable-Organization\Database.php";
+require_once 'E:\brwana\Gam3a\Senoir 2\Design Patterns\charityyy\Charitable-Organization\Services\IService.php';
 Database::getInstance();
 
 class EventModel {
@@ -11,19 +12,21 @@ class EventModel {
     private $EventAttendanceCapacity;
     private $tickets;
     private $createdAt;
+    private $event_type_id;
 
     // Constructor
-    public function __construct($eventId, $date, $addressId, $EventAttendanceCapacity, $tickets, $createdAt) {
+    public function __construct($eventId, $date, $addressId, $EventAttendanceCapacity, $tickets, $createdAt,$event_type_id) {
         $this->eventId = $eventId;
         $this->date = $date;
         $this->addressId = $addressId;
         $this->EventAttendanceCapacity = $EventAttendanceCapacity;
         $this->tickets = $tickets;
         $this->createdAt = $createdAt;
+        $this->$event_type_id=$event_type_id;
     }
 
     // Create a new event
-    public static function createEvent($date, $EventAttendanceCapacity, $tickets) {
+    public static function createEvent($date,$addressId,$EventAttendanceCapacity, $tickets, $event_type_id) {
         // Ensure the database connection is established
         if (Database::get_connection() === null) {
             echo "No database connection established.";
@@ -34,11 +37,11 @@ class EventModel {
        // echo "Date: $date, Capacity: $EventAttendanceCapacity, Tickets: $tickets<br>";
     
         // Example static addressId (change to dynamic if needed)
-        $addressId = '70ea9c2c-9f01-11ef-a964-1cbfc07800ee';  // Static addressId or dynamically fetched
+        $addressId = 'hkhk';  // Static addressId or dynamically fetched
     
         // Prepare the query to insert the event into the database
-        $query = "INSERT INTO Event (`date`, `addressId`, `EventAttendanceCapacity`, `tickets`) 
-                  VALUES ('$date', (SELECT addressId FROM Address LIMIT 1), '$EventAttendanceCapacity', '$tickets')";
+        $query = "INSERT INTO Event (`date`, `addressId`, `EventAttendanceCapacity`, `tickets`, `event_type_id`) 
+              VALUES ('$date', (SELECT addressId FROM Address LIMIT 1), '$EventAttendanceCapacity', '$tickets', '$event_type_id')";
     
         // Debugging: Check if the query is being executed properly
         //echo "Executing Query: $query<br>";
@@ -94,6 +97,9 @@ class EventModel {
             //echo "Error retrieving event details or no event found for ID: $eventId<br>";
             return false;
         }
+    }
+    public function addService(IService $service) {
+        return $service->setEvent($this->eventId);
     }
     
     public static function getLastInsertedEvent() {
@@ -197,60 +203,82 @@ if (Database::get_connection() === null) {
     exit;
 }
 
-// // Example of Address ID from the Address table (make sure this addressId exists in your DB)
-// $addressId = '29959131-9d80-11ef-b1d4-902e1627f5db  ';  // Replace this with an actual UUID from the Address table
-// $date = '$2024-12-01';
-// $EventAttendanceCapacity = 100;
-// $tickets = 50;
 
-// // Test creating an event
-// if (EventModel::createEvent($date, $addressId, $EventAttendanceCapacity, $tickets)) {
-//     echo "Event created successfully.<br/>";
-// } else {
-//     echo "Failed to create event.<br/>";
-// }
+// Test creating an event
+echo "<h3>Testing Event Creation</h3>";
 
-// // Test retrieving an event by ID (Assuming the eventId is 1)
-// $eventId = 3;
-// $event = EventModel::getEventById($eventId);
-// if ($event) {
-//     echo "Event found: " . $event->$date . "<br/>";
-// } else {
-//     echo "Event not found.<br/>";
-// }
+$date = '2024-12-01';
+$EventAttendanceCapacity = 200;
+$tickets = 150;
+$event_type_id = 1;// Food Bank event type
+$addressId='hkhk';
+// Create the event and check if it was successful
+$eventId = EventModel::createEvent($date,$addressId,$EventAttendanceCapacity, $tickets, $event_type_id);
+if ($eventId) {
+    echo "Event created successfully with Event ID: $eventId<br/>";
+} else {
+    echo "Failed to create event.<br/>";
+}
+///////////////////////////////////////////Test Event Model with event types//////////////////////////////
+// Test retrieving an event by ID
+echo "<h3>Testing Retrieve Event by ID</h3>";
+
+$event = EventModel::getEventById($eventId);
+if ($event) {
+    echo "Event found: <br/>";
+    echo "Event ID: " . $event['eventId'] . "<br/>";
+    echo "Date: " . $event['date'] . "<br/>";
+    echo "Capacity: " . $event['EventAttendanceCapacity'] . "<br/>";
+    echo "Tickets: " . $event['tickets'] . "<br/>";
+    echo "Event Type ID: " . $event['event_type_id'] . "<br/>";
+} else {
+    echo "Event not found.<br/>";
+}
 
 // Test updating an event
-// $newDate = '$2024-12-05';
-// $newEventAttendanceCapacity = 150;
-// $newTickets = 100;
-// if (EventModel::updateEvent($eventId, $newDate, $addressId, $newEventAttendanceCapacity, $newTickets)) {
-//     echo "Event updated successfully.<br/>";
-// } else {
-//     echo "Failed to update event.<br/>";
-// }
+echo "<h3>Testing Event Update</h3>";
 
-// // Test deleting an event
-// if (EventModel::deleteEvent($eventId)) {
-//     echo "Event deleted successfully.<br/>";
-// } else {
-//     echo "Failed to delete event.<br/>";
-// }
+$newDate = '2024-12-05';
+$newEventAttendanceCapacity = 250;
+$newTickets = 200;
+$updated = EventModel::updateEvent($eventId, $newDate, 'hkhk', $newEventAttendanceCapacity, $newTickets);
+if ($updated) {
+    echo "Event updated successfully.<br/>";
+} else {
+    echo "Failed to update event.<br/>";
+}
 
-// // Test associating a volunteer with the event (Assuming volunteerId = 1)
-// $volunteerId = 1;
-// if (EventModel::addVolunteerToEvent($eventId, $volunteerId)) {
-//     echo "Volunteer added to event successfully.<br/>";
-// } else {
-//     echo "Failed to add volunteer to event.<br/>";
-// }
+// Test retrieving updated event details
+echo "<h3>Testing Retrieve Updated Event</h3>";
 
-// // Test getting volunteers associated with an event
-// $volunteers = EventModel::getVolunteersByEvent($eventId);
-// if ($volunteers && $volunteers->num_rows > 0) {
-//     while ($volunteer = $volunteers->fetch_assoc()) {
-//         echo "Volunteer ID: " . $volunteer['volunteerId'] . "<br/>";
-//     }
-// } else {
-//     echo "No volunteers found for this event.<br/>";
-// }
+$updatedEvent = EventModel::getEventById($eventId);
+if ($updatedEvent) {
+    echo "Updated Event Details: <br/>";
+    echo "Date: " . $updatedEvent['date'] . "<br/>";
+    echo "Capacity: " . $updatedEvent['EventAttendanceCapacity'] . "<br/>";
+    echo "Tickets: " . $updatedEvent['tickets'] . "<br/>";
+} else {
+    echo "Error retrieving updated event.<br/>";
+}
+
+// Test deleting an event
+echo "<h3>Testing Event Deletion</h3>";
+
+$deleted = EventModel::deleteEvent($eventId);
+if ($deleted) {
+    echo "Event deleted successfully.<br/>";
+} else {
+    echo "Failed to delete event.<br/>";
+}
+
+// Test retrieving a deleted event
+echo "<h3>Testing Retrieve Deleted Event</h3>";
+
+$deletedEvent = EventModel::getEventById($eventId);
+if ($deletedEvent) {
+    echo "Deleted event found: <br/>";
+    echo "Event ID: " . $deletedEvent['eventId'] . "<br/>";
+} else {
+    echo "Event successfully deleted, no record found.<br/>";
+}
 ?>

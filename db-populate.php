@@ -7,7 +7,8 @@ class Populate {
         Database::run_queries(
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
-                "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor, organization, ipayment, cash, visa, instapay;",
+                "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
+                , organization, ipayment, cash, visa, instapay,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes;",
                 "SET FOREIGN_KEY_CHECKS = 1;",
  
                 // Create Users Table
@@ -194,12 +195,22 @@ class Populate {
                         city VARCHAR(100)
                     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
  
-                    // Insert sample address
-                    "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
-                        (UUID(), '123 Main St', 5, 101, 'New York');",
- 
- 
- 
+            // Insert sample address
+            "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
+                ('hkhk', '123 Main St', 5, 101, 'New York');",
+
+                     "CREATE TABLE EventTypes (
+                        event_type_id INT AUTO_INCREMENT PRIMARY KEY,
+                        type_name ENUM('FoodBank', 'FamilyShelters', 'EducationalCenters') NOT NULL
+                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+
+                    "INSERT INTO EventTypes (type_name) VALUES
+                            ('FoodBank'),
+                            ('FamilyShelters'),
+                            ('EducationalCenters');",     
+                    
+
                 "CREATE TABLE Event (
                         eventId INT AUTO_INCREMENT PRIMARY KEY,
                         date DATE NOT NULL,
@@ -207,12 +218,52 @@ class Populate {
                         EventAttendanceCapacity INT NOT NULL,
                         tickets INT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (addressId) REFERENCES Address(addressId) ON DELETE SET NULL
+                        event_type_id INT NOT NULL,
+                        FOREIGN KEY (addressId) REFERENCES Address(addressId),
+                        FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id)
                     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT = 1;",
- 
-                    // Insert test Event
-                    "INSERT INTO Event (date, addressId, EventAttendanceCapacity, tickets) VALUES
-                        ('2024-12-01', (SELECT addressId FROM Address LIMIT 1), 100, 50);",
+
+"INSERT INTO Event (date, addressId, EventAttendanceCapacity, tickets, event_type_id) VALUES
+                    ('2024-12-01', 'hkhk', 200, 150, 1), 
+                    ('2024-12-15', 'hkhk', 300, 250, 2); 
+", 
+                   
+                   "CREATE TABLE FoodBankEvent (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    eventId INT,
+                    foodQuantity INT,
+                    foodType VARCHAR(255),
+                    foodBankLocation VARCHAR(255),
+                    event_type_id INT,
+                    FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
+                    FOREIGN KEY (eventId) REFERENCES Event(eventId));",                   
+
+                    "CREATE TABLE FamilyShelterEvent (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        eventId INT,
+                        numberOfShelters INT,
+                        shelterLocation VARCHAR(255),
+                        capacity INT,
+                        facilities TEXT,
+                        event_type_id INT,
+                        FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
+                        FOREIGN KEY (eventId) REFERENCES Event(eventId));",
+
+                    "CREATE TABLE EducationalCenterEvent (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            eventId INT,
+                            targetGroup VARCHAR(255),
+                            numberOfCenters INT,
+                            centerLocation VARCHAR(255),
+                            event_type_id INT,
+                            FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
+                            FOREIGN KEY (eventId) REFERENCES Event(eventId));",                        
+
+            "INSERT INTO FoodBankEvent (eventId, foodQuantity, foodType, foodBankLocation, event_type_id) VALUES
+            (1, 500, 'Canned Goods', 'Downtown Food Bank', 1);",
+
+            "INSERT INTO FamilyShelterEvent (eventId, numberOfShelters, shelterLocation, capacity, facilities, event_type_id) VALUES
+            (2, 10, 'Northside Family Shelter', 50, 'Restrooms, Showers, Sleeping Areas', 2);",
  
                     // Create EventVolunteer Table to link Events and Volunteers
                     
@@ -226,7 +277,15 @@ class Populate {
  
                     // Insert a Volunteer association with the Event
                     "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
-                        (1, 1);"
+                        (1, 1);",
+
+
+
+
+
+
+
+
             ]
         );
     }
