@@ -50,10 +50,10 @@ class RegisterUser extends user {
         }}
         elseif ($this->category === 'Volunteer') {
             if (VolunteerModel::createVolunteer($this->id,1)) { // Assuming createVolunteer is a method to initialize volunteer data
-                echo "dakhalt";
+                //echo "dakhalt";
                 $volunteerId = VolunteerModel::getLastInsertVolunteerId(); // Get the last inserted Volunteer ID
-                //header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId"); // Redirect to volunteer dashboard
-                //exit();
+                header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId"); // Redirect to volunteer dashboard
+                exit();
             }
         }
     }
