@@ -41,17 +41,19 @@ class RegisterUser extends user {
 
     public function signUp(){
         $_SESSION['user_id'] = $this->id;
-        $_SESSION['user_type'] = $this->type;
+        $_SESSION['user_category'] = $this->category;
+        if($this->category === 'Donor'){
         if(DonarModel::createDonor($this->id,1)){
            $donorId = DonarModel::getLastInsertDonorId();
            header("Location: ./views/HomeView.php?donor_id=$donorId");
         exit();
-        }
-        elseif ($this->type === 'Volunteer') {
-            if (VolunteerModel::createVolunteer($this->id)) { // Assuming createVolunteer is a method to initialize volunteer data
+        }}
+        elseif ($this->category === 'Volunteer') {
+            if (VolunteerModel::createVolunteer($this->id,1)) { // Assuming createVolunteer is a method to initialize volunteer data
+                echo "dakhalt";
                 $volunteerId = VolunteerModel::getLastInsertVolunteerId(); // Get the last inserted Volunteer ID
-                header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId"); // Redirect to volunteer dashboard
-                exit();
+                //header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId"); // Redirect to volunteer dashboard
+                //exit();
             }
         }
     }
