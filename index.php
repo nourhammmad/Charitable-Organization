@@ -13,7 +13,6 @@ Populate::populate();
 
 if (Database::get_connection()) {
     $controller = new LoginController();
- //  $controller = new OrganizationController('My Charitable Organization');
  $controller->handleRequest();
 } else {
     echo "Failed to connect to the database.";

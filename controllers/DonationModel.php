@@ -102,7 +102,8 @@ class DonationModel {
         $query = "SELECT * FROM DonationItem di
                   JOIN DonationTypes dt ON di.donation_type_id = dt.donation_type_id
                   WHERE di.donation_type_id = $donationTypeId";
-        return Database::run_select_query(query: $query);
+        $result= Database::run_select_query(query: $query);
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     // Get all donations for a specific donation management
