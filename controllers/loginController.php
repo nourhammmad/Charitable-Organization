@@ -27,7 +27,6 @@ class LoginController {
             } elseif (isset($_POST['facebook_login'])) {
                 $this->loginWithFacebook();
             }
-            // Handle organization login
             elseif (isset($_POST['org_pressed'])) {
                $this->loginorg();
               
@@ -36,14 +35,11 @@ class LoginController {
         }
 
     
-        require_once "./views/loginView.php";
+        require_once "D:/SDP/project/Charitable-Organization/views/loginView.php";
     }
 
     private function loginorg() {
-        $server=$_SERVER['DOCUMENT_ROOT'];
-    //     $controller = new OrganizationController('My Charitable Organization');
-    //    $controller->handleRequest();
-        header( $server."./views/testOrganization.php") ;
+        require_once "D:/SDP/project/Charitable-Organization/views/testOrganization.php";
          exit(); 
     }
     
