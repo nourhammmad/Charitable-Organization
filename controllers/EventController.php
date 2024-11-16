@@ -1,11 +1,13 @@
 <?php
-require_once "./models/EventModel.php";
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server.'./Database.php';
+require_once $server."./models/EventModel.php";
 
 class EventController {
 
     // Create a new event
-    public function createEvent($date, $addressId, $EventAttendanceCapacity, $tickets) {
-        $result = EventModel::createEvent($date, $addressId, $EventAttendanceCapacity, $tickets);
+    public function createEvent($date, $EventAttendanceCapacity, $tickets) {
+        $result = EventModel::createEvent($date, $addressId=NULL, $EventAttendanceCapacity, $tickets);
         if ($result) {
             echo "Event created successfully.<br/>";
         } else {
@@ -79,6 +81,20 @@ class EventController {
             echo "No volunteers found for this event.<br/>";
         }
     }
+    public function displayLastInsertedEvent() {
+        $event = EventModel::getLastInsertedEvent();
+        
+        if ($event) {
+            echo "Last Inserted Event Details:<br/>";
+            echo "Event ID: " . $event['id'] . "<br/>";
+            echo "Event Date: " . $event['date'] . "<br/>";
+            echo "Event Capacity: " . $event['EventAttendanceCapacity'] . "<br/>";
+            echo "Tickets: " . $event['tickets'] . "<br/>";
+        } else {
+            echo "Failed to retrieve the last inserted event.<br/>";
+        }
+    }
+    
 }
 
 // Usage example (for testing purposes)

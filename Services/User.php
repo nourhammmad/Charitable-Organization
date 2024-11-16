@@ -3,11 +3,12 @@
 require_once "./models/UserModel.php";
 
 abstract class User {
-    protected $id;
+    protected $userid;
     protected $type;
 
     // Constructor to set the type
-    public function __construct($type) {
+    public function __construct($userId,$type) {
+        $this->userid=$userId;
         $this->type = $type;
     }
 
@@ -15,12 +16,12 @@ abstract class User {
 
     // Getter for id
     public function getId() {
-        return $this->id;
+        return $this->userid;
     }
 
     // Setter for id (if needed)
     public function setId($id) {
-        $this->id = $id;
+        $this->userid = $id;
     }
 
     // Getter for type

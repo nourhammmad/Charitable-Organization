@@ -1,5 +1,7 @@
 <?php
-require_once "../Database.php";  
+
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server.'./Database.php';
 Database::getInstance();
 
 class EventModel {
@@ -21,98 +23,110 @@ class EventModel {
     }
 
     // Create a new event
-    public static function createEvent($date ,$EventAttendanceCapacity, $tickets) {
-        // Ensure the connection is established
-        //$db = Database::getInstance();
+    public static function createEvent($date, $EventAttendanceCapacity, $tickets) {
+        // Ensure the database connection is established
         if (Database::get_connection() === null) {
             echo "No database connection established.";
             return false;
         }
-        //var_dump($addressId); // Check what addressId is being passed
-        //var_dump($date, $EventAttendanceCapacity, $tickets); // Check all other parameters
-
-        $addressId = '70ea9c2c-9f01-11ef-a964-1cbfc07800ee'; 
-        // Query to insert a new event
-        $query = "INSERT INTO Event (`date`, `EventAttendanceCapacity`, `tickets`) 
-                  VALUES ('$date', '$EventAttendanceCapacity', '$tickets')";
-        return Database::run_query($query);
+    
+        // Debugging: Output the parameters being used for insertion
+       // echo "Date: $date, Capacity: $EventAttendanceCapacity, Tickets: $tickets<br>";
+    
+        // Example static addressId (change to dynamic if needed)
+        $addressId = '70ea9c2c-9f01-11ef-a964-1cbfc07800ee';  // Static addressId or dynamically fetched
+    
+        // Prepare the query to insert the event into the database
+        $query = "INSERT INTO Event (`date`, `addressId`, `EventAttendanceCapacity`, `tickets`) 
+                  VALUES ('$date', (SELECT addressId FROM Address LIMIT 1), '$EventAttendanceCapacity', '$tickets')";
+    
+        // Debugging: Check if the query is being executed properly
+        //echo "Executing Query: $query<br>";
+    
+        // Execute the query
+        $result = Database::run_query($query);
+    
+        // Check if the query executed successfully
+        if ($result) {
+            // Use the new method to get the last inserted ID
+            $lastInsertId = Database::get_last_inserted_id();
+            //echo "Last Inserted ID: " . $lastInsertId . "<br>"; // Debugging: Check the inserted ID
+            
+            if ($lastInsertId) {
+                // Return the last inserted ID for further use
+                return $lastInsertId;
+            } else {
+                //echo "No valid event ID retrieved.<br>";
+                return false;
+            }
+        } else {
+            //echo "Event creation failed. Query: $query<br>";
+            return false;
+        }
     }
-    public function getEventId() {
-        return $this->eventId;
-    }
-
-    public function getDate() {
-        return $this->date;
-    }
-
-    public function getAddressId() {
-        return $this->addressId;
-    }
-
-    public function getEventAttendanceCapacity() {
-        return $this->EventAttendanceCapacity;
-    }
-
-    public function getTickets() {
-        return $this->tickets;
-    }
-
-    public function getCreatedAt() {
-        return $this->createdAt;
-    }
-
-
-    // Retrieve event by ID
+    
+    
+    // Method to retrieve event details by ID
     public static function getEventById($eventId) {
-        // Ensure the connection is established
-        $db = Database::getInstance();
-        if (Database::get_connection()) {
-            echo "No database connection established.";
-            return null;
-        }
-
-        // Query to retrieve event by ID
-        $query = "SELECT * FROM Event WHERE eventId = $eventId";
-        $result = Database::run_select_query($query);
-        if ($result && $result->num_rows > 0) {
-            $data = $result->fetch_assoc();
-            return new self(
-                $data['eventId'],
-                $data['date'],
-                $data['addressId'],
-                $data['EventAttendanceCapacity'],
-                $data['tickets'],
-                $data['created_at']
-            );
-        }
-        return null;
-    }
-
-    public static function getAllEvents() {
+        // Ensure the database connection is established
         if (Database::get_connection() === null) {
             echo "No database connection established.";
-            return [];
+            return false;
         }
+    
+        // Sanitize the eventId to prevent SQL injection (important for security)
+        $eventId = (int)$eventId;
 
-        // Query to retrieve all events
-        $query = "SELECT * FROM Event";
-        $result = Database::run_select_query($query);
-
-        $events = [];
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $events[] = new self(
-                    $row['eventId'],
-                    $row['date'],
-                    $row['addressId'],
-                    $row['EventAttendanceCapacity'],
-                    $row['tickets'],
-                    $row['created_at']
-                );
-            }
+        // Query to fetch event details by event ID
+        $eventQuery = "SELECT * FROM Event WHERE eventId = $eventId";
+    
+        // Debugging: Output the query to check if it's correct
+        //echo "Executing Query: $eventQuery<br>";
+    
+        // Execute the query
+        $eventResult = Database::run_select_query($eventQuery);
+        
+        if ($eventResult && $eventResult->num_rows>0) {
+            // Fetch the event details as an associative array
+            return $eventResult->fetch_assoc();
+        } else {
+            // If no rows were returned, output an error message
+            //echo "Error retrieving event details or no event found for ID: $eventId<br>";
+            return false;
         }
-        return $events;
     }
+    
+    public static function getLastInsertedEvent() {
+        // Ensure the database connection is established
+        if (Database::get_connection() === null) {
+            echo "No database connection established.<br>";
+            return false;
+        }
+    
+        // Get the last inserted event ID
+        $lastInsertId = Database::get_connection()->insert_id;
+    
+        // If a valid ID is returned, fetch the event details
+        if ($lastInsertId) {
+            // Query to fetch the last inserted event using the last insert ID
+            $eventQuery = "SELECT * FROM Event WHERE id = $lastInsertId";
+            $eventResult = Database::run_query($eventQuery);
+    
+            // Check if the query was successful and rows were returned
+            if ($eventResult && $eventResult instanceof mysqli_result && $eventResult->num_rows > 0) {
+                // Return the event details as an associative array
+                return $eventResult->fetch_assoc();
+            } else {
+                echo "No event found with the last inserted ID.<br>";
+                return false;
+            }
+        } else {
+            echo "No valid event ID retrieved.<br>";
+            return false;
+        }
+    }
+    
+    
 
     // Update an event's details
     public static function updateEvent($eventId, $date, $addressId, $EventAttendanceCapacity, $tickets) {

@@ -1,10 +1,11 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login / Signup</title>
-    <!-- <link rel="stylesheet" href="styles.css"> -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,6 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
         }
         .container {
             background: #fff;
@@ -20,11 +22,14 @@
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             width: 300px;
-        }
-        h2 {
+            text-align: center;
             text-align: center;
         }
-        input[type="text"], input[type="password"], input[type="email"] {
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        input[type="text"], input[type="password"], input[type="email"], select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -39,16 +44,50 @@
             color: white;
             border-radius: 4px;
             cursor: pointer;
+            margin-top: 10px;
+            margin-top: 10px;
         }
         button:hover {
             background: #45a049;
         }
+        .social-login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            margin-top: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .google-btn {
+            background: #db4437;
+        }
+        .facebook-btn {
+            background: #4267B2;
+        }
+        .google-btn:hover {
+            background: #c33d2e;
+        }
+        .facebook-btn:hover {
+            background: #365899;
+        }
         .error, .success {
             color: red;
-            text-align: center;
+            margin: 10px 0;
         }
         .success {
             color: green;
+        }
+        .organization-button {
+            background: #3498db;
+            margin-top: 15px;
+        }
+        .organization-button:hover {
+            background: #2980b9;
         }
     </style>
 </head>
@@ -62,6 +101,12 @@
             <button type="submit" name="login">Login</button>
         </form>
 
+        <!-- Social Login Buttons -->
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+            <button type="submit" name="google_login" class="social-login-btn google-btn">Login with Google</button>
+            <button type="submit" name="facebook_login" class="social-login-btn facebook-btn">Login with Facebook</button>
+        </form>
+        
         <h2>Sign Up</h2>
         <?php if (isset($signup_success)) echo "<p class='success'>$signup_success</p>"; ?>
         <?php if (isset($signup_error)) echo "<p class='error'>$signup_error</p>"; ?>
@@ -72,7 +117,8 @@
             <select name="category" required>
                 <option value="">Select Category</option>
                 <option value="Volunteer">Volunteer</option>
-                <option value="Donar">Donor</option>
+                <option value="Donor">Donor</option>
+
             </select>
             <button type="submit" name="signup">Sign Up</button>
         </form>
@@ -81,6 +127,13 @@
         <form method="post">
             <button type="submit" name="guest">Continue as Guest</button>
         </form>
+
+        <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+    <button type="submit" name="org_pressed" class="organization-button">Log in as Organization</button>
+
+</form>
+
+
     </div>
 </body>
 </html>

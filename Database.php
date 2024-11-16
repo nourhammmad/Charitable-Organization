@@ -1,10 +1,10 @@
 <?php
 
 define('DB_HOST', 'localhost');     
-define('DB_PORT', '3307');          
+define('DB_PORT', '3306');          
 define('DB_USER', 'root');          
 define('DB_PASS', '');              
-define('DB_NAME', 'charity_db');        
+define('DB_NAME', 'charityy_db');        
 
 class Database {
     private static $instance = null;
@@ -69,31 +69,29 @@ class Database {
         }
     }
     
-    public static function run_select_query($query, $echo = false): mysqli_result|bool {
-        $conn = self::get_connection(); 
-        if ($conn) {
-            $result = $conn->query($query);
-            if ($echo) {
-                echo '<pre>' . $query . '</pre>';
-                if ($result && $result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        print_r($row);
-                    }
-                } else {
-                    echo "0 results";
-                }
-                echo "<hr/>";
-            }
-            return $result;
-        } else {
-            echo "No database connection established.";
+    public static function run_select_query($query) {
+        $connection = self::get_connection();
+        if ($connection === null) {
+            echo "No database connection established.<br>";
             return false;
         }
+    
+        $result = mysqli_query($connection, $query); // Run the query
+    
+        if (!$result) {
+            echo "Query failed: " . mysqli_error($connection) . "<br>";
+            return false;
+        }
+    
+        return $result; // Return the result object if query is successful
     }
+    
     
 
     // Get the last inserted ID
     public static function get_last_inserted_id(): int {
         return self::$conn->insert_id;
     }
+
+    
 }
