@@ -64,6 +64,34 @@ class EventModel {
             return false;
         }
     }
+    // Method to retrieve all events
+public static function getAllEvents() {
+    // Ensure the database connection is established
+    if (Database::get_connection() === null) {
+        echo "No database connection established.";
+        return false;
+    }
+
+    // Query to retrieve all events
+    $query = "SELECT * FROM Event";
+
+    // Execute the query
+    $result = Database::run_select_query($query);
+
+    // Check if the query returned any rows
+    if ($result && $result->num_rows > 0) {
+        // Fetch all rows as an array of associative arrays
+        $events = [];
+        while ($row = $result->fetch_assoc()) {
+            $events[] = $row;
+        }
+        return $events;
+    } else {
+        // Return an empty array if no events are found
+        return [];
+    }
+}
+
     
     
     // Method to retrieve event details by ID
