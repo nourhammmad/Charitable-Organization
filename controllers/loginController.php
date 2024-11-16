@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 
 require_once "./models/UserModel.php";
@@ -7,14 +8,14 @@ require_once "./Services/Guest.php";
 require_once "./Services/RegisterUser.php";
 require_once "./Database.php";
 require_once "./Services/ContextAuthenticator.php";
-
-
+require_once "./controllers/OrganizationController.php";
 
 class LoginController {
 
-    
+    // Main handler for requests
     public function handleRequest() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // Handle Registered User login
             if (isset($_POST['login'])) {
                 $this->loginRegisteredUser($_POST['email'], $_POST['password']);
             } elseif (isset($_POST['signup'])) {
@@ -26,13 +27,32 @@ class LoginController {
             } elseif (isset($_POST['facebook_login'])) {
                 $this->loginWithFacebook();
             }
+            // Handle organization login
+            elseif (isset($_POST['org_pressed'])) {
+               $this->loginorg();
+              
+            }
+
         }
 
+    
         require_once "./views/loginView.php";
+    }
+
+    private function loginorg() {
+        $server=$_SERVER['DOCUMENT_ROOT'];
+    //     $controller = new OrganizationController('My Charitable Organization');
+    //    $controller->handleRequest();
+        header( $server."./views/testOrganization.php") ;
+         exit(); 
     }
     
 
-        private function loginRegisteredUser() {
+
+
+    // Registered User login logic
+    public function loginRegisteredUser() {
+        if (isset($_POST['login'])) {
             $msg = '';
             if (!empty($_POST['email']) && !empty($_POST['password'])) {
                 $context = new ContextAuthenticator(new PasswordAuth());
@@ -47,6 +67,7 @@ class LoginController {
             }
         
         }
+    }
 
         private function registerNewUser($email, $userName, $password, $category) {
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);

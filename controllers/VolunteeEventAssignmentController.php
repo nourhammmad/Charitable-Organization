@@ -1,8 +1,12 @@
 <?php
 require_once "./models/VolunteerEventAssignementModel.php";
 require_once "./models/VolunteerModel.php";
+require_once "./controllers/VolunteerCotroller.php.php";
+require_once "Services/Volunteer.php";
 
-class VolunteerAssignemtnController {
+
+
+class VolunteeEventAssignmentController {
 
     // Method to fetch and display all available events
     public function getAvailableEvents() {

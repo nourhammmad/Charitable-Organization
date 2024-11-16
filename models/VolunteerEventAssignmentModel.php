@@ -3,7 +3,7 @@ require_once "./Database.php";
 require_once "./models/VolunteerModel.php";
 require_once "./models/EventModel.php";
 
-class VolunteerEventAssignemtnModel{
+class VolunteerEventAssignementModel{
 
     // Fetch all available events from the database
     public static function fetchAllEvents() {

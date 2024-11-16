@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
         }
         .container {
             background: #fff;
@@ -20,9 +23,11 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             width: 300px;
             text-align: center;
+            text-align: center;
         }
         h2 {
-            text-align: center;
+            margin-top: 0;
+            color: #333;
         }
         input[type="text"], input[type="password"], input[type="email"], select {
             width: 100%;
@@ -39,6 +44,7 @@
             color: white;
             border-radius: 4px;
             cursor: pointer;
+            margin-top: 10px;
             margin-top: 10px;
         }
         button:hover {
@@ -71,10 +77,17 @@
         }
         .error, .success {
             color: red;
-            text-align: center;
+            margin: 10px 0;
         }
         .success {
             color: green;
+        }
+        .organization-button {
+            background: #3498db;
+            margin-top: 15px;
+        }
+        .organization-button:hover {
+            background: #2980b9;
         }
     </style>
 </head>
@@ -105,6 +118,7 @@
                 <option value="">Select Category</option>
                 <option value="Volunteer">Volunteer</option>
                 <option value="Donor">Donor</option>
+
             </select>
             <button type="submit" name="signup">Sign Up</button>
         </form>
@@ -113,6 +127,14 @@
         <form method="post">
             <button type="submit" name="guest">Continue as Guest</button>
         </form>
+
+        <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+    <button type="submit" name="org_pressed" class="organization-button">Log in as Organization</button>
+
+</form>
+
+
     </div>
 </body>
 </html>
+

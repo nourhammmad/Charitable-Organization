@@ -3,6 +3,8 @@
 require_once "./Services/User.php";
 require_once "../Charitable-Organization/models/RegisteredUserModel.php";
 require_once "../Charitable-Organization/models/DonorModel.php";
+require_once "./models/VolunteerModel.php";
+
 
 
 class RegisterUser extends user {
@@ -26,6 +28,7 @@ class RegisterUser extends user {
     public function login() {
         $_SESSION['user_id'] = $this->id;
         $_SESSION['user_type'] = $this->type;
+        //$regUser=RegisterUserTypeModel::findById($this->id);
         if($this->category=='Donor'){
             $res=DonarModel::getDonorByRegisteredId($_SESSION['user_id']);
             if($res){
@@ -43,6 +46,13 @@ class RegisterUser extends user {
            $donorId = DonarModel::getLastInsertDonorId();
            header("Location: ./views/HomeView.php?donor_id=$donorId");
         exit();
+        }
+        elseif ($this->type === 'Volunteer') {
+            if (VolunteerModel::createVolunteer($this->id)) { // Assuming createVolunteer is a method to initialize volunteer data
+                $volunteerId = VolunteerModel::getLastInsertVolunteerId(); // Get the last inserted Volunteer ID
+                header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId"); // Redirect to volunteer dashboard
+                exit();
+            }
         }
     }
 
