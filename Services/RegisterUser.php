@@ -6,16 +6,21 @@ require_once "../Charitable-Organization/models/DonorModel.php";
 
 
 class RegisterUser extends user {
+    private $id;
     private $email;
     private $userName;
+    private $passwordHash;
+    //private $createdAt;
     private $category;
+    
 
-
-    public function __construct($email, $userName, $category) {
-        parent::__construct('RegisteredUserType');
-        $this->email=$email;
+    public function __construct($userid,$registeredUserId,$email, $userName, $passwordHash,$category ) {
+        parent::__construct($userid,'RegisteredUserType');
+        $this->id =$registeredUserId;
+        $this->email = $email;
+        $this->userName = $userName;
+        $this->passwordHash = $passwordHash;
         $this->category=$category;
-        $this->userName=$userName;
     }
 
     public function login() {
@@ -26,11 +31,8 @@ class RegisterUser extends user {
             if($res){
                 $donorId = $res->getId();
                 header("Location: ./views/HomeView.php?donor_id=$donorId");
-             exit();
             }
         }
-        exit();
-
         exit();
     }
 

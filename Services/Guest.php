@@ -18,7 +18,7 @@ class Guest extends user{
     }
    
     public function login() {
-        $_SESSION['user_id'] = $this->id;
+        $_SESSION['user_id'] = $this->userid;
         $_SESSION['user_type'] = $this->type;
         header("Location: ./views/HomeView.php");
         exit();

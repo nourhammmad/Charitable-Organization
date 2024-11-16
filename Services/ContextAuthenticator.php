@@ -2,24 +2,54 @@
 
 require_once ('./models/RegisteredUserModel.php');
 require_once ('./Services/IAuthenticationProvider.php');
+require_once('./models/DonorModel.php');
 
-// class FacebookAuth implements IAuthenticationProvider
-// {
-//     public function login(String $email, String $password): User|null
-//     {
-//         echo "Authenticating user with email: $email with Facebook...<br/>";
-//         return User::getUserById(1);
-//     }
-// }
+class FacebookAuth implements IAuthenticationProvider
+{
+    public function login(String $email, String $password): RegisterUser|null
+    {
 
-// class GoogleAuth implements IAuthenticationProvider
-// {
-//     public function login(String $email, String $password): User|null
-//     {
-//         echo "Authenticating user with email: $email with Google...<br/>";
-//         return User::getUserById(1);
-//     }
-//}
+         $existingUser = RegisterUserTypeModel::findByEmail("mockuser@facebook.com");
+         if ($existingUser) {
+             return $existingUser;
+         } else {
+             if (RegisterUserTypeModel::save("mockuser@facebook.com", "MockUser Facebook","123hashed", "Donor")){
+                 $mockUser = RegisterUserTypeModel::findByEmail('mockuser@facebook.com');
+                 //just created for it a donor in DB as it dont have 
+                 if(DonarModel::createDonor($mockUser->getId(),1)){
+                     return $mockUser;
+                 }
+                 return null;
+ 
+             }
+             return null;
+        }
+    }
+}
+
+class GoogleAuth implements IAuthenticationProvider
+{
+    public function login(String $email, String $password): RegisterUser|null
+    {
+        //if user entered by this mail has already been saved otherwise new user will be created
+        $existingUser = RegisterUserTypeModel::findByEmail("mockuser@gmail.com");
+        if ($existingUser) {
+            return $existingUser;
+        } else {
+            if (RegisterUserTypeModel::save("mockuser@gmail.com", "MockUser google","123hashed", "Donor")){
+                $mockUser = RegisterUserTypeModel::findByEmail('mockuser@gmail.com');
+                //just created for it a donor in DB as it dont have 
+                if(DonarModel::createDonor($mockUser->getId(),1)){
+                    return $mockUser;
+                }
+                return null;
+
+            }
+            return null;
+        }
+
+    }
+}
 
 
 
@@ -34,7 +64,7 @@ class PasswordAuth implements IAuthenticationProvider
 class ContextAuthenticator
 {
     private IAuthenticationProvider $strategy;
-    public function __construct(IAuthenticationProvider $strategy = new PasswordAuth())
+    public function __construct(IAuthenticationProvider $strategy)
     {
         $this->strategy = $strategy;
     }
