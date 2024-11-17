@@ -80,7 +80,14 @@ class Populate {
                 "INSERT INTO Tasks (`name`, `description`, `requiredSkill`, `timeSlot`, `location`) 
                 VALUES ('Build a Website', 'Create a responsive website for the charity.', 'Web Development', '10:00 AM - 3:00 PM', 'Main Office');",
                 
-            
+               "CREATE TABLE VolunteerTaskAssignments (
+                    volunteerId INT NOT NULL,              -- ID of the volunteer
+                    taskId INT NOT NULL,                   -- ID of the task
+                    assignedAt DATETIME DEFAULT CURRENT_TIMESTAMP, -- Timestamp of the assignment
+                    PRIMARY KEY (volunteerId, taskId),     -- Composite primary key
+                    FOREIGN KEY (volunteerId) REFERENCES Volunteers(id) ON DELETE CASCADE,
+                    FOREIGN KEY (taskId) REFERENCES Tasks(id) ON DELETE CASCADE
+                );",
                 // Create Donor Table
                 "CREATE TABLE Donor (
                     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
