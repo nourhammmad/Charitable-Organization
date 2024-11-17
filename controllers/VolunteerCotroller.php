@@ -1,6 +1,16 @@
 <?php
-require_once "./models/VolunteerModel.php";
-require_once "./controllers/VolunteeEventAssignmentController.php.php";
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server."./models/VolunteerModel.php";
+require_once $server."./controllers/VolunteeEventAssignmentController.php";
+// require_once $server."./db-populate.php";
+
+// try {
+//     $db =  Database::getInstance();
+//     Populate::populate();
+// } catch (Exception $e) {
+//     echo "Error initializing Database: " . $e->getMessage();
+//     exit;
+// }
 
 
 class VolunteerCotroller {
@@ -11,31 +21,33 @@ class VolunteerCotroller {
     public function __construct($volunteerId) {
         $this->volunteerModel = VolunteerModel::getVolunteerById($volunteerId);
         $this->assignEventController = new VolunteeEventAssignmentController();
+       
+    }
+    public function getAssignEventController() {
+        return $this->assignEventController;
     }
 
     public function displayAvailableEvents() {
+        // Ensure $this->assignEventController->getAvailableEvents() is returning an array
         $events = $this->assignEventController->getAvailableEvents();
         
+        // Check if events are returned and not an error message
         if (is_array($events) && !empty($events)) {
-            echo "Available Events:<br>";
-            foreach ($events as $event) {
-                // Use getter methods instead of array keys
-                echo "Event ID: " . $event->getEventId() . ", Date: " . $event->getDate() ."<br>";
-            }
+            return $events;
         } else {
-            echo "No available events at the moment.";
+            return [];  // Return an empty array if no events found
         }
     }
     
-
     public function applyForEvent($eventId) {
         if ($this->volunteerModel) {
-            $result = $this->assignEventController->assignVolunteer($this->volunteerModel->getId(), $eventId);
-            echo $result;
+            $result = $this->assignEventController->assignVolunteer((int)$this->volunteerModel->getId(), $eventId);
+            echo $result;  // Send the result back (e.g., success or failure message)
         } else {
-            echo "Volunteer not found.";
+            echo "Volunteer not found.";  // Send an error if volunteer doesn't exist
         }
     }
+    
 
     public function updateVolunteerSkills($skills) {
         try {
@@ -50,4 +62,6 @@ class VolunteerCotroller {
         $result = VolunteerModel::addDescription($description, $this->volunteerModel->getId());
         echo $result ? "Description added successfully!" : "Failed to add description.";
     }
+    
 }
+//$volu=new VolunteerCotroller(1);
