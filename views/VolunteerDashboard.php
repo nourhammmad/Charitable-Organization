@@ -10,6 +10,8 @@ $volunteerController = new VolunteerCotroller($volunteerId);
 
 // Fetch available events
 $events = $volunteerController->displayAvailableEvents();
+$tasks = $volunteerController->displayAllTasks();
+
 ?>
 
 <!DOCTYPE html>
@@ -76,7 +78,7 @@ $events = $volunteerController->displayAvailableEvents();
     <ul>
         <?php foreach ($events as $event): ?>
             <li>
-                Event ID: <?= $event['eventId'] ?> | Event Name: <?= $event['eventName'] ?> | Date: <?= $event['date'] ?>
+                Event Name: <?= $event['eventName'] ?> | Date: <?= $event['date'] ?>
                 <button id="applyButton<?= $event['eventId'] ?>" onclick="applyForEvent(<?= $event['eventId'] ?>, this)">Apply</button>
             </li>
         <?php endforeach; ?>
@@ -84,7 +86,19 @@ $events = $volunteerController->displayAvailableEvents();
 <?php else: ?>
     <p>No events available at the moment.</p>
 <?php endif; ?>
-
+<h1>Available Volunteer Tasks</h1>
+<?php if (is_array($tasks) && !empty($tasks)): ?>
+    <ul>
+        <?php foreach ($tasks as $tasks): ?>
+            <li>
+                Task Name: <?= $tasks['name'] ?> | Description: <?= $tasks['description'] ?>
+                <button id="applyButton<?= $tasks['id'] ?>" onclick="applyForTasks(<?= $tasks['id'] ?>, this)">Apply</button>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php else: ?>
+    <p>No tasks available at the moment.</p>
+<?php endif; ?>
 <script>
     // JavaScript function to handle applying for an event
     function applyForEvent(eventId, button) {
@@ -107,6 +121,26 @@ $events = $volunteerController->displayAvailableEvents();
         })
         .catch(error => console.error('Error:', error));
     }
+    function applyForTasks(id, button) {
+        const volunteerId = <?= $volunteerId; ?>;
+        const formData = new FormData();
+        formData.append('volunteerId', volunteerId);
+        formData.append('id', id);
+
+        const documentRoot = '../controllers/VolunteerEventHandlerController.php';  
+
+        fetch(documentRoot, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data);  // Show success or failure message from the server
+            button.innerText = "Applied";  // Change button text
+            button.disabled = true;  // Disable the button to prevent further clicks
+        })
+        .catch(error => console.error('Error:', error));
+    }
 </script>
 
 </body>

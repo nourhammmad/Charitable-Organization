@@ -2,6 +2,8 @@
 $server=$_SERVER['DOCUMENT_ROOT'];
 require_once $server."./models/VolunteerModel.php";
 require_once $server."./controllers/VolunteeEventAssignmentController.php";
+require_once $server."./controllers/VolunteetTaskAssignmentController.php";
+
 // require_once $server."./db-populate.php";
 
 // try {
@@ -16,11 +18,14 @@ require_once $server."./controllers/VolunteeEventAssignmentController.php";
 class VolunteerCotroller {
     private $volunteerModel;
     private $assignEventController;
+    private $assignTaskController;
 
     // Initialize with a VolunteerModel instance and create an assignment controller instance
     public function __construct($volunteerId) {
         $this->volunteerModel = VolunteerModel::getVolunteerById($volunteerId);
         $this->assignEventController = new VolunteeEventAssignmentController();
+        $this->assignTaskController = new VolunteerTaskAssignmentController();
+
        
     }
     public function getAssignEventController() {
@@ -38,6 +43,15 @@ class VolunteerCotroller {
             return [];  // Return an empty array if no events found
         }
     }
+    public function displayAllTasks() {
+        // Fetch all tasks using the TaskModel
+        $tasks = $this ->assignTaskController->viewAllTasks();  // Call the method from TaskModel
+    
+        if (is_array($tasks) && !empty($tasks)) {
+            return $tasks;
+        } else {
+            return [];
+}}
     
     public function applyForEvent($eventId) {
         if ($this->volunteerModel) {
@@ -62,6 +76,8 @@ class VolunteerCotroller {
         $result = VolunteerModel::addDescription($description, $this->volunteerModel->getId());
         echo $result ? "Description added successfully!" : "Failed to add description.";
     }
-    
+    public function update($event, $message) {
+        echo "Notification for Volunteer {$this->volunteerModel->getId()}: {$message}<br>";
+}
 }
 //$volu=new VolunteerCotroller(1);

@@ -3,13 +3,17 @@ $server = $_SERVER['DOCUMENT_ROOT'];
 
 require_once $server."./Database.php";
  
+
+
+
+ 
 class Populate {
     public static function populate() {
         Database::run_queries(
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
                 "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
-                , organization, ipayment, cash, visa, instapay,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes;",
+                , organization, ipayment, cash, visa, instapay,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments;",
                 "SET FOREIGN_KEY_CHECKS = 1;",
  
                 // Create Users Table
@@ -113,6 +117,15 @@ class Populate {
                     type_name ENUM('Money', 'Books', 'Clothes') NOT NULL
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
+                "CREATE TABLE VolunteerTaskAssignments (
+                    volunteerId INT NOT NULL,
+                    taskId INT NOT NULL,
+                    assignedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (volunteerId, taskId),
+                    FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE,
+                    FOREIGN KEY (taskId) REFERENCES Tasks(id) ON DELETE CASCADE
+    );",
+
                 // Insert DonationTypes (Money, Books, Clothes)
                 "INSERT INTO DonationTypes (type_name) VALUES
                     ('Money'),
@@ -134,6 +147,52 @@ class Populate {
                 // Insert Money Donation
                 "INSERT INTO Money (donation_type_id, donation_management_id, amount, currency, date_donated) VALUES
                     (1, 1, 1000.00, 'USD', '2024-11-01 12:00:00');",
+
+
+                // Create Payments Table to Reference Payment Types
+                "CREATE TABLE Payments (
+                    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+                    donor_id INT,
+                    money_id INT,
+                    amount DECIMAL(10, 2) NOT NULL,
+                    payment_method ENUM('Cash', 'Visa', 'Instapay') NOT NULL,
+                    FOREIGN KEY (donor_id) REFERENCES Donor(id) ON DELETE CASCADE,
+                    FOREIGN KEY (money_id) REFERENCES Money(money_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Insert Payments without status
+                "INSERT INTO Payments (donor_id, money_id, amount, payment_method) VALUES
+                    (1, 1, 500.00, 'Cash'),
+                    (1, 1, 200.00, 'Visa'),
+                    (1, 1, 300.00, 'Instapay');",
+                // Create Cash Table (Specific Fields for Cash Payments)
+                "CREATE TABLE Cash (
+                    payment_id INT NOT NULL,
+                    transaction_id VARCHAR(100) UNIQUE,
+                    FOREIGN KEY (payment_id) REFERENCES Payments(payment_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create Visa Table (Specific Fields for Visa Payments)
+                "CREATE TABLE Visa (
+                    payment_id INT NOT NULL,
+                    transaction_number VARCHAR(100) UNIQUE,
+                    card_number VARCHAR(50),
+                    FOREIGN KEY (payment_id) REFERENCES Payments(payment_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Create Instapay Table (Specific Fields for Instapay Payments)
+                "CREATE TABLE Instapay (
+                    payment_id INT NOT NULL,
+                    transaction_reference VARCHAR(100) UNIQUE,
+                    account_number VARCHAR(50),
+                    FOREIGN KEY (payment_id) REFERENCES Payments(payment_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Insert into specific payment tables
+                "INSERT INTO Cash (payment_id, transaction_id) VALUES
+                    (1, 'CASH12345');",
+                
+                "INSERT INTO Visa (payment_id, transaction_number, card_number) VALUES
+                    (2, 'VISA67890', '1234-5678-9876-5432');",
+                
+                "INSERT INTO Instapay (payment_id, transaction_reference, account_number) VALUES
+                    (3, 'INSTA54321', '1234567890');",  
  
                 // Create Books Table (Child Table)
                 "CREATE TABLE Books (
@@ -236,6 +295,7 @@ class Populate {
                     foodQuantity INT,
                     foodType VARCHAR(255),
                     foodBankLocation VARCHAR(255),
+                    AccessLevel INT DEFAULT 0,
                     event_type_id INT,
                     FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
                     FOREIGN KEY (eventId) REFERENCES Event(eventId));",                   
@@ -254,9 +314,9 @@ class Populate {
                     "CREATE TABLE EducationalCenterEvent (
                             id INT AUTO_INCREMENT PRIMARY KEY,
                             eventId INT,
-                            targetGroup VARCHAR(255),
                             numberOfCenters INT,
                             centerLocation VARCHAR(255),
+                            AccessLevel INT DEFAULT 0,
                             event_type_id INT,
                             FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
                             FOREIGN KEY (eventId) REFERENCES Event(eventId));",                        
@@ -277,32 +337,32 @@ class Populate {
                         FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
                     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
  
+                   
                     // Insert a Volunteer association with the Event
-                    "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
-                        (1, 1);",
+                    // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
+                    //     (1, 1);",
 
 // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
 // (1, 1);",
-//   "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets) VALUES
-//   ('Charity Gala', '2024-12-01', (SELECT addressId FROM Address LIMIT 1), 100, 50),
-//   ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75),
-//   ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100),
-//   ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125),
-//   ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40),
-//   ('Community Cleanup', '2024-12-25', (SELECT addressId FROM Address LIMIT 1), 50, 25),
-//   ('Holiday Celebration', '2024-12-30', (SELECT addressId FROM Address LIMIT 1), 300, 150),
-//   ('Health Screening Camp', '2025-01-05', (SELECT addressId FROM Address LIMIT 1), 100, 50),
-//   ('Art Workshop for Kids', '2025-01-10', (SELECT addressId FROM Address LIMIT 1), 120, 60),
-//   ('Senior Assistance Program', '2025-01-15', (SELECT addressId FROM Address LIMIT 1), 90, 45);",
+  "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets,event_type_id ) VALUES
+  ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75,1 ),
+  ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100, 3),
+  ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125, 2),
+  ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40, 1);",
 
 
-
-
+"INSERT INTO Tasks (name, description, requiredSkill, timeSlot, location)
+VALUES 
+('Donation Sorting', 'Organizing and categorizing donated items such as clothes, toys, and food', 'Organization Skills', '9:00 AM - 12:00 PM', 'Charity Warehouse'),
+('Volunteer Coordination', 'Supervising and guiding volunteers during a food drive', 'Leadership', '10:00 AM - 2:00 PM', 'Community Center'),
+('Event Promotion', 'Distributing flyers and promoting the charity event on social media', 'Marketing Skills', '10:00 AM - 1:00 PM', 'Office'),
+('Food Packing', 'Packing food items for distribution to families in need', 'Attention to Detail', '1:00 PM - 4:00 PM', 'Charity Kitchen'),
+('Cleanup Crew', 'Cleaning up after the charity gala event', 'Teamwork', '8:00 PM - 9:30 PM', 'Banquet Hall');"
 
 
 
             ]
-        );
-    }
+);
+}
 }
 ?>

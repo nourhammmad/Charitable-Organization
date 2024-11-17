@@ -1,5 +1,5 @@
 <?php
-require_once "../Database.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./Database.php";
 
 class TaskModel {
 
@@ -27,7 +27,15 @@ class TaskModel {
                   WHERE id = '$id'";
         return Database::run_query(query: $query);
     }
-
+    public static function getLastInsertTasksId() {
+        $query = "SELECT `id` FROM Tasks ORDER BY `id` DESC LIMIT 1;";
+        $res = Database::run_select_query(query: $query);
+        if ($res && $res->num_rows > 0) {
+            $row = $res->fetch_assoc();
+            return $row['id'];  
+        }
+        return null;  
+    }
     // Delete a task
     public static function deleteTask($id): bool {
         $query = "DELETE FROM Tasks WHERE id = '$id'";
