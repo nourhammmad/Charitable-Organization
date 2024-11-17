@@ -103,6 +103,7 @@ function handleCreateEvent() {
     $familyShelter = ($service === 'familyShelter');
     $educationalCenter = ($service === 'educationalCenter');
     $foodBank = ($service === 'foodBank');
+    //public static function createFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $signLangInterpret, $wheelchair) {
 
     // Call the method to create the event, passing in the necessary parameters
     $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
@@ -110,9 +111,6 @@ function handleCreateEvent() {
         $date,
         $capacity,
         $tickets,
-        $familyShelter,
-        $educationalCenter,
-        $foodBank,
         $signLangInterpret,
         $wheelchair
     );

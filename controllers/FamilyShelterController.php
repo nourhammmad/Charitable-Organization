@@ -7,10 +7,12 @@ require_once $_SERVER['DOCUMENT_ROOT']."./models/EventModel.php"; // Include the
 
 class FamilyShelterController {
 
-    public static function createFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $familyShelter, $educationalCenter, $foodBank, $signLangInterpret, $wheelchair) {
-        
+    public static function createFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $signLangInterpret, $wheelchair) {
+        $eventName="Family Shelter";
+        $capacity=23;
+
         // Step 1: Create the base FamilyShelter instance
-        $familyShelterService = new FamilyShelter(10, 5, 'Shelter Location'); // Example values for family shelter
+        $familyShelterService = new FamilyShelter($EventAttendanceCapacity, $capacity, 'Shelter Location'); // Example values for family shelter
 
         // Step 2: Apply decorators based on accessibility features
         if ($signLangInterpret) {
@@ -22,9 +24,10 @@ class FamilyShelterController {
 
         // Step 3: Get the final access level after decorators are applied
         $finalAccessLvl = $familyShelterService->showAccessLevel();
-        
+        $numberOfShelters=12;
+        $shelterLocation="adsjnk";
         // Step 4: Create the event in the EventModel
-        $isEventCreated = EventModel::CreateFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $familyShelter, $educationalCenter, $foodBank, $finalAccessLvl);
+        $isEventCreated = EventModel::CreateFamilyShelterEvent($eventName, $date,$capacity, $tickets, $numberOfShelters,$shelterLocation,$EventAttendanceCapacity ,$finalAccessLvl);
         
         return $isEventCreated;
     }
