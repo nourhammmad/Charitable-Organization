@@ -17,6 +17,16 @@ if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
         case 'clothes':
             $donationStrategy = new ClothesDonation($_POST['type'],$_POST['size'],$_POST['color'],$_POST['quantity']);
             break;
+        case 'money':
+            if($_POST['paymentType']='cash')
+             $donationStrategy = new FeesDonation($_POST['amount'],new cash($_POST['amount'],$_POST['currency']));
+
+            else if($_POST['paymentType']='visa')
+             $donationStrategy = new FeesDonation($_POST['amount'],new visa($_POST['amount'],$_POST['cardNumber'],$_POST['currency']));
+
+            // else if($_POST['paymentType']='instapay')
+            //  $donationStrategy = new FeesDonation($_POST['amount'],new cash($_POST['amount'],$_POST['currency']));
+            break;
         default:
             echo "Invalid donation type.";
             exit;

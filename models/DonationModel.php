@@ -1,6 +1,5 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./Database.php";
+require_once "../Database.php";
 
 class DonationModel {
 
@@ -46,7 +45,7 @@ class DonationModel {
 
         // Insert the Money donation record
         $queryMoney = "INSERT INTO Money (donation_management_id, amount, currency, date_donated) 
-                       VALUES ('$donationManagementId', '$amount', '$currency', NOW())";
+                       VALUES ($donationManagementId, '$amount', '$currency', NOW())";
         $result = Database::run_query(query: $queryMoney);
 
         if (!$result) {
@@ -55,6 +54,7 @@ class DonationModel {
 
         // Get the last inserted money_id
         $moneyId = Database::get_last_inserted_id();
+        echo "payment method :: ". $paymentMethod."\n";
 
         // Insert payment record into Payments table
         $queryPayment = "INSERT INTO Payments (donor_id, money_id, amount, payment_method) 
@@ -67,12 +67,13 @@ class DonationModel {
 
         // Based on the payment method, insert additional details into the corresponding payment table
         switch ($paymentMethod) {
-            case 'Cash':
-                $transactionId = $paymentDetails['transaction_id'];
+            case 'cash':
+                $transactionId = $paymentDetails['transaction_number'];
                 $queryCash = "INSERT INTO Cash (payment_id, transaction_id) 
                               VALUES ((SELECT payment_id FROM Payments WHERE money_id = '$moneyId'), '$transactionId')";
                 return Database::run_query(query: $queryCash);
-            case 'Visa':
+            case 'visa':
+                echo "in visa \n";
                 $transactionNumber = $paymentDetails['transaction_number'];
                 $cardNumber = $paymentDetails['card_number'];
                 $queryVisa = "INSERT INTO Visa (payment_id, transaction_number, card_number) 

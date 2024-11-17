@@ -1,9 +1,8 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./models/VolunteerEventAssignmentModel.php";
-require_once $server."./models/VolunteerModel.php";
-require_once $server."./controllers/VolunteerCotroller.php";
-require_once $server."./Services/Volunteer.php";
+require_once "./models/VolunteerEventAssignementModel.php";
+require_once "./models/VolunteerModel.php";
+require_once "./controllers/VolunteerCotroller.php.php";
+require_once "Services/Volunteer.php";
 
 
 
@@ -11,23 +10,23 @@ class VolunteeEventAssignmentController {
 
     // Method to fetch and display all available events
     public function getAvailableEvents() {
-        // Fetch events from the model
+        // Fetch all events using the model
         $events = VolunteerEventAssignementModel::fetchAllEvents();
-    
-        // Ensure fetchAllEvents() is returning an array and not a string
-        if (is_array($events) && !empty($events)) {
+        
+        if (!empty($events)) {
             return $events;
         } else {
-            return [];  // Return an empty array if no events
+            return "No available events at the moment.";
         }
     }
-    
 
     // Method to assign a volunteer to a specific event
     public function assignVolunteer($volunteerId, $eventId) {
-        // Ensure your database model method returns a success or failure message
-        $result = VolunteerEventAssignementModel::assignVolunteerToEvent($volunteerId, $eventId);
+        // Initialize the volunteer with their ID
+      
+        // Call the model to assign the volunteer to the event
+        $result = VolunteerEventAssignementModel::assignVolunteerToEvent($volunteer, $eventId);
         
-        // Return a success or failure message
-        return $result ? "You have successfully applied for the event." : "Failed to apply for the event.";}
+        return $result;
+    }
 }

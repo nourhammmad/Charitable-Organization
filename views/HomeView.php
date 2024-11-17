@@ -158,6 +158,35 @@
                     <input type="text" id="clothesType" placeholder="Type of Clothes (e.g., Shirt, Jacket)" required>
                     <input type="text" id="clothesColor" placeholder="Color" required>
                 </div>
+                <div id="moneyFields" style="display: none;">
+                    <select id="paymentType" onchange="updatePaymentFields()">
+                        <option value="" disabled selected>Select Payment Method</option>
+                        <option value="cash">Cash</option>
+                        <option value="visa">Visa</option>
+                        <option value="instapay">Instapay</option>
+                    </select>
+                    <div id="cashFields" style="display: none;">
+                        <input type="number" id="cashAmount" placeholder="Amount" required>
+                        <input type="text" id="cashCurrency" placeholder="Currency" required>
+                    </div>
+                    <div id="visaFields" style="display: none;">
+                        <input type="number" id="visaAmount" placeholder="Amount" required>
+                        <input type="text"   id="cardNumber" placeholder="Card Number" required>
+                        <input type="text"   id="visaCurrency" placeholder="Currency" required>
+                        <!-- <input type="text" id="cardHolderName" placeholder="Card Holder Name" required>
+                        <input type="text" id="expiryDate" placeholder="Expiry Date (MM/YY)" required>
+                        <input type="number" id="cvv" placeholder="CVV" required> -->
+                    </div>
+                    <div id="instapayFields" style="display: none;">
+                        <input type="number" id="instapayAmount" placeholder="Amount" required>
+                        <input type="text" id="accountID" placeholder="Account ID" required>
+                        <input type="text" id="accountHolderName" placeholder="Account Holder Name" required>
+                        <input type="number" id="balance" placeholder="Balance" required>
+                        <input type="number" id="transactionFee" placeholder="Transaction Fee" required>
+                    </div>
+                </div>
+
+
                 <button type="button" onclick="submitDonationForm()">Donate</button>
             </form>
         </div>
@@ -189,17 +218,30 @@
                 formData.append("author", document.getElementById("author").value);
                 formData.append("publicationYear", document.getElementById("publicationYear").value);
                 formData.append("quantity", document.getElementById("quantity").value);
-            } else if (selectedType === "money") {
-                formData.append("amount", document.getElementById("amount").value);
-            } else if (selectedType === "clothes") {
+            } 
+            else if (selectedType === "money") {
+        
+                if (document.getElementById("paymentType").value === "cash") {
+                formData.append("paymentType", "cash");
+                formData.append("amount", document.getElementById("cashAmount").value);
+                formData.append("currency", document.getElementById("cashCurrency").value);
+                }
+                else if (document.getElementById("paymentType").value === "visa") {
+                formData.append("paymentType", "visa");
+                formData.append("amount", document.getElementById("visaAmount").value);
+                formData.append("currency", document.getElementById("visaCurrency").value);
+                formData.append("cardNumber", document.getElementById("cardNumber").value);
+                }
+                //add instapay
+
+            } 
+            else if (selectedType === "clothes") {
                 formData.append("size", document.getElementById("size").value);
                 formData.append("quantity", document.getElementById("clothesQuantity").value);
                 formData.append("type", document.getElementById("clothesType").value);
                 formData.append("color", document.getElementById("clothesColor").value);
             }
 
-            console.log("Selected Type:", selectedType);
-            console.log("Form Data:", formData.toString());
 
             fetch("../controllers/DonationController.php", {
                 method: 'POST',

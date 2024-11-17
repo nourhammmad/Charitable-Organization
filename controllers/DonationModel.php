@@ -1,6 +1,5 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./Database.php";
+require_once "./Database.php";
 
 class DonationModel {
 
@@ -103,8 +102,7 @@ class DonationModel {
         $query = "SELECT * FROM DonationItem di
                   JOIN DonationTypes dt ON di.donation_type_id = dt.donation_type_id
                   WHERE di.donation_type_id = $donationTypeId";
-        $result= Database::run_select_query(query: $query);
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return Database::run_select_query(query: $query);
     }
 
     // Get all donations for a specific donation management
