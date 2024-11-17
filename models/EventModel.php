@@ -2,8 +2,8 @@
 
 <?php
 
-require_once "D:/SDP/project/Charitable-Organization/Database.php";
-require_once "D:/SDP/project/Charitable-Organization/Services/IService.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/IService.php";
 Database::getInstance();
 try {
     $db =  Database::getInstance();

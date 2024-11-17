@@ -1,5 +1,5 @@
 <?php
-require_once "D:/SDP/project/Charitable-Organization/Services/Donation.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/Donation.php";
 
 
 
@@ -21,7 +21,7 @@ class Donor {
 
     public function donate($donarID) {
         if ($this->Dt) {
-            if($this->Dt->donate()) {
+            if($this->Dt->donate($this->id)) {
                 $des=(String)DonationModel::getDonationDescription();
                 DonarModel::addDescription($des,$donarID);
                 return true;

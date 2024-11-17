@@ -1,6 +1,6 @@
 <?php
-require_once "D:/SDP/project/Charitable-Organization/models/VolunteerModel.php";
-require_once "D:/SDP/project/Charitable-Organization/controllers/VolunteeEventAssignmentController.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/VolunteerModel.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/controllers/VolunteeEventAssignmentController.php";
 
 class VolunteerEventHandlerController {
     private $volunteerModel;

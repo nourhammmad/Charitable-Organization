@@ -3,6 +3,7 @@
 require_once "../Services/Donor.php";
 require_once "../Services/DonationProvider.php";
 require_once "../models/DonorModel.php";
+require_once "F:\senior 2\Design Patterns\project\Charitable-Organization\Services\paymentMethods.php";
 
 
 if (isset($_POST['donorId']) && isset($_POST['donationType'])) {

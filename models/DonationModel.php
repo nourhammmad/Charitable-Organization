@@ -55,7 +55,7 @@ class DonationModel {
 
         // Get the last inserted money_id
         $moneyId = Database::get_last_inserted_id();
-        echo "payment method :: ". $paymentMethod."\n";
+
 
         // Insert payment record into Payments table
         $queryPayment = "INSERT INTO Payments (donor_id, money_id, amount, payment_method) 
