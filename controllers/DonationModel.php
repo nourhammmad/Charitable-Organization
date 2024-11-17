@@ -1,38 +1,24 @@
 <?php
-require_once "../Database.php";
+require_once "./Database.php";
 
 class DonationModel {
 
-
+    // Create a donation record (includes Money, Books, Clothes)
     private static function insertDonationItem($donationManagementId, $donationTypeId, $descriptionn): bool {
-        if (Database::get_connection()) {
-            $descriptionn = mysqli_real_escape_string(Database::get_connection(), $descriptionn);
+        // Remove "date_donated=NULL" and use NOW() for current timestamp
+        $descriptionn = mysqli_real_escape_string(Database::get_connection(), $descriptionn);
 
-            $queryDonationItem = "INSERT INTO DonationItem (donation_management_id, donation_type_id, description, date_donated)
-                                VALUES ('$donationManagementId', '$donationTypeId', '$descriptionn', NOW())";
-            $result = Database::run_query(query: $queryDonationItem);
-            
-            // if (!$result) {
-            //     echo "Donation Type ID: $donationTypeId";
+        $queryDonationItem = "INSERT INTO DonationItem (donation_management_id, donation_type_id, description, date_donated)
+                              VALUES ('$donationManagementId', '$donationTypeId', '$descriptionn', NOW())";
+        $result = Database::run_query(query: $queryDonationItem);
+        echo "$descriptionn";
+        
+        if (!$result) {
+            // Log or print error
+            echo "Donation Type ID: $donationTypeId";
 
-            // }
-            return $result;
         }
-        else{
-            echo "no connection";
-            return false;
-        }
-
-    }
-    public static function getDonationDescription(){
-        $query="SELECT description FROM DonationItem ORDER BY date_donated DESC LIMIT 1";
-        $result= Database::run_select_query($query);
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            return $row['description'];
-        } else {
-            return null;
-        }
+        return $result;
     }
     
 
@@ -45,7 +31,7 @@ class DonationModel {
 
         // Insert the Money donation record
         $queryMoney = "INSERT INTO Money (donation_management_id, amount, currency, date_donated) 
-                       VALUES ($donationManagementId, '$amount', '$currency', NOW())";
+                       VALUES ('$donationManagementId', '$amount', '$currency', NOW())";
         $result = Database::run_query(query: $queryMoney);
 
         if (!$result) {
@@ -54,7 +40,6 @@ class DonationModel {
 
         // Get the last inserted money_id
         $moneyId = Database::get_last_inserted_id();
-        echo "payment method :: ". $paymentMethod."\n";
 
         // Insert payment record into Payments table
         $queryPayment = "INSERT INTO Payments (donor_id, money_id, amount, payment_method) 
@@ -67,13 +52,12 @@ class DonationModel {
 
         // Based on the payment method, insert additional details into the corresponding payment table
         switch ($paymentMethod) {
-            case 'cash':
-                $transactionId = $paymentDetails['transaction_number'];
+            case 'Cash':
+                $transactionId = $paymentDetails['transaction_id'];
                 $queryCash = "INSERT INTO Cash (payment_id, transaction_id) 
                               VALUES ((SELECT payment_id FROM Payments WHERE money_id = '$moneyId'), '$transactionId')";
                 return Database::run_query(query: $queryCash);
-            case 'visa':
-                echo "in visa \n";
+            case 'Visa':
                 $transactionNumber = $paymentDetails['transaction_number'];
                 $cardNumber = $paymentDetails['card_number'];
                 $queryVisa = "INSERT INTO Visa (payment_id, transaction_number, card_number) 
@@ -89,13 +73,14 @@ class DonationModel {
                 return false;
         }
     }
+//    (1, 2, '10 books including The Great Gatsby', '2024-11-01 12:00:00'),
 
 
 
     // Function for book donations
     public static function createBookDonation($donationTypeId=2,$donationManagementId, $bookTitle, $author, $publicationYear, $quantity): bool { 
         $description = "$quantity copies of '$bookTitle' by $author";
-        self::insertDonationItem($donationManagementId, 2, $description);  
+        self::insertDonationItem($donationManagementId, 2, $description);  // DonationType for Books is 2
     
         $queryBooks = "INSERT INTO Books (donation_type_id,donation_management_id, book_title, author, publication_year, quantity, date_donated) 
                        VALUES ('$donationTypeId','$donationManagementId', '$bookTitle', '$author', '$publicationYear', '$quantity', NOW())";

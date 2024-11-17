@@ -1,5 +1,6 @@
 <?php
 
+require_once "./models/UserModel.php";
 
 abstract class User {
     protected $userid;

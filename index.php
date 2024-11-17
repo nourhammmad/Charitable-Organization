@@ -12,13 +12,13 @@ $db = Database::getInstance();
 Populate::populate();
 
 
-if (Database::get_connection()) {
-    $controller = new LoginController();
- //  $controller = new OrganizationController('My Charitable Organization');
- $controller->handleRequest();
-} else {
-    echo "Failed to connect to the database.";
-}
+// if (Database::get_connection()) {
+//     $controller = new LoginController();
+//  //  $controller = new OrganizationController('My Charitable Organization');
+//  $controller->handleRequest();
+// } else {
+//     echo "Failed to connect to the database.";
+// }
 
 // $registerUser = new RegisterUser("volunteer@example.com", "VolunteerName", "Volunteer");
 // $registerUser->signUp();

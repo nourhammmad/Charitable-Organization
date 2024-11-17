@@ -146,7 +146,11 @@
                     <input type="number" id="publicationYear" placeholder="Publication Year" required>
                     <input type="number" id="quantity" placeholder="Quantity" required>
                 </div>
-        
+                <!-- Money fields -->
+                <div id="moneyFields" style="display: none;">
+                    <input type="number" id="amount" placeholder="Amount" required>
+                </div>
+                <!-- Clothes fields -->
                <!-- Clothes fields -->
                 <div id="clothesFields" style="display: none;">
                     <input type="text" id="size" placeholder="Size (e.g., M, L)" required>
@@ -201,13 +205,6 @@
 
         function closeModal() {
             document.getElementById("donationModal").style.display = "none";
-        }
-
-        function updatePaymentFields() {
-            const paymentType = document.getElementById("paymentType").value;
-            document.getElementById("cashFields").style.display = paymentType === "cash" ? "block" : "none";
-            document.getElementById("visaFields").style.display = paymentType === "visa" ? "block" : "none";
-            document.getElementById("instapayFields").style.display = paymentType === "instapay" ? "block" : "none";
         }
 
         function submitDonationForm() {

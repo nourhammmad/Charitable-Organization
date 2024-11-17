@@ -1,142 +1,103 @@
 <?php
+$server = $_SERVER['DOCUMENT_ROOT'];
+require_once $server . './models/OrganizationModel.php';
+require_once $server . './models/EventModel.php';
+require_once $server . './controllers/DonationManagement.php';
 
-// require_once $_SERVER['DOCUMENT_ROOT'].'./models/OrganizationModel.php';
-// require_once $_SERVER['DOCUMENT_ROOT'].'./models/EventModel.php';
-// require_once $_SERVER['DOCUMENT_ROOT'].'./controllers/DonationManagement.php';
+ class OrganizationController {
 
-// require_once $_SERVER['DOCUMENT_ROOT']."./models/OrganizationModel.php";
-// require_once  $_SERVER['DOCUMENT_ROOT']."./controllers/FamilyShelterController.php";
+    public static function createEvent($date, $address, $capacity, $tickets) {
+        $eventId = EventModel::createEvent($date, $capacity, $tickets);
 
+        // Check if the event ID was successfully returned
+        if ($eventId) {
+            // Retrieve the event details using the ID
+            $event = EventModel::getEventById($eventId);
 
+            // Check if event details were retrieved
+            if ($event && is_array($event)) {
+                // Event was created and retrieved successfully, pass the event details to the view
+                // We don't need to echo anything here, we'll handle passing the data directly
+                $server = $_SERVER['DOCUMENT_ROOT'];
+                require_once $server . "./views/yay.php"; // Ensure this view handles the event creation info.
+            } else {
+                echo "Error retrieving event details.";
+            }
+        } else {
+            echo "Event creation failed.";
+        }
+    }
 
-// class OrganizationController {
+    public function handleRequest() {
+        // Start the session at the beginning of the method (if not done already)
+    
+     
+    
+        // Initialize default values for descriptions to avoid undefined variable warnings
+        $bookDescription = isset($_POST['book_description']) ? $_POST['book_description'] : '';
+        $clothesDescription = isset($_POST['clothes_description']) ? $_POST['clothes_description'] : '';
+        $moneyDescription = isset($_POST['money_description']) ? $_POST['money_description'] : '';
+    
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // Handle different actions based on the POST request
+            if (isset($_POST['get_org'])) {
+                OrganizationController::showOrg();
+            } elseif (isset($_POST['get_donors'])) {
+                OrganizationController::showDonors();
+            } elseif (isset($_POST['track_books']) || isset($_POST['track_clothes']) || isset($_POST['track_money'])) {
+                DonationManagement::handelTrack();
+            } elseif (isset($_POST['create_event'])) {
+                // Handle event creation
+                $date = $_POST['event_date'];
+                $address = $_POST['event_address'];
+                $capacity = $_POST['event_capacity'];
+                $tickets = $_POST['event_tickets'];
+    
+                // Create the event
+                $this->createEvent($date, $capacity, $tickets);
+            }
+        }
+    
+        // After handling the request, pass the variables to the view
+        $server = $_SERVER['DOCUMENT_ROOT'];
+        require_once $server . "./views/testOrganization.php";
+    }
+    
+    // Show organization data
+    public function showOrg() {
+        $result = OrganizationModel::getAllOrganizations();
+        if ($result) {
+            $organization = $result->fetch_assoc(); // Fetch organization data
+            // Show the organization data in the view
+            require_once "./views/yay.php";
+            exit();
+        } else {
+            echo "No organization found.";
+        }
+    }
 
-//     public static function createEvent($date, $address, $capacity, $tickets) {
-//         $eventId = EventModel::createEvent($date, $capacity, $tickets);
+    // Show the donors data
+    public function showDonors() {
+        $donors = OrganizationModel::getDonors();
 
-//         if ($eventId) {
-//             $event = EventModel::getEventById($eventId);
-//             if ($event && is_array($event)) {
-//                 echo "mazboot";
+        if ($donors) {
+            $donorsData = [];
+            while ($donor = $donors->fetch_assoc()) {
+                $donorsData[] = $donor; // Store all donors in an array
+            }
+            // Pass the donors data to the view
+            $server = $_SERVER['DOCUMENT_ROOT'];
+            require_once $server . "./views/yay.php";
+        } else {
+            echo "No donors found.";
+        }
+    }
 
-//             } else {
-//                 echo "Error retrieving event details.";
-//             }
-//         } else {
-//             echo "Event creation failed.";
-//         }
-//     }
-// }
-
-
-
-// if (isset($_GET['action'])) {
-
-//     $action = $_GET['action'];
-// echo $action;
-//     switch ($action) {
-//         case 'getOrganizations':
-//             handleGetOrganizations();
-//             break;
-
-//         case 'getDonors':
-//             handleGetDonors();
-//             break;
-
-//         case 'createEvent':
-//             handleCreateEvent();
-//             break;
-
-//         case 'trackBooks':
-//             handleBooks();
-//             break;
-
-//         case 'trackClothes':
-//             handleClothes();
-//             break;
-
-//         case 'trackMoney':
-//             handleMoney();
-//             break;
-
-//         default:
-//             echo "Invalid action.";
-//             break;
-//     }
-// }
-
-// function handleGetOrganizations() {
-//     $result = OrganizationModel::getAllOrganizations();
-//     if ($result && $result->num_rows > 0) {
-//         echo json_encode($result->fetch_all(MYSQLI_ASSOC));
-//     } else {
-//         echo "No organizations found.";
-//     }
-// }
-
-// function handleGetDonors() {
-//     $result = OrganizationModel::getDonors();
-//     if ($result && $result->num_rows > 0) {
-//         echo json_encode($result->fetch_all(MYSQLI_ASSOC));
-//     } else {
-//         echo "No donors found.";
-//     }
-// }
-
-// function handleCreateEvent() {
-//     // Sanitize and check POST values
-//     $date = $_POST['date'] ?? null;
-//     $address = $_POST['address'] ?? null;
-//     $capacity = $_POST['capacity'] ?? null;
-//     $tickets = $_POST['tickets'] ?? null;
-//     $service = $_POST['service'] ?? null;
-//     $signLangInterpret = isset($_POST['signLang']) ? true : false;
-//     $wheelchair = isset($_POST['wheelchair']) ? true : false;
-
-//     // Validate required fields
-//     if (!$date || !$address || !$capacity || !$tickets || !$service) {
-//         echo "Missing required fields: date, address, capacity, tickets, and service are mandatory.";
-//         return;
-//     }
-
-//     // Determine the service type
-//     $familyShelter = ($service === 'familyShelter');
-//     $educationalCenter = ($service === 'educationalCenter');
-//     $foodBank = ($service === 'foodBank');
-//     //public static function createFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $signLangInterpret, $wheelchair) {
-
-//     // Call the method to create the event, passing in the necessary parameters
-//     $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
-//         'Family Shelter Event', // Example event name
-//         $date,
-//         $capacity,
-//         $tickets,
-//         $signLangInterpret,
-//         $wheelchair
-//     );
-//     if ($isEventCreated) {
-//         echo "Event created successfully.";
-//     } else {
-//         echo "Failed to create event. Please try again.";
-//     }
-
-// }
-
-// function handleBooks() {
-//    // echo"ana f handle books fel cont ";
-//     DonationManagement::handelTrack(2);
-//     echo "Books tracked successfully.";
-//     exit();
-// }
-
-// function handleClothes() {
-//     DonationManagement::handelTrack(3);
-//     echo "Clothes tracked successfully.";
-// }
-
-// function handleMoney() {
-//     DonationManagement::handelTrack(1);
-//     echo "Money tracked successfully.";
-// }
-
+    // Static method to get all donors
+    public static function getDonors() {
+        $query = "SELECT * FROM Donor";
+        $res = Database::run_select_query(query: $query);
+        return $res;
+    }
+}
 ?>

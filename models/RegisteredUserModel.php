@@ -1,6 +1,6 @@
 <?php
 
-$server=$_SERVER['DOCUMENT_ROOT'];
+
 require_once "./Database.php";
 require_once "./models/UserModel.php";
 

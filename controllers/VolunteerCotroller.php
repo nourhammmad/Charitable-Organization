@@ -1,53 +1,70 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./models/VolunteerModel.php";
-require_once $server."./controllers/VolunteeEventAssignmentController.php";
-// require_once $server."./db-populate.php";
-
-// try {
-//     $db =  Database::getInstance();
-//     Populate::populate();
-// } catch (Exception $e) {
-//     echo "Error initializing Database: " . $e->getMessage();
-//     exit;
-// }
+require_once "./models/VolunteerModel.php";
+require_once "./controllers/VolunteeEventAssignmentController.php.php";
+require_once "./controllers/VolunteerTaskAssignmentController.php";
 
 
 class VolunteerCotroller {
     private $volunteerModel;
     private $assignEventController;
+    private $assignTaskController ;
 
     // Initialize with a VolunteerModel instance and create an assignment controller instance
     public function __construct($volunteerId) {
         $this->volunteerModel = VolunteerModel::getVolunteerById($volunteerId);
         $this->assignEventController = new VolunteeEventAssignmentController();
-       
-    }
-    public function getAssignEventController() {
-        return $this->assignEventController;
+        $this->assignTaskController = new VolunteerTaskAssignmentController();
     }
 
     public function displayAvailableEvents() {
-        // Ensure $this->assignEventController->getAvailableEvents() is returning an array
         $events = $this->assignEventController->getAvailableEvents();
         
-        // Check if events are returned and not an error message
         if (is_array($events) && !empty($events)) {
-            return $events;
+            echo "Available Events:<br>";
+            foreach ($events as $event) {
+                // Use getter methods instead of array keys
+                echo "Event ID: " . $event->getEventId() . ", Date: " . $event->getDate() ."<br>";
+            }
         } else {
-            return [];  // Return an empty array if no events found
+            echo "No available events at the moment.";
+        }
+    }
+    public function displayAllTasks() {
+        // Fetch all tasks using the TaskModel
+        $tasks = $this ->assignTaskController->viewAllTasks();  // Call the method from TaskModel
+    
+        // Check if tasks are available and display them
+        if (is_array($tasks) && !empty($tasks)) {
+            echo "Available Tasks:<br>";
+            foreach ($tasks as $task) {
+                // Display task details using array keys
+                echo "Task ID: " . $task['id'] . ", Name: " . $task['name'] . ", Required Skill: " . $task['requiredSkill'] . "<br>";
+            }
+        } else {
+            echo "No tasks available at the moment.";
         }
     }
     
+    
+    
+    
+
     public function applyForEvent($eventId) {
         if ($this->volunteerModel) {
-            $result = $this->assignEventController->assignVolunteer((int)$this->volunteerModel->getId(), $eventId);
-            echo $result;  // Send the result back (e.g., success or failure message)
+            $result = $this->assignEventController->assignVolunteer($this->volunteerModel->getId(), $eventId);
+            echo $result;
         } else {
-            echo "Volunteer not found.";  // Send an error if volunteer doesn't exist
+            echo "Volunteer not found.";
         }
     }
-    
+    public function applyForTask($taskId) {
+        if ($this->volunteerModel) {
+            $result = VolunteerTaskAssignmentController::assignTaskToUser($taskId, $this->volunteerModel->getId());
+            echo $result;
+        } else {
+            echo "Volunteer not found.";
+        }
+    }
 
     public function updateVolunteerSkills($skills) {
         try {
@@ -62,6 +79,4 @@ class VolunteerCotroller {
         $result = VolunteerModel::addDescription($description, $this->volunteerModel->getId());
         echo $result ? "Description added successfully!" : "Failed to add description.";
     }
-    
 }
-//$volu=new VolunteerCotroller(1);

@@ -3,7 +3,6 @@
 require_once "../Services/Donor.php";
 require_once "../Services/DonationProvider.php";
 require_once "../models/DonorModel.php";
-require_once "../Services/paymentMethods.php";
 
 
 if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
@@ -37,7 +36,7 @@ if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
 
         if($donor){
             $donor->setDonationStrategy($donationStrategy);
-            if ($donor->donate()) {
+            if ($donor->donate($donorId)) {
                 echo ucfirst($donationType) . " donation successful!";
             } 
             else {
