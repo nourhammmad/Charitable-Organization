@@ -17,7 +17,7 @@ class DonationDetails {
         }
     }
 
-    // Method to handle the request and return the response
+  
     function show() {
         if (isset($_POST['getid'])) {
             $id = $this->getUserID(); // Get the user ID

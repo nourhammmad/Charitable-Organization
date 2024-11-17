@@ -12,7 +12,7 @@ require_once  "D:/SDP/project/Charitable-Organization/controllers/FoodBankContro
 
 
 
- class OrganizationController {
+class OrganizationController {
 
 //     public static function createEvent($name,$date, $address, $capacity, $tickets, $typeid) {
 //         $eventId = EventModel::createEvent($date, $capacity, $tickets);

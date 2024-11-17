@@ -2,13 +2,13 @@
 
 session_start();
 
-require_once "./models/UserModel.php";
-require_once "./models/RegisteredUserModel.php";
-require_once "./Services/Guest.php";
-require_once "./Services/RegisterUser.php";
-require_once "./Database.php";
-require_once "./Services/ContextAuthenticator.php";
-require_once "./controllers/OrganizationController.php";
+require_once "D:/SDP/project/Charitable-Organization/models/UserModel.php";
+require_once "D:/SDP/project/Charitable-Organization/models/RegisteredUserModel.php";
+require_once "D:/SDP/project/Charitable-Organization/Services/Guest.php";
+require_once "D:/SDP/project/Charitable-Organization/Services/RegisterUser.php";
+require_once "D:/SDP/project/Charitable-Organization/Database.php";
+require_once "D:/SDP/project/Charitable-Organization/Services/ContextAuthenticator.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/OrganizationController.php";
 
 class LoginController {
 
@@ -37,12 +37,12 @@ class LoginController {
 
         
 
-        require_once "./views/loginView.php";
+        require_once "D:/SDP/project/Charitable-Organization/views/loginView.php";
     }
 
     private function loginorg() {
         
-        require_once "./views/testOrganization.php";
+        require_once "D:/SDP/project/Charitable-Organization/views/testOrganization.php";
          exit(); 
     }
     

@@ -5,27 +5,40 @@
 require_once "D:/SDP/project/Charitable-Organization/Database.php";
 require_once "D:/SDP/project/Charitable-Organization/Services/IService.php";
 Database::getInstance();
+try {
+    $db =  Database::getInstance();
+    //Populate::populate();
+} catch (Exception $e) {
+    echo "Error initializing Database: " . $e->getMessage();
+    exit;
+}
+
 
 class EventModel {
     private $eventId;
+    private $eventName;
     private $date;
     private $addressId;
     private $EventAttendanceCapacity;
     private $tickets;
     private $createdAt;
-
+    private $event_type_id;
+    
+    private $observers=[]; 
     // Constructor
-    public function __construct($eventId, $date, $addressId, $EventAttendanceCapacity, $tickets, $createdAt) {
+    public function __construct($eventId,$eventName,$date, $addressId, $EventAttendanceCapacity, $tickets, $createdAt,$event_type_id) {
         $this->eventId = $eventId;
+        $this->eventName =$eventName;
         $this->date = $date;
         $this->addressId = $addressId;
         $this->EventAttendanceCapacity = $EventAttendanceCapacity;
         $this->tickets = $tickets;
         $this->createdAt = $createdAt;
+        $this->$event_type_id=$event_type_id;
     }
 
     // Create a new event
-    public static function createEvent($date, $EventAttendanceCapacity, $tickets) {
+    public static function createEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $event_type_id) {
         // Ensure the database connection is established
         if (Database::get_connection() === null) {
             echo "No database connection established.";
@@ -36,7 +49,7 @@ class EventModel {
        // echo "Date: $date, Capacity: $EventAttendanceCapacity, Tickets: $tickets<br>";
     
         // Example static addressId (change to dynamic if needed)
-        $addressId = '70ea9c2c-9f01-11ef-a964-1cbfc07800ee';  // Static addressId or dynamically fetched
+        $addressId = 'hkhk';  // Static addressId or dynamically fetched
     
         // Prepare the query to insert the event into the database
         $query = "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets, event_type_id) 
@@ -46,16 +59,15 @@ class EventModel {
     
         // Check if the query executed successfully
         if ($result) {
+            
             // Use the new method to get the last inserted ID
             $lastInsertId = Database::get_last_inserted_id();
-            //echo "Last Inserted ID: " . $lastInsertId . "<br>"; // Debugging: Check the inserted ID
-            
+    
             if ($lastInsertId) {
                 // Return the last inserted ID for further use
                 return $lastInsertId;
             } else {
-                //echo "No valid event ID retrieved.<br>";
-                return false;
+                return false;  // No valid event ID retrieved
             }
         } else {
             return false;  // Event creation failed
@@ -195,6 +207,9 @@ public static function getAllEvents() {
             return false;
         }
     }
+    public function addService(IService $service) {
+        return $service->setEvent($this->eventId);
+    }
     
     public static function getLastInsertedEvent() {
         // Ensure the database connection is established
@@ -229,7 +244,7 @@ public static function getAllEvents() {
     
 
     // Update an event's details
-    public static function updateEvent($eventId, $date, $addressId, $EventAttendanceCapacity, $tickets) {
+    public static function updateEvent($eventId,$eventName ,$date, $addressId, $EventAttendanceCapacity, $tickets) {
         // Ensure the connection is established
         //$db = Database::getInstance();
         if (Database::get_connection() === null) {

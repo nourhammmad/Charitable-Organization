@@ -1,14 +1,15 @@
 <?php
-require_once "./models/RegisteredUserTypeModel.php";
-require_once "./controllers/VolunteerCotroller.php";
-require_once "controllers/VolunteeEventAssignmentController.php";
+//$server=$_SERVER['DOCUMENT_ROOT'];
+require_once "D:/SDP/project/Charitable-Organization/models/RegisteredUserModel.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/VolunteerCotroller.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/VolunteeEventAssignmentController.php";
 
 
-class VolunteerModel {
+class VolunteerModel{
     private $skills;
     private const ALLOWED_SKILLS = ['Cooking', 'Teaching', 'Building'];
 
-    // // Constructor that initializes volunteer-specific data, plus inherited data
+    // Constructor that initializes volunteer-specific data, plus inherited data
     // public function __construct($id, $email, $userName, $passwordHash, $category, $createdAt, $skills = null) {
     //     parent::__construct($id, $email, $userName, $passwordHash, $category, $createdAt);
     //     $this->setSkills($skills);  // Initialize the skills with validation
@@ -42,10 +43,10 @@ class VolunteerModel {
         return Database::run_query($query);
     }
 
-    public static function createVolunteer($registeredUserId, $organizationId = 1, $skills = 'Cooking') {
+    public static function createVolunteer($registeredUserId, $organizationId = 1, $specificField = '', $skills = 'Cooking') {
         // Properly quote the string values
-        $query = "INSERT INTO Volunteer (`registered_user_id`, `organization_id`,  `skills`) 
-                  VALUES ($registeredUserId, $organizationId, '$skills')";
+        $query = "INSERT INTO Volunteer (`registered_user_id`, `organization_id`, `other_volunteer_specific_field`, `skills`) 
+                  VALUES ($registeredUserId, $organizationId, '$specificField', '$skills')";
     
         // Optional debug print
         echo "Executing query: $query";
@@ -53,7 +54,8 @@ class VolunteerModel {
         // Run the query
         return Database::run_query($query);
     }
-
+    
+    
     public static function getLastInsertVolunteerId() {
         $query = "SELECT `id` FROM Volunteer ORDER BY `id` DESC LIMIT 1;";
         $res = Database::run_select_query(query: $query);

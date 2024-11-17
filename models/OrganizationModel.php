@@ -1,5 +1,7 @@
 <?php 
-require_once "../Database.php";
+//$server=$_SERVER['DOCUMENT_ROOT'];
+
+require_once "D:/SDP/project/Charitable-Organization/Database.php";
 
 class OrganizationModel {
 

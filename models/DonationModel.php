@@ -1,5 +1,5 @@
 <?php
-require_once "../Database.php";
+require_once "D:/SDP/project/Charitable-Organization/Database.php";
 
 class DonationModel {
 

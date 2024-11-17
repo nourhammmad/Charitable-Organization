@@ -1,27 +1,30 @@
 <?php
-require_once "./Database.php";
-require_once "./models/VolunteerModel.php";
-require_once "./models/EventModel.php";
+//$server=$_SERVER['DOCUMENT_ROOT'];
+require_once "D:/SDP/project/Charitable-Organization/Database.php";
+require_once "D:/SDP/project/Charitable-Organization/models/VolunteerModel.php";
+require_once "D:/SDP/project/Charitable-Organization/models/EventModel.php";
 
 class VolunteerEventAssignementModel{
 
     // Fetch all available events from the database
     public static function fetchAllEvents() {
-        return EventModel::getAllEvents();
-    }
+        $connection = Database::get_connection();
+        $query = "SELECT * FROM Event";  // Adjust with the correct table name and columns
+
+        $result = $connection->query($query);
+
+        if ($result) {
+            return $result->fetch_all(MYSQLI_ASSOC);  // Return events as an associative array
+        } else {
+            return [];  // Return an empty array if no events
+        }    }
+   
 
     // Directly assign the event to the volunteer
-    public static function assignVolunteerToEvent(VolunteerModel $volunteer, $eventId) {
-        // Insert the volunteer-event association
-        $query = "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES ('$eventId', '{$volunteer->getId()}')";
-        $assignmentSuccess = Database::run_query($query);
+    public static function assignVolunteerToEvent($volunteerId, $eventId) {
+        
+        return EventModel::addVolunteerToEvent($eventId, $volunteerId);
     
-        // Check if the assignment was successful
-        if ($assignmentSuccess) {
-            return "Volunteer assigned to event successfully!";
-        } else {
-            return "Failed to assign volunteer to the event.";
-        }
     }
     
 }

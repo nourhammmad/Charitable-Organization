@@ -1,31 +1,19 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . './models/VolunteerModel.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . './controllers/VolunteeEventAssignmentController.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . './controllers/VolunteerTaskAssignmentController.php.php';
-
+require_once "D:/SDP/project/Charitable-Organization/models/VolunteerModel.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/VolunteeEventAssignmentController.php";
 
 class VolunteerEventHandlerController {
     private $volunteerModel;
     private $assignEventController;
-    private   $assignTaskController;
 
     public function __construct($volunteerId) {
         $this->volunteerModel = VolunteerModel::getVolunteerById($volunteerId);
         $this->assignEventController = new VolunteeEventAssignmentController();
-        $this->assignTaskController = new VolunteerTaskAssignmentController();
     }
 
     public function applyForEvent($eventId) {
         if ($this->volunteerModel) {
             $result = $this->assignEventController->assignVolunteer((int)$this->volunteerModel->getId(), $eventId);
-            return $result ? "Successfully applied to the event." : "Failed to apply to the event.";
-        } else {
-            return "Volunteer not found.";
-        }
-    }
-    public function applyForTask($taskId) {
-        if ($this->volunteerModel) {
-            $result = $this->assignTaskController->assignTaskToUser((int)$this->volunteerModel->getId(), $taskId);
             return $result ? "Successfully applied to the event." : "Failed to apply to the event.";
         } else {
             return "Volunteer not found.";
