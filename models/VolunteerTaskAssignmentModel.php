@@ -1,6 +1,6 @@
 <?php
 
-require_once "../Database.php";
+require_once "./Database.php";
 
 class VolunteerTaskAssignmentModel {
 
@@ -9,13 +9,20 @@ class VolunteerTaskAssignmentModel {
         $query = "INSERT INTO TaskAssignments (`taskId`, `userId`) VALUES ('$taskId', '$userId')";
         return Database::run_query(query: $query);
     }
-    public static function getAllTasks(): array {
-        $query = "SELECT * FROM Tasks";
-        $res = Database::run_select_query(query: $query);
-        
-        // Convert the result to an array of associative arrays or return an empty array if no tasks are found
-        return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
-    }
+   public static function fetchAllTasks() {
+    $connection = Database::get_connection();
+    $query = "SELECT * FROM Tasks";  
+
+    $result = $connection->query($query);
+
+    if ($result) {
+        return $result->fetch_all(MYSQLI_ASSOC);  
+    } else {
+        return [];  
+}
+   }
+}
+
 
     // Unassign a task from a user
     // public static function unassignTaskFromUser($taskId, $userId): bool {
@@ -61,4 +68,3 @@ class VolunteerTaskAssignmentModel {
     //     $query = "DELETE FROM TaskAssignments WHERE `taskId` = '$taskId'";
     //     return Database::run_query(query: $query);
     // }
-}

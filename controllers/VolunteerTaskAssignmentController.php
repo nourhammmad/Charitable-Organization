@@ -14,26 +14,13 @@ class VolunteerTaskAssignmentController {
         return "Failed to assign task $taskId to user $userId.";
     }
 
-    public function getAvailableEvents() {
-        // Fetch all events using the model
-        $events = VolunteerTaskAssignmentModel::getAllTasks();
-        
-        if (!empty($events)) {
-            return $events;
-        } else {
-            return "No available events at the moment.";
-        }
-    }
     public function viewAllTasks() {
-        $tasks = TaskAssignmentController::getAllTasks();
+        $tasks = VolunteerTaskAssignmentModel::fetchAllTasks();
         
         if (is_array($tasks) && !empty($tasks)) {
-            echo "Available Tasks:<br>";
-            foreach ($tasks as $task) {
-                echo "Task ID: " . $task['id'] . ", Name: " . $task['name'] . ", Required Skill: " . $task['requiredSkill'] . "<br>";
-            }
+            return $tasks;
         } else {
-            echo "No tasks available at the moment.";
+            return [];  // Return an empty array if no events
         }
     }
     
