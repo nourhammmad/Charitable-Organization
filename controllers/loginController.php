@@ -1,7 +1,6 @@
 <?php
 
 session_start();
-$server = $_SERVER['DOCUMENT_ROOT'];
 
 require_once "./models/UserModel.php";
 require_once "./models/RegisteredUserModel.php";
@@ -28,6 +27,7 @@ class LoginController {
             } elseif (isset($_POST['facebook_login'])) {
                 $this->loginWithFacebook();
             }
+            // Handle organization login
             elseif (isset($_POST['org_pressed'])) {
                $this->loginorg();
               

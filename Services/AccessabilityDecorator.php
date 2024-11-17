@@ -1,6 +1,6 @@
 <?php 
-$server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./Services/IServices.php";
+//$server=$_SERVER['DOCUMENT_ROOT'];
+require_once "D:/SDP/project/Charitable-Organization/Services/IServices.php";
 
 abstract class AcessabilityDecorator implements IServices{
     public IServices $ref;

@@ -1,9 +1,9 @@
 <?php
 // Assuming $volunteerId is passed from session or login process
 $volunteerId = $_GET['volunteer_id'];  // Example of a logged-in volunteer
-$server = $_SERVER['DOCUMENT_ROOT'];
+//$server = $_SERVER['DOCUMENT_ROOT'];
 
-require_once $server.'./controllers/VolunteerCotroller.php';  // Corrected typo in class name ('VolunteerCotroller' -> 'VolunteerController')
+require_once "D:/SDP/project/Charitable-Organization/controllers/VolunteerCotroller.php";  // Corrected typo in class name ('VolunteerCotroller' -> 'VolunteerController')
 
 // Create a new VolunteerController
 $volunteerController = new VolunteerCotroller($volunteerId);
@@ -86,14 +86,13 @@ $events = $volunteerController->displayAvailableEvents();
 <?php endif; ?>
 
 <script>
-    // JavaScript function to handle applying for an event
     function applyForEvent(eventId, button) {
         const volunteerId = <?= $volunteerId; ?>;
         const formData = new FormData();
         formData.append('volunteerId', volunteerId);
         formData.append('eventId', eventId);
 
-        const documentRoot = '/controllers/VolunteerEventHandlerController.php';  // Use relative URL instead of document root
+        const documentRoot = '../controllers/VolunteerEventHandlerController.php';  
 
         fetch(documentRoot, {
             method: 'POST',

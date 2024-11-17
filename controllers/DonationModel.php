@@ -1,6 +1,5 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
+require_once "../Database.php";
 
 class DonationModel {
 
@@ -74,6 +73,7 @@ class DonationModel {
                               VALUES ((SELECT payment_id FROM Payments WHERE money_id = '$moneyId'), '$transactionId')";
                 return Database::run_query(query: $queryCash);
             case 'visa':
+                echo "in visa \n";
                 $transactionNumber = $paymentDetails['transaction_number'];
                 $cardNumber = $paymentDetails['card_number'];
                 $queryVisa = "INSERT INTO Visa (payment_id, transaction_number, card_number) 

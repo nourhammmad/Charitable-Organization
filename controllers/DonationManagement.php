@@ -1,6 +1,6 @@
 <?php
-$server = $_SERVER['DOCUMENT_ROOT'];
-require_once $server."./models/DonationModel.php";
+//$server = $_SERVER['DOCUMENT_ROOT'];
+require_once "D:/SDP/project/Charitable-Organization/models/DonationModel.php";
 
 class DonationManagement {
     public static function handelTrack($type) {

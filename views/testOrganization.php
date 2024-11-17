@@ -124,10 +124,12 @@
             else if (type === "createEvent") {
                 title.textContent = "Create New Event";
                 fields.innerHTML = `
+                    <input type="text" name="name" placeholder="Event Name" required>
                     <input type="text" name="date" placeholder="Event Date" required>
                     <input type="text" name="address" placeholder="Event Address" required>
                     <input type="number" name="capacity" placeholder="Capacity" required>
                     <input type="number" name="tickets" placeholder="Tickets" required>
+
                     
                     <label for="service">Service:</label>
                     <select name="service" id="service">

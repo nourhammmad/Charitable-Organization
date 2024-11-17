@@ -1,8 +1,8 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./models/RegisteredUserModel.php";
-require_once $server."./controllers/VolunteerCotroller.php";
-require_once $server."./controllers/VolunteeEventAssignmentController.php";
+//$server=$_SERVER['DOCUMENT_ROOT'];
+require_once "D:/SDP/project/Charitable-Organization/models/RegisteredUserModel.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/VolunteerCotroller.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/VolunteeEventAssignmentController.php";
 
 
 class VolunteerModel{

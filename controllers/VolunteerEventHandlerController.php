@@ -1,6 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . './models/VolunteerModel.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . './controllers/VolunteeEventAssignmentController.php';
+require_once "D:/SDP/project/Charitable-Organization/models/VolunteerModel.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/VolunteeEventAssignmentController.php";
 
 class VolunteerEventHandlerController {
     private $volunteerModel;

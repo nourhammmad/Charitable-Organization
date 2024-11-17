@@ -1,7 +1,8 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
+// $server=$_SERVER['DOCUMENT_ROOT'];
 
-require_once $server."./Services/IServices.php";
+require_once "D:/SDP/project/Charitable-Organization/Services/IServices.php";
+
 class FamilyShelter implements IServices {
     // Attributes
     private $quantity;

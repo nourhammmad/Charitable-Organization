@@ -1,7 +1,7 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server.'./Database.php';
-require_once $server."./models/EventModel.php";
+//$server=$_SERVER['DOCUMENT_ROOT'];
+require_once "D:/SDP/project/Charitable-Organization/Database.php";
+require_once "D:/SDP/project/Charitable-Organization/models/EventModel.php";
 
 class EventController {
 

@@ -1,7 +1,7 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
+// $server=$_SERVER['DOCUMENT_ROOT'];
 
-require_once $server."./IServices.php";
+require_once  "D:/SDP/project/Charitable-Organization/Services/IServices.php";
 class FoodBank implements IServices {
     // Attributes
     private $foodQuantity;

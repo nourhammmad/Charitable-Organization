@@ -1,7 +1,7 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./models/VolunteerModel.php";
-require_once $server."./controllers/VolunteeEventAssignmentController.php";
+///$server=$_SERVER['DOCUMENT_ROOT'];
+require_once "D:/SDP/project/Charitable-Organization/models/VolunteerModel.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/VolunteeEventAssignmentController.php";
 // require_once $server."./db-populate.php";
 
 // try {

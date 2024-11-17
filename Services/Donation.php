@@ -4,7 +4,7 @@ abstract class DonationType {
     protected $quantityDonated;
     protected $donationId;
 
-    abstract public function donate($donorid): bool;
+    abstract public function donate(): bool;
 
     public function __construct($donationId, $quantityDonated) {
         $this->donationId = $donationId;

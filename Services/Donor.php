@@ -1,13 +1,10 @@
 <?php
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/Donation.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/RegisterUser.php";
+require_once "D:/SDP/project/Charitable-Organization/Services/Donation.php";
 
 
 
-class Donor extends RegisterUser {
+class Donor {
     private $id;
-    //should be user so dont do it now 
-    private $reguserId;
     private DonationType $Dt;
 
     public function __construct($id)
@@ -22,11 +19,11 @@ class Donor extends RegisterUser {
         return $this->id;
     }
 
-    public function donate() {
+    public function donate($donarID) {
         if ($this->Dt) {
-            if($this->Dt->donate($this->id)) {
+            if($this->Dt->donate()) {
                 $des=(String)DonationModel::getDonationDescription();
-                DonarModel::addDescription($des,$this->id);
+                DonarModel::addDescription($des,$donarID);
                 return true;
             }
             else return false;

@@ -1,5 +1,5 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
+//$server=$_SERVER['DOCUMENT_ROOT'];
 
 require_once "./Database.php";
 

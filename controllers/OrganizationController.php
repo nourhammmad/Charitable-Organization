@@ -1,17 +1,20 @@
 <?php
 
-// require_once $_SERVER['DOCUMENT_ROOT'].'./models/OrganizationModel.php';
-// require_once $_SERVER['DOCUMENT_ROOT'].'./models/EventModel.php';
-// require_once $_SERVER['DOCUMENT_ROOT'].'./controllers/DonationManagement.php';
+require_once "D:/SDP/project/Charitable-Organization/models/OrganizationModel.php";
+require_once "D:/SDP/project/Charitable-Organization/models/EventModel.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/DonationManagement.php";
 
-// require_once $_SERVER['DOCUMENT_ROOT']."./models/OrganizationModel.php";
-// require_once  $_SERVER['DOCUMENT_ROOT']."./controllers/FamilyShelterController.php";
+require_once "D:/SDP/project/Charitable-Organization/models/OrganizationModel.php";
+require_once  "D:/SDP/project/Charitable-Organization/controllers/FamilyShelterController.php";
+require_once  "D:/SDP/project/Charitable-Organization/controllers/EducationalCenterController.php";
+require_once  "D:/SDP/project/Charitable-Organization/controllers/FoodBankController.php";
+
 
 
 
 // class OrganizationController {
 
-//     public static function createEvent($date, $address, $capacity, $tickets) {
+//     public static function createEvent($name,$date, $address, $capacity, $tickets, $typeid) {
 //         $eventId = EventModel::createEvent($date, $capacity, $tickets);
 
 //         if ($eventId) {
@@ -26,7 +29,7 @@
 //             echo "Event creation failed.";
 //         }
 //     }
-// }
+ 
 
 
 
@@ -83,44 +86,88 @@
 //     }
 // }
 
-// function handleCreateEvent() {
-//     // Sanitize and check POST values
-//     $date = $_POST['date'] ?? null;
-//     $address = $_POST['address'] ?? null;
-//     $capacity = $_POST['capacity'] ?? null;
-//     $tickets = $_POST['tickets'] ?? null;
-//     $service = $_POST['service'] ?? null;
-//     $signLangInterpret = isset($_POST['signLang']) ? true : false;
-//     $wheelchair = isset($_POST['wheelchair']) ? true : false;
+function handleCreateEvent() {
+    $name = $_POST['name'] ?? null; 
+    $date = $_POST['date'] ?? null;
+    $address = $_POST['address'] ?? null;
+    $capacity = $_POST['capacity'] ?? null;
+    $tickets = $_POST['tickets'] ?? null;
+  //  $typeid = $_POST['typeid'] ?? null;
+    $service = $_POST['service'] ?? null;
+    $signLangInterpret = isset($_POST['signLang']) ? true : false;
+    $wheelchair = isset($_POST['wheelchair']) ? true : false;
 
-//     // Validate required fields
-//     if (!$date || !$address || !$capacity || !$tickets || !$service) {
-//         echo "Missing required fields: date, address, capacity, tickets, and service are mandatory.";
-//         return;
-//     }
+    // Validate required fields
+    if (!$date || !$address || !$capacity || !$tickets ||  !$service) {
+        echo "Missing required fields: date, address, capacity, tickets, and service are mandatory.";
+        return;
+    }
 
-//     // Determine the service type
-//     $familyShelter = ($service === 'familyShelter');
-//     $educationalCenter = ($service === 'educationalCenter');
-//     $foodBank = ($service === 'foodBank');
-//     //public static function createFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $signLangInterpret, $wheelchair) {
+    // Determine the service type
+   
+    $familyShelter = ($service === 'familyShelter');
+    $educationalCenter = ($service === 'educationalCenter');
+    $foodBank = ($service === 'foodBank');
+    //public static function createFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $signLangInterpret, $wheelchair) {
 
-//     // Call the method to create the event, passing in the necessary parameters
-//     $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
-//         'Family Shelter Event', // Example event name
-//         $date,
-//         $capacity,
-//         $tickets,
-//         $signLangInterpret,
-//         $wheelchair
-//     );
-//     if ($isEventCreated) {
-//         echo "Event created successfully.";
-//     } else {
-//         echo "Failed to create event. Please try again.";
-//     }
+    // Call the method to create the event, passing in the necessary parameters
+    if($service === 'familyShelter'){
+        //echo"yatara ana da5alt hena ?  ";
+       $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
+         $name,
+         $date,
+         $capacity,
+         $capacity,
+         $tickets,
+         $signLangInterpret,
+         $wheelchair
+        );
+        if ($isEventCreated) {
+          echo "$service Event created successfully.";
+          } else {
+          echo "Failed to create event. Please try again.";
+          }
+    }elseif($service === 'educationalCenter'){
+         $isEventCreated = EducationalCenterController::createEducationalCenterEvent(
+         $name,
+         $date,
+         $capacity,
+         $capacity,
+         $tickets,
+         $signLangInterpret,
+         $wheelchair
+         );
+        if ($isEventCreated) {
+         echo "$service Event created successfully.";
+         } else {
+         echo "Failed to create event. Please try again.";
+         }
 
-// }
+    }elseif($service === 'foodBank'){
+        $isEventCreated = FoodBankController::createFoodBankEvent(
+            $name,
+            $date,
+            $capacity,
+            $capacity,
+            $tickets,
+            $signLangInterpret,
+            $wheelchair
+            );
+           if ($isEventCreated) {
+            echo "$service Event created successfully.";
+            } else {
+            echo "Failed to create event. Please try again.";
+            }
+
+    }
+
+
+
+
+
+     
+
+}
 
 // function handleBooks() {
 //    // echo"ana f handle books fel cont ";
