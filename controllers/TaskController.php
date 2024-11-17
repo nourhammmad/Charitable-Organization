@@ -1,6 +1,6 @@
 <?php
-
-require_once './models/TaskModel.php';
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server.'./models/TaskModel.php';
 
 class TaskController
 {
