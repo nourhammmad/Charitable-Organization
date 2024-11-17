@@ -45,10 +45,6 @@ class EventModel {
             return false;
         }
     
-        // Debugging: Output the parameters being used for insertion
-       // echo "Date: $date, Capacity: $EventAttendanceCapacity, Tickets: $tickets<br>";
-    
-        // Example static addressId (change to dynamic if needed)
         $addressId = 'hkhk';  // Static addressId or dynamically fetched
     
         // Prepare the query to insert the event into the database
@@ -240,29 +236,81 @@ public static function getAllEvents() {
             return false;
         }
     }
+
+    public function addObserver($observer) {
+        $this->observers[] = $observer;
+    }
+
+    public function removeObserver($observer) {
+        $index = array_search($observer, $this->observers);
+        if ($index !== false) {
+            unset($this->observers[$index]);
+            $this->observers = array_values($this->observers); // Reindex the array
+        }
+    }
+
+    public function notifyObservers($message) {
+        foreach ($this->observers as $observer) {
+            $observer->update($this, $message); // Notify each observer
+        }
+    }
     
     
 
     // Update an event's details
-    public static function updateEvent($eventId,$eventName ,$date, $addressId, $EventAttendanceCapacity, $tickets) {
-        // Ensure the connection is established
-        //$db = Database::getInstance();
+ public static function updateEvent($eventId, $eventName, $date, $addressId, $EventAttendanceCapacity, $tickets) {
         if (Database::get_connection() === null) {
             echo "No database connection established.";
             return false;
         }
-
-        // Query to update event details
+    
+        $currentEvent = self::getEventById($eventId);
+        if (!$currentEvent) {
+            echo "Event not found.<br>";
+            return false;
+        }
+    
+        $changes = [];
+        if ($currentEvent['eventName'] !== $eventName) {
+            $changes[] = "Event name changed from '{$currentEvent['eventName']}' to '$eventName'";
+        }
+        if ($currentEvent['date'] !== $date) {
+            $changes[] = "Date changed from '{$currentEvent['date']}' to '$date'";
+        }
+        if ($currentEvent['addressId'] !== $addressId) {
+            $changes[] = "Address changed from '{$currentEvent['addressId']}' to '$addressId'";
+        }
+        if ($currentEvent['EventAttendanceCapacity'] != $EventAttendanceCapacity) {
+            $changes[] = "Capacity changed from '{$currentEvent['EventAttendanceCapacity']}' to '$EventAttendanceCapacity'";
+        }
+        if ($currentEvent['tickets'] != $tickets) {
+            $changes[] = "Tickets changed from '{$currentEvent['tickets']}' to '$tickets'";
+        }
+    
+        if (empty($changes)) {
+            echo "No changes to update.<br>";
+            return true;
+        }
+    
         $query = "UPDATE Event 
-                  SET date = '$date',eventName='$eventName' ,addressId = '$addressId', EventAttendanceCapacity = '$EventAttendanceCapacity', tickets = '$tickets'
+                  SET `eventName` = '$eventName', `date` = '$date', `addressId` = '$addressId', `EventAttendanceCapacity` = '$EventAttendanceCapacity', `tickets` = '$tickets'
                   WHERE eventId = $eventId";
-        return Database::run_query($query);
+        $result = Database::run_query($query);
+    
+        if (!$result) {
+            echo "Failed to update the event.<br>";
+            return false;
+        }
+    
+        $message = "The following changes were made to the event: " . implode(', ', $changes);
+        $eventInstance = new  self($eventId, $eventName,$date, $addressId, $EventAttendanceCapacity, $tickets, $currentEvent['createdAt'], $currentEvent['event_type_id']);
+        $eventInstance->notifyObservers($message);
+    
+        return true;
     }
 
     // Delete an event
     public static function deleteEvent($eventId) {
-        // Ensure the connection is established
-       // $db = Database::getInstance();
         if (Database::get_connection() === null) {
             echo "No database connection established.";
             return false;

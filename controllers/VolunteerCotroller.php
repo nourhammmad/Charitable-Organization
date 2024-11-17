@@ -63,5 +63,8 @@ class VolunteerCotroller {
         echo $result ? "Description added successfully!" : "Failed to add description.";
     }
     
+    public function update($event, $message) {
+        echo "Notification for Volunteer {$this->volunteerModel->getId()}: {$message}<br>";
+    }
 }
 //$volu=new VolunteerCotroller(1);

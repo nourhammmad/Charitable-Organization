@@ -52,7 +52,7 @@ class RegisterUser extends user {
             if (VolunteerModel::createVolunteer($this->id,1)) { // Assuming createVolunteer is a method to initialize volunteer data
                 echo "dakhalt";
                 $volunteerId = VolunteerModel::getLastInsertVolunteerId(); // Get the last inserted Volunteer ID
-                header("Location: F:/senior 2/Design Patterns/project/Charitable-Organization/views/VolunteerDashboard.php?volunteer_id=$volunteerId"); // Redirect to volunteer dashboard
+                header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId"); // Redirect to volunteer dashboard
                 exit();
             }
         }
