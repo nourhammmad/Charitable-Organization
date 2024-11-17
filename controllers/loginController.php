@@ -34,12 +34,14 @@ class LoginController {
 
         }
 
-    
-        require_once "D:/SDP/project/Charitable-Organization/views/loginView.php";
+        
+
+        require_once $_SERVER['DOCUMENT_ROOT']."./views/loginView.php";
     }
 
     private function loginorg() {
-        require_once "D:/SDP/project/Charitable-Organization/views/testOrganization.php";
+        
+        require_once $_SERVER['DOCUMENT_ROOT']."./views/testOrganization.php";
          exit(); 
     }
     

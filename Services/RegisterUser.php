@@ -1,9 +1,9 @@
 <?php
 
-require_once "./Services/User.php";
-require_once "../Charitable-Organization/models/RegisteredUserModel.php";
-require_once "../Charitable-Organization/models/DonorModel.php";
-require_once "./models/VolunteerModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./Services/User.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/RegisteredUserModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/DonorModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/VolunteerModel.php";
 
 
 

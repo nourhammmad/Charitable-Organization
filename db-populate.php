@@ -246,7 +246,7 @@ class Populate {
                         numberOfShelters INT,
                         shelterLocation VARCHAR(255),
                         capacity INT,
-                        AccessLvl INT DEFAULT 0,
+                        AccessLevel INT DEFAULT 0,
                         event_type_id INT,
                         FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
                         FOREIGN KEY (eventId) REFERENCES Event(eventId));",
@@ -261,11 +261,11 @@ class Populate {
                             FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
                             FOREIGN KEY (eventId) REFERENCES Event(eventId));",                        
 
-            "INSERT INTO FoodBankEvent (eventId, foodQuantity, foodType, foodBankLocation, event_type_id) VALUES
-            (1, 500, 'Canned Goods', 'Downtown Food Bank', 1);",
+            // "INSERT INTO FoodBankEvent (eventId, foodQuantity, foodType, foodBankLocation, event_type_id) VALUES
+            // (1, 500, 'Canned Goods', 'Downtown Food Bank', 1);",
 
-            "INSERT INTO FamilyShelterEvent (eventId, numberOfShelters, shelterLocation, capacity, facilities, event_type_id) VALUES
-            (2, 10, 'Northside Family Shelter', 50, 'Restrooms, Showers, Sleeping Areas', 2);",
+            // "INSERT INTO FamilyShelterEvent (eventId, numberOfShelters, shelterLocation, capacity, facilities, event_type_id) VALUES
+            // (2, 10, 'Northside Family Shelter', 50, 'Restrooms, Showers, Sleeping Areas', 2);",
  
                     // Create EventVolunteer Table to link Events and Volunteers
                     
@@ -281,19 +281,19 @@ class Populate {
                     "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
                         (1, 1);",
 
-"INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
-(1, 1);",
-  "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets) VALUES
-  ('Charity Gala', '2024-12-01', (SELECT addressId FROM Address LIMIT 1), 100, 50),
-  ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75),
-  ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100),
-  ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125),
-  ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40),
-  ('Community Cleanup', '2024-12-25', (SELECT addressId FROM Address LIMIT 1), 50, 25),
-  ('Holiday Celebration', '2024-12-30', (SELECT addressId FROM Address LIMIT 1), 300, 150),
-  ('Health Screening Camp', '2025-01-05', (SELECT addressId FROM Address LIMIT 1), 100, 50),
-  ('Art Workshop for Kids', '2025-01-10', (SELECT addressId FROM Address LIMIT 1), 120, 60),
-  ('Senior Assistance Program', '2025-01-15', (SELECT addressId FROM Address LIMIT 1), 90, 45);",
+// "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
+// (1, 1);",
+//   "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets) VALUES
+//   ('Charity Gala', '2024-12-01', (SELECT addressId FROM Address LIMIT 1), 100, 50),
+//   ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75),
+//   ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100),
+//   ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125),
+//   ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40),
+//   ('Community Cleanup', '2024-12-25', (SELECT addressId FROM Address LIMIT 1), 50, 25),
+//   ('Holiday Celebration', '2024-12-30', (SELECT addressId FROM Address LIMIT 1), 300, 150),
+//   ('Health Screening Camp', '2025-01-05', (SELECT addressId FROM Address LIMIT 1), 100, 50),
+//   ('Art Workshop for Kids', '2025-01-10', (SELECT addressId FROM Address LIMIT 1), 120, 60),
+//   ('Senior Assistance Program', '2025-01-15', (SELECT addressId FROM Address LIMIT 1), 90, 45);",
 
 
 

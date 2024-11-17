@@ -1,8 +1,13 @@
 <?php
-$server = $_SERVER['DOCUMENT_ROOT'];
-require_once $server.'./models/OrganizationModel.php';
-require_once $server.'./models/EventModel.php';
-require_once $server.'./controllers/DonationManagement.php';
+
+require_once $_SERVER['DOCUMENT_ROOT'].'./models/OrganizationModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'./models/EventModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'./controllers/DonationManagement.php';
+
+require_once $_SERVER['DOCUMENT_ROOT']."./models/OrganizationModel.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."./controllers/FamilyShelterController.php";
+
+
 
 class OrganizationController {
 
@@ -25,13 +30,10 @@ class OrganizationController {
 
 
 
-require_once $server . "./controllers/FamilyShelterController.php";
-// Include the EventModel class
-
 if (isset($_GET['action'])) {
 
     $action = $_GET['action'];
-    echo $action;
+echo $action;
     switch ($action) {
         case 'getOrganizations':
             handleGetOrganizations();
@@ -42,12 +44,7 @@ if (isset($_GET['action'])) {
             break;
 
         case 'createEvent':
-            // Check if the HTTP method is POST before calling handleCreateEvent
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                handleCreateEvent();
-            } else {
-                echo "Invalid request method. Please use POST.";
-            }
+            handleCreateEvent();
             break;
 
         case 'trackBooks':
@@ -119,34 +116,29 @@ function handleCreateEvent() {
         $signLangInterpret,
         $wheelchair
     );
-
     if ($isEventCreated) {
         echo "Event created successfully.";
     } else {
         echo "Failed to create event. Please try again.";
     }
+
 }
 
 function handleBooks() {
-    if (DonationManagement::handelTrack(2)) {
-        echo "Books tracked successfully.";
-    } else {
-        echo "Failed to track books.";
-    }
+   // echo"ana f handle books fel cont ";
+    DonationManagement::handelTrack(2);
+    echo "Books tracked successfully.";
+    exit();
 }
 
 function handleClothes() {
-    if (DonationManagement::handelTrack(3)) {
-        echo "Clothes tracked successfully.";
-    } else {
-        echo "Failed to track clothes.";
-    }
+    DonationManagement::handelTrack(3);
+    echo "Clothes tracked successfully.";
 }
 
 function handleMoney() {
-    if (DonationManagement::handelTrack(1)) {
-        echo "Money tracked successfully.";
-    } else {
-        echo "Failed to track money.";
-    }
+    DonationManagement::handelTrack(1);
+    echo "Money tracked successfully.";
 }
+
+?>

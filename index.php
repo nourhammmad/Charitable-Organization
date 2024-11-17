@@ -14,19 +14,20 @@ Populate::populate();
 
 if (Database::get_connection()) {
     $controller = new LoginController();
+ //  $controller = new OrganizationController('My Charitable Organization');
  $controller->handleRequest();
 } else {
     echo "Failed to connect to the database.";
 }
 
-$registerUser = new RegisterUser("volunteer@example.com", "VolunteerName", "Volunteer");
-$registerUser->signUp();
+// $registerUser = new RegisterUser("volunteer@example.com", "VolunteerName", "Volunteer");
+// $registerUser->signUp();
 
-// Test: Display available events for a volunteer with ID 1
-$volunteerController = new VolunteerController(1);
-$volunteerController->displayAvailableEvents();
+// // Test: Display available events for a volunteer with ID 1
+// $volunteerController = new VolunteerController(1);
+// $volunteerController->displayAvailableEvents();
 
-// Test: Apply for an event with ID 2 for the volunteer with ID 1
-$volunteerController->applyForEvent(2);
+// // Test: Apply for an event with ID 2 for the volunteer with ID 1
+// $volunteerController->applyForEvent(2);
 
 ?>

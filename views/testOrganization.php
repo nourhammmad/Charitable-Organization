@@ -154,47 +154,29 @@
             document.getElementById("actionModal").style.display = "none";
         }
 
-    function submitForm() {
-        const form = document.getElementById("actionForm");
-        const modalTitle = document.getElementById("modalTitle").textContent;
+        function submitForm() {
+            const form = new URLSearchParams(new FormData(document.getElementById("actionForm")));
+            const modalTitle = document.getElementById("modalTitle").textContent;
+           
+            let endpoint = "";
+            if (modalTitle.includes("Retrieve Organization")) endpoint = "../controllers/OrganizationController.php?action=getOrganizations";
+            if (modalTitle.includes("Donors")) endpoint = "../controllers/OrganizationController.php?action=getDonors";
+            if (modalTitle.includes("Track Clothes Donations")) endpoint = "../controllers/OrganizationController.php?action=trackClothes";
+            if (modalTitle.includes("Track Money Donations")) endpoint = "../controllers/OrganizationController.php?action=trackMoney";
+            if (modalTitle.includes("Event")) endpoint = "../controllers/OrganizationController.php?action=createEvent";
+            if (modalTitle.includes("Track Book Donations")) endpoint = "../controllers/OrganizationController.php?action=trackBooks";
 
-        // Client-side validation
-        const date = form.querySelector('input[name="date"]');
-        const address = form.querySelector('input[name="address"]');
-        const capacity = form.querySelector('input[name="capacity"]');
-        const tickets = form.querySelector('input[name="tickets"]');
-        const service = form.querySelector('select[name="service"]');
+            fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: form.toString(),
+            })
+                .then(response => response.text())
+                .then(data => alert(data))
+                .catch(error => console.error("Error:", error));
 
-        // Check if required fields are filled
-        if (!date.value || !address.value || !capacity.value || !tickets.value || !service.value) {
-            alert("Please fill in all required fields.");
-            return; // Prevent form submission if fields are missing
+            closeModal();
         }
-
-        // Create a URLSearchParams object for the form data
-        const formData = new URLSearchParams(new FormData(form));
-
-        let endpoint = "";
-        if (modalTitle.includes("Retrieve Organization")) endpoint = "../controllers/OrganizationController.php?action=getOrganizations";
-        if (modalTitle.includes("Donors")) endpoint = "../controllers/OrganizationController.php?action=getDonors";
-        if (modalTitle.includes("Track Clothes Donations")) endpoint = "../controllers/OrganizationController.php?action=trackClothes";
-        if (modalTitle.includes("Track Money Donations")) endpoint = "../controllers/OrganizationController.php?action=trackMoney";
-        if (modalTitle.includes("Event")) endpoint = "../controllers/OrganizationController.php?action=createEvent";
-        if (modalTitle.includes("Track Book Donations")) endpoint = "../controllers/OrganizationController.php?action=trackBooks";
-
-        // Submit form data via fetch API
-        fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: formData.toString(),
-        })
-            .then(response => response.text())
-            .then(data => alert(data))
-            .catch(error => console.error("Error:", error));
-
-        closeModal();
-    }
-
     </script>
 </body>
 </html>

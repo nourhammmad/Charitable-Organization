@@ -1,5 +1,6 @@
 <?php
-require_once "./Database.php";
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server."./Database.php";
 
 class DonationModel {
 
