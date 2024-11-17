@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Organization Management</title>
     <style>
-        /* Use your existing styles or tweak as needed */
         body {
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
@@ -85,12 +84,6 @@
         <div class="option" onclick="openModal('books')">Track Books</div>
         <div class="option" onclick="openModal('clothes')">Track Clothes</div>
         <div class="option" onclick="openModal('money')">Track Money</div>
-
-        <!-- <div class="option" onclick="trackBooks()">Track Books</div>
-        <div class="option" onclick="trackClothes()">Track Clothes</div>
-        <div class="option" onclick="trackMoney()">Track Money</div> -->
-
-
     </div>
 
     <!-- Modal -->
@@ -120,7 +113,7 @@
             } else if (type === "donors") {
                 title.textContent = "Retrieve Donors";
             } else if(type === 'books'){
-               title.textContent = "Track Book Donations";
+                title.textContent = "Track Book Donations";
             }
             else if(type === 'clothes'){
                 title.textContent = "Track Clothes Donations";
@@ -128,13 +121,29 @@
             else if(type === 'money'){
                 title.textContent = "Track Money Donations";
             }
-             else if (type === "createEvent") {
+            else if (type === "createEvent") {
                 title.textContent = "Create New Event";
                 fields.innerHTML = `
                     <input type="text" name="date" placeholder="Event Date" required>
                     <input type="text" name="address" placeholder="Event Address" required>
                     <input type="number" name="capacity" placeholder="Capacity" required>
                     <input type="number" name="tickets" placeholder="Tickets" required>
+                    
+                    <label for="service">Service:</label>
+                    <select name="service" id="service">
+                        <option value="educationalCenter">Educational Center</option>
+                        <option value="foodBank">Food Bank</option>
+                        <option value="familyShelter">Family Shelter</option>
+                    </select>
+                    <br>
+
+                    <label for="signLang">Sign Language Interpretation:</label>
+                    <input type="checkbox" name="signLang" id="signLang">
+                    <br>
+
+                    <label for="wheelchair">Wheelchair Access:</label>
+                    <input type="checkbox" name="wheelchair" id="wheelchair">
+                    <br>
                 `;
             }
 
@@ -145,51 +154,47 @@
             document.getElementById("actionModal").style.display = "none";
         }
 
-        function submitForm() {
-            const form = new URLSearchParams(new FormData(document.getElementById("actionForm")));
-            const modalTitle = document.getElementById("modalTitle").textContent;
-           
-            let endpoint = "";
-            if (modalTitle.includes("Retrieve Organization")) endpoint = "../controllers/OrganizationController.php?action=getOrganizations";
-            if (modalTitle.includes("Donors")) endpoint = "../controllers/OrganizationController.php?action=getDonors";
-            if (modalTitle.includes("Track Clothes Donations")) endpoint = "../controllers/OrganizationController.php?action=trackClothes";
-            if (modalTitle.includes("Track Money Donations")) endpoint = "../controllers/OrganizationController.php?action=trackMoney";
-            if (modalTitle.includes("Event")) endpoint = "../controllers/OrganizationController.php?action=createEvent";
-            if (modalTitle.includes("Track Book Donations")) endpoint = "../controllers/OrganizationController.php?action=trackBooks";
+    function submitForm() {
+        const form = document.getElementById("actionForm");
+        const modalTitle = document.getElementById("modalTitle").textContent;
 
-           //console.log("Endpoint being called: ", endpoint);
-            fetch(endpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: form.toString(),
-            })
-                .then(response=>response.text())
-                .then(data => alert(data))
-                .catch(error => console.error("Error:", error));
+        // Client-side validation
+        const date = form.querySelector('input[name="date"]');
+        const address = form.querySelector('input[name="address"]');
+        const capacity = form.querySelector('input[name="capacity"]');
+        const tickets = form.querySelector('input[name="tickets"]');
+        const service = form.querySelector('select[name="service"]');
 
-            closeModal();
+        // Check if required fields are filled
+        if (!date.value || !address.value || !capacity.value || !tickets.value || !service.value) {
+            alert("Please fill in all required fields.");
+            return; // Prevent form submission if fields are missing
         }
 
-        // function trackBooks() {
-        //     fetch("../controllers/OrganizationController.php?action=trackBooks")
-        //         .then(response => response.text())
-        //         .then(data => alert(data))
-        //         .catch(error => console.error("Error:", error));
-        // }
+        // Create a URLSearchParams object for the form data
+        const formData = new URLSearchParams(new FormData(form));
 
-        // function trackClothes() {
-        //     fetch("../controllers/OrganizationController.php?action=trackClothes")
-        //         .then(response => response.text())
-        //         .then(data => alert(data))
-        //         .catch(error => console.error("Error:", error));
-        // }
+        let endpoint = "";
+        if (modalTitle.includes("Retrieve Organization")) endpoint = "../controllers/OrganizationController.php?action=getOrganizations";
+        if (modalTitle.includes("Donors")) endpoint = "../controllers/OrganizationController.php?action=getDonors";
+        if (modalTitle.includes("Track Clothes Donations")) endpoint = "../controllers/OrganizationController.php?action=trackClothes";
+        if (modalTitle.includes("Track Money Donations")) endpoint = "../controllers/OrganizationController.php?action=trackMoney";
+        if (modalTitle.includes("Event")) endpoint = "../controllers/OrganizationController.php?action=createEvent";
+        if (modalTitle.includes("Track Book Donations")) endpoint = "../controllers/OrganizationController.php?action=trackBooks";
 
-        // function trackMoney() {
-        //     fetch("../controllers/OrganizationController.php?action=trackMoney")
-        //         .then(response => response.text())
-        //         .then(data => alert(data))
-        //         .catch(error => console.error("Error:", error));
-        // }
+        // Submit form data via fetch API
+        fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: formData.toString(),
+        })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error("Error:", error));
+
+        closeModal();
+    }
+
     </script>
 </body>
 </html>

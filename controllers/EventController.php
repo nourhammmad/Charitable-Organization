@@ -32,10 +32,10 @@ class EventController {
     public function displayEventById($eventId) {
         $event = EventModel::getEventById($eventId);
         if ($event) {
-            echo "Event Details:<br/>";
-            echo "Event ID: " . $event->eventId . ", Date: " . $event->date . ", Capacity: " . $event->EventAttendanceCapacity . ", Tickets: " . $event->tickets . "<br/>";
+            //echo "Event Details:<br/>";
+            //echo "Event ID: " . $event->eventId . ", Date: " . $event->date . ", Capacity: " . $event->EventAttendanceCapacity . ", Tickets: " . $event->tickets . "<br/>";
         } else {
-            echo "Event not found.<br/>";
+            //echo "Event not found.<br/>";
         }
     }
 

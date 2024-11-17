@@ -1,8 +1,8 @@
 <?php
-
-require_once 'D:/SDP/project/Charitable-Organization/models/OrganizationModel.php';
-require_once 'D:/SDP/project/Charitable-Organization/models/EventModel.php';
-require_once 'D:/SDP/project/Charitable-Organization/controllers/DonationManagement.php';
+$server = $_SERVER['DOCUMENT_ROOT'];
+require_once $server.'./models/OrganizationModel.php';
+require_once $server.'./models/EventModel.php';
+require_once $server.'./controllers/DonationManagement.php';
 
 class OrganizationController {
 
@@ -25,12 +25,13 @@ class OrganizationController {
 
 
 
-require_once "D:/SDP/project/Charitable-Organization/models/OrganizationModel.php";
+require_once $server . "./controllers/FamilyShelterController.php";
+// Include the EventModel class
 
 if (isset($_GET['action'])) {
 
     $action = $_GET['action'];
-echo $action;
+    echo $action;
     switch ($action) {
         case 'getOrganizations':
             handleGetOrganizations();
@@ -41,7 +42,12 @@ echo $action;
             break;
 
         case 'createEvent':
-            handleCreateEvent();
+            // Check if the HTTP method is POST before calling handleCreateEvent
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                handleCreateEvent();
+            } else {
+                echo "Invalid request method. Please use POST.";
+            }
             break;
 
         case 'trackBooks':
@@ -81,34 +87,66 @@ function handleGetDonors() {
 }
 
 function handleCreateEvent() {
+    // Sanitize and check POST values
     $date = $_POST['date'] ?? null;
     $address = $_POST['address'] ?? null;
     $capacity = $_POST['capacity'] ?? null;
     $tickets = $_POST['tickets'] ?? null;
+    $service = $_POST['service'] ?? null;
+    $signLangInterpret = isset($_POST['signLang']) ? true : false;
+    $wheelchair = isset($_POST['wheelchair']) ? true : false;
 
-    if ($date && $address && $capacity && $tickets) {
-        OrganizationController::createEvent($date, $address, $capacity, $tickets);
+    // Validate required fields
+    if (!$date || !$address || !$capacity || !$tickets || !$service) {
+        echo "Missing required fields: date, address, capacity, tickets, and service are mandatory.";
+        return;
+    }
+
+    // Determine the service type
+    $familyShelter = ($service === 'familyShelter');
+    $educationalCenter = ($service === 'educationalCenter');
+    $foodBank = ($service === 'foodBank');
+
+    // Call the method to create the event, passing in the necessary parameters
+    $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
+        'Family Shelter Event', // Example event name
+        $date,
+        $capacity,
+        $tickets,
+        $familyShelter,
+        $educationalCenter,
+        $foodBank,
+        $signLangInterpret,
+        $wheelchair
+    );
+
+    if ($isEventCreated) {
         echo "Event created successfully.";
     } else {
-        echo "Missing required fields.";
+        echo "Failed to create event. Please try again.";
     }
 }
 
 function handleBooks() {
-   // echo"ana f handle books fel cont ";
-    DonationManagement::handelTrack(2);
-    echo "Books tracked successfully.";
-    exit();
+    if (DonationManagement::handelTrack(2)) {
+        echo "Books tracked successfully.";
+    } else {
+        echo "Failed to track books.";
+    }
 }
 
 function handleClothes() {
-    DonationManagement::handelTrack(3);
-    echo "Clothes tracked successfully.";
+    if (DonationManagement::handelTrack(3)) {
+        echo "Clothes tracked successfully.";
+    } else {
+        echo "Failed to track clothes.";
+    }
 }
 
 function handleMoney() {
-    DonationManagement::handelTrack(1);
-    echo "Money tracked successfully.";
+    if (DonationManagement::handelTrack(1)) {
+        echo "Money tracked successfully.";
+    } else {
+        echo "Failed to track money.";
+    }
 }
-
-?>
