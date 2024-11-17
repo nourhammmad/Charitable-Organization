@@ -1,10 +1,10 @@
 <?php
 
 define('DB_HOST', 'localhost');     
-define('DB_PORT', '3306');          
+define('DB_PORT', '3309');          
 define('DB_USER', 'root');          
 define('DB_PASS', '');              
-define('DB_NAME', 'charityy_db');        
+define('DB_NAME', 'charity_db');        
 
 class Database {
     private static $instance = null;
@@ -88,7 +88,6 @@ class Database {
     
     
 
-    // Get the last inserted ID
     public static function get_last_inserted_id(): int {
         return self::$conn->insert_id;
     }

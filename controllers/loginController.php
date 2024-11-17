@@ -1,15 +1,15 @@
 <?php
 
 session_start();
-$server = $_SERVER['DOCUMENT_ROOT'];
+//$server = $_SERVER['DOCUMENT_ROOT'];
 
-require_once $server."./models/UserModel.php";
-require_once $server."./models/RegisteredUserModel.php";
-require_once $server."./Services/Guest.php";
-require_once $server."./Services/RegisterUser.php";
-require_once $server."./Database.php";
-require_once $server."./Services/ContextAuthenticator.php";
-require_once $server."./controllers/OrganizationController.php";
+require_once "D:/SDP/project/Charitable-Organization/models/UserModel.php";
+require_once "D:/SDP/project/Charitable-Organization/models/RegisteredUserModel.php";
+require_once "D:/SDP/project/Charitable-Organization/Services/Guest.php";
+require_once "D:/SDP/project/Charitable-Organization/Services/RegisterUser.php";
+require_once "D:/SDP/project/Charitable-Organization/Database.php";
+require_once "D:/SDP/project/Charitable-Organization/Services/ContextAuthenticator.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/OrganizationController.php";
 
 class LoginController {
 
@@ -37,12 +37,12 @@ class LoginController {
 
         
 
-        require_once $_SERVER['DOCUMENT_ROOT']."./views/loginView.php";
+        require_once "D:/SDP/project/Charitable-Organization/views/loginView.php";
     }
 
     private function loginorg() {
         
-        require_once $_SERVER['DOCUMENT_ROOT']."./views/testOrganization.php";
+        require_once "D:/SDP/project/Charitable-Organization/views/testOrganization.php";
          exit(); 
     }
     
