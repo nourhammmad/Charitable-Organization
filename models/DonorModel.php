@@ -1,7 +1,7 @@
 <?php
 
-require_once "./Database.php";
-require_once "./Services/Donor.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/Donor.php";
 
 
 class DonarModel{

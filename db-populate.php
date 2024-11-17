@@ -1,7 +1,7 @@
 <?php
 $server = $_SERVER['DOCUMENT_ROOT'];
 
-require_once $server."./Database.php";
+require_once "./Database.php";
  
 class Populate {
     public static function populate() {
@@ -323,8 +323,8 @@ class Populate {
                     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
  
                     // Insert a Volunteer association with the Event
-                    "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
-                        (1, 1);",
+                    // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
+                    //     (1, 1);",
 
 // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
 // (1, 1);",

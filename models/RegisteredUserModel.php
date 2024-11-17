@@ -1,8 +1,8 @@
 <?php
 
 $server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./Database.php";
-require_once $server."./models/UserModel.php";
+require_once "./Database.php";
+require_once "./models/UserModel.php";
 
 
 class RegisterUserTypeModel {
