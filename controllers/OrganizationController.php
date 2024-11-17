@@ -1,142 +1,142 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'].'./models/OrganizationModel.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'./models/EventModel.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'./controllers/DonationManagement.php';
+// require_once $_SERVER['DOCUMENT_ROOT'].'./models/OrganizationModel.php';
+// require_once $_SERVER['DOCUMENT_ROOT'].'./models/EventModel.php';
+// require_once $_SERVER['DOCUMENT_ROOT'].'./controllers/DonationManagement.php';
 
-require_once $_SERVER['DOCUMENT_ROOT']."./models/OrganizationModel.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."./controllers/FamilyShelterController.php";
-
-
-
-class OrganizationController {
-
-    public static function createEvent($date, $address, $capacity, $tickets) {
-        $eventId = EventModel::createEvent($date, $capacity, $tickets);
-
-        if ($eventId) {
-            $event = EventModel::getEventById($eventId);
-            if ($event && is_array($event)) {
-                echo "mazboot";
-
-            } else {
-                echo "Error retrieving event details.";
-            }
-        } else {
-            echo "Event creation failed.";
-        }
-    }
-}
+// require_once $_SERVER['DOCUMENT_ROOT']."./models/OrganizationModel.php";
+// require_once  $_SERVER['DOCUMENT_ROOT']."./controllers/FamilyShelterController.php";
 
 
 
-if (isset($_GET['action'])) {
+// class OrganizationController {
 
-    $action = $_GET['action'];
-echo $action;
-    switch ($action) {
-        case 'getOrganizations':
-            handleGetOrganizations();
-            break;
+//     public static function createEvent($date, $address, $capacity, $tickets) {
+//         $eventId = EventModel::createEvent($date, $capacity, $tickets);
 
-        case 'getDonors':
-            handleGetDonors();
-            break;
+//         if ($eventId) {
+//             $event = EventModel::getEventById($eventId);
+//             if ($event && is_array($event)) {
+//                 echo "mazboot";
 
-        case 'createEvent':
-            handleCreateEvent();
-            break;
+//             } else {
+//                 echo "Error retrieving event details.";
+//             }
+//         } else {
+//             echo "Event creation failed.";
+//         }
+//     }
+// }
 
-        case 'trackBooks':
-            handleBooks();
-            break;
 
-        case 'trackClothes':
-            handleClothes();
-            break;
 
-        case 'trackMoney':
-            handleMoney();
-            break;
+// if (isset($_GET['action'])) {
 
-        default:
-            echo "Invalid action.";
-            break;
-    }
-}
+//     $action = $_GET['action'];
+// echo $action;
+//     switch ($action) {
+//         case 'getOrganizations':
+//             handleGetOrganizations();
+//             break;
 
-function handleGetOrganizations() {
-    $result = OrganizationModel::getAllOrganizations();
-    if ($result && $result->num_rows > 0) {
-        echo json_encode($result->fetch_all(MYSQLI_ASSOC));
-    } else {
-        echo "No organizations found.";
-    }
-}
+//         case 'getDonors':
+//             handleGetDonors();
+//             break;
 
-function handleGetDonors() {
-    $result = OrganizationModel::getDonors();
-    if ($result && $result->num_rows > 0) {
-        echo json_encode($result->fetch_all(MYSQLI_ASSOC));
-    } else {
-        echo "No donors found.";
-    }
-}
+//         case 'createEvent':
+//             handleCreateEvent();
+//             break;
 
-function handleCreateEvent() {
-    // Sanitize and check POST values
-    $date = $_POST['date'] ?? null;
-    $address = $_POST['address'] ?? null;
-    $capacity = $_POST['capacity'] ?? null;
-    $tickets = $_POST['tickets'] ?? null;
-    $service = $_POST['service'] ?? null;
-    $signLangInterpret = isset($_POST['signLang']) ? true : false;
-    $wheelchair = isset($_POST['wheelchair']) ? true : false;
+//         case 'trackBooks':
+//             handleBooks();
+//             break;
 
-    // Validate required fields
-    if (!$date || !$address || !$capacity || !$tickets || !$service) {
-        echo "Missing required fields: date, address, capacity, tickets, and service are mandatory.";
-        return;
-    }
+//         case 'trackClothes':
+//             handleClothes();
+//             break;
 
-    // Determine the service type
-    $familyShelter = ($service === 'familyShelter');
-    $educationalCenter = ($service === 'educationalCenter');
-    $foodBank = ($service === 'foodBank');
-    //public static function createFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $signLangInterpret, $wheelchair) {
+//         case 'trackMoney':
+//             handleMoney();
+//             break;
 
-    // Call the method to create the event, passing in the necessary parameters
-    $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
-        'Family Shelter Event', // Example event name
-        $date,
-        $capacity,
-        $tickets,
-        $signLangInterpret,
-        $wheelchair
-    );
-    if ($isEventCreated) {
-        echo "Event created successfully.";
-    } else {
-        echo "Failed to create event. Please try again.";
-    }
+//         default:
+//             echo "Invalid action.";
+//             break;
+//     }
+// }
 
-}
+// function handleGetOrganizations() {
+//     $result = OrganizationModel::getAllOrganizations();
+//     if ($result && $result->num_rows > 0) {
+//         echo json_encode($result->fetch_all(MYSQLI_ASSOC));
+//     } else {
+//         echo "No organizations found.";
+//     }
+// }
 
-function handleBooks() {
-   // echo"ana f handle books fel cont ";
-    DonationManagement::handelTrack(2);
-    echo "Books tracked successfully.";
-    exit();
-}
+// function handleGetDonors() {
+//     $result = OrganizationModel::getDonors();
+//     if ($result && $result->num_rows > 0) {
+//         echo json_encode($result->fetch_all(MYSQLI_ASSOC));
+//     } else {
+//         echo "No donors found.";
+//     }
+// }
 
-function handleClothes() {
-    DonationManagement::handelTrack(3);
-    echo "Clothes tracked successfully.";
-}
+// function handleCreateEvent() {
+//     // Sanitize and check POST values
+//     $date = $_POST['date'] ?? null;
+//     $address = $_POST['address'] ?? null;
+//     $capacity = $_POST['capacity'] ?? null;
+//     $tickets = $_POST['tickets'] ?? null;
+//     $service = $_POST['service'] ?? null;
+//     $signLangInterpret = isset($_POST['signLang']) ? true : false;
+//     $wheelchair = isset($_POST['wheelchair']) ? true : false;
 
-function handleMoney() {
-    DonationManagement::handelTrack(1);
-    echo "Money tracked successfully.";
-}
+//     // Validate required fields
+//     if (!$date || !$address || !$capacity || !$tickets || !$service) {
+//         echo "Missing required fields: date, address, capacity, tickets, and service are mandatory.";
+//         return;
+//     }
+
+//     // Determine the service type
+//     $familyShelter = ($service === 'familyShelter');
+//     $educationalCenter = ($service === 'educationalCenter');
+//     $foodBank = ($service === 'foodBank');
+//     //public static function createFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $signLangInterpret, $wheelchair) {
+
+//     // Call the method to create the event, passing in the necessary parameters
+//     $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
+//         'Family Shelter Event', // Example event name
+//         $date,
+//         $capacity,
+//         $tickets,
+//         $signLangInterpret,
+//         $wheelchair
+//     );
+//     if ($isEventCreated) {
+//         echo "Event created successfully.";
+//     } else {
+//         echo "Failed to create event. Please try again.";
+//     }
+
+// }
+
+// function handleBooks() {
+//    // echo"ana f handle books fel cont ";
+//     DonationManagement::handelTrack(2);
+//     echo "Books tracked successfully.";
+//     exit();
+// }
+
+// function handleClothes() {
+//     DonationManagement::handelTrack(3);
+//     echo "Clothes tracked successfully.";
+// }
+
+// function handleMoney() {
+//     DonationManagement::handelTrack(1);
+//     echo "Money tracked successfully.";
+// }
 
 ?>

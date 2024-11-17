@@ -1,6 +1,6 @@
 <?php
 $server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./Database.php";
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
 
 class DonationModel {
 
@@ -67,12 +67,12 @@ class DonationModel {
 
         // Based on the payment method, insert additional details into the corresponding payment table
         switch ($paymentMethod) {
-            case 'Cash':
-                $transactionId = $paymentDetails['transaction_id'];
+            case 'cash':
+                $transactionId = $paymentDetails['transaction_number'];
                 $queryCash = "INSERT INTO Cash (payment_id, transaction_id) 
                               VALUES ((SELECT payment_id FROM Payments WHERE money_id = '$moneyId'), '$transactionId')";
                 return Database::run_query(query: $queryCash);
-            case 'Visa':
+            case 'visa':
                 $transactionNumber = $paymentDetails['transaction_number'];
                 $cardNumber = $paymentDetails['card_number'];
                 $queryVisa = "INSERT INTO Visa (payment_id, transaction_number, card_number) 

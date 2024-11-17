@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -146,7 +145,7 @@
                     <input type="number" id="publicationYear" placeholder="Publication Year" required>
                     <input type="number" id="quantity" placeholder="Quantity" required>
                 </div>
-        
+
                <!-- Clothes fields -->
                 <div id="clothesFields" style="display: none;">
                     <input type="text" id="size" placeholder="Size (e.g., M, L)" required>
@@ -167,10 +166,11 @@
                     </div>
                     <div id="visaFields" style="display: none;">
                         <input type="number" id="visaAmount" placeholder="Amount" required>
-                        <input type="text" id="cardNumber" placeholder="Card Number" required>
-                        <input type="text" id="cardHolderName" placeholder="Card Holder Name" required>
+<input type="text"   id="cardNumber" placeholder="Card Number" required>
+                        <input type="text"   id="visaCurrency" placeholder="Currency" required>
+                        <!-- <input type="text" id="cardHolderName" placeholder="Card Holder Name" required>
                         <input type="text" id="expiryDate" placeholder="Expiry Date (MM/YY)" required>
-                        <input type="number" id="cvv" placeholder="CVV" required>
+  <input type="number" id="cvv" placeholder="CVV" required> -->
                     </div>
                     <div id="instapayFields" style="display: none;">
                         <input type="number" id="instapayAmount" placeholder="Amount" required>
@@ -220,24 +220,29 @@
                 formData.append("author", document.getElementById("author").value);
                 formData.append("publicationYear", document.getElementById("publicationYear").value);
                 formData.append("quantity", document.getElementById("quantity").value);
-            } else if (selectedType === "money") {
-               if (document.getElementById("paymentType").value === "cash") {
+ } 
+            else if (selectedType === "money") {
+        
+                if (document.getElementById("paymentType").value === "cash") {
                 formData.append("paymentType", "cash");
                 formData.append("amount", document.getElementById("cashAmount").value);
                 formData.append("currency", document.getElementById("cashCurrency").value);
                 }
-                //add visa and insta pay
-            } else if (selectedType === "clothes") {
+   else if (document.getElementById("paymentType").value === "visa") {
+                formData.append("paymentType", "visa");
+                formData.append("amount", document.getElementById("visaAmount").value);
+                formData.append("currency", document.getElementById("visaCurrency").value);
+                formData.append("cardNumber", document.getElementById("cardNumber").value);
+                }
+                //add instapay
+            } 
+            else if (selectedType === "clothes") {
                 formData.append("size", document.getElementById("size").value);
                 formData.append("quantity", document.getElementById("clothesQuantity").value);
                 formData.append("type", document.getElementById("clothesType").value);
                 formData.append("color", document.getElementById("clothesColor").value);
             }
-
-            console.log("Selected Type:", selectedType);
-            console.log("Form Data:", formData.toString());
-
-            fetch("../controllers/DonationController.php", {
+  fetch("../controllers/DonationController.php", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formData.toString()

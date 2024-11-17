@@ -1,7 +1,7 @@
 <?php
 $server=$_SERVER['DOCUMENT_ROOT'];
 
-require_once $server."./Database.php";
+require_once "./Database.php";
 
 class UserModel {
 

@@ -1,7 +1,7 @@
 <?php
 $server = $_SERVER['DOCUMENT_ROOT'];
 
-require_once $server."./Database.php";
+require_once "./Database.php";
  
 class Populate {
     public static function populate() {
@@ -322,23 +322,21 @@ class Populate {
                         FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
                     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
  
-                    // Insert a Volunteer association with the Event
-                    "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
-                        (1, 1);",
+                   
 
 // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
 // (1, 1);",
-//   "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets) VALUES
-//   ('Charity Gala', '2024-12-01', (SELECT addressId FROM Address LIMIT 1), 100, 50),
-//   ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75),
-//   ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100),
-//   ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125),
-//   ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40),
-//   ('Community Cleanup', '2024-12-25', (SELECT addressId FROM Address LIMIT 1), 50, 25),
-//   ('Holiday Celebration', '2024-12-30', (SELECT addressId FROM Address LIMIT 1), 300, 150),
-//   ('Health Screening Camp', '2025-01-05', (SELECT addressId FROM Address LIMIT 1), 100, 50),
-//   ('Art Workshop for Kids', '2025-01-10', (SELECT addressId FROM Address LIMIT 1), 120, 60),
-//   ('Senior Assistance Program', '2025-01-15', (SELECT addressId FROM Address LIMIT 1), 90, 45);",
+                    // "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets) VALUES
+                    // ('Charity Gala', '2024-12-01', (SELECT addressId FROM Address LIMIT 1), 100, 50),
+                    // ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75),
+                    // ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100),
+                    // ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125),
+                    // ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40),
+                    // ('Community Cleanup', '2024-12-25', (SELECT addressId FROM Address LIMIT 1), 50, 25),
+                    // ('Holiday Celebration', '2024-12-30', (SELECT addressId FROM Address LIMIT 1), 300, 150),
+                    // ('Health Screening Camp', '2025-01-05', (SELECT addressId FROM Address LIMIT 1), 100, 50),
+                    // ('Art Workshop for Kids', '2025-01-10', (SELECT addressId FROM Address LIMIT 1), 120, 60),
+                    // ('Senior Assistance Program', '2025-01-15', (SELECT addressId FROM Address LIMIT 1), 90, 45);",
 
 
 

@@ -3,13 +3,13 @@
 session_start();
 $server = $_SERVER['DOCUMENT_ROOT'];
 
-require_once $server."./models/UserModel.php";
-require_once $server."./models/RegisteredUserModel.php";
-require_once $server."./Services/Guest.php";
-require_once $server."./Services/RegisterUser.php";
-require_once $server."./Database.php";
-require_once $server."./Services/ContextAuthenticator.php";
-require_once $server."./controllers/OrganizationController.php";
+require_once "./models/UserModel.php";
+require_once "./models/RegisteredUserModel.php";
+require_once "./Services/Guest.php";
+require_once "./Services/RegisterUser.php";
+require_once "./Database.php";
+require_once "./Services/ContextAuthenticator.php";
+require_once "./controllers/OrganizationController.php";
 
 class LoginController {
 
@@ -37,12 +37,12 @@ class LoginController {
 
         
 
-        require_once $_SERVER['DOCUMENT_ROOT']."./views/loginView.php";
+        require_once "./views/loginView.php";
     }
 
     private function loginorg() {
         
-        require_once $_SERVER['DOCUMENT_ROOT']."./views/testOrganization.php";
+        require_once "./views/testOrganization.php";
          exit(); 
     }
     
