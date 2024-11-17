@@ -66,9 +66,7 @@ class Populate {
  
                 // Insert into Volunteer Table
                 "INSERT INTO Volunteer (registered_user_id, organization_id, other_volunteer_specific_field, skills) 
-                    VALUES (2, 1, 'Event Coordinator', 'Cooking');
-                    ",
-                    
+                    VALUES (2, 1, 'Event Coordinator', 'Cooking');",
 
 
                 " CREATE TABLE Tasks (
@@ -144,6 +142,53 @@ class Populate {
                 // Insert Money Donation
                 "INSERT INTO Money (donation_type_id, donation_management_id, amount, currency, date_donated) VALUES
                     (1, 1, 1000.00, 'USD', '2024-11-01 12:00:00');",
+                //payment table 
+                "CREATE TABLE Payments (
+                    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+                    donor_id INT,
+                    money_id INT,
+                    amount DECIMAL(10, 2) NOT NULL,
+                    payment_method ENUM('Cash', 'Visa', 'Instapay') NOT NULL,
+                    FOREIGN KEY (donor_id) REFERENCES Donor(id) ON DELETE CASCADE,
+                    FOREIGN KEY (money_id) REFERENCES Money(money_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Insert Payments without status
+                "INSERT INTO Payments (donor_id, money_id, amount, payment_method) VALUES
+                    (1, 1, 500.00, 'Cash'),
+                    (1, 1, 200.00, 'Visa'),
+                    (1, 1, 300.00, 'Instapay');",
+
+                "CREATE TABLE Cash (
+                    payment_id INT NOT NULL,
+                    transaction_id VARCHAR(100) UNIQUE,
+                    FOREIGN KEY (payment_id) REFERENCES Payments(payment_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                // Create Visa Table (Specific Fields for Visa Payments)
+                "CREATE TABLE Visa (
+                    payment_id INT NOT NULL,
+                    transaction_number VARCHAR(100) UNIQUE,
+                    card_number VARCHAR(50),
+                    FOREIGN KEY (payment_id) REFERENCES Payments(payment_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                // Create Instapay Table (Specific Fields for Instapay Payments)
+                "CREATE TABLE Instapay (
+                    payment_id INT NOT NULL,
+                    transaction_reference VARCHAR(100) UNIQUE,
+                    account_number VARCHAR(50),
+                    FOREIGN KEY (payment_id) REFERENCES Payments(payment_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                // Insert into specific payment tables
+                "INSERT INTO Cash (payment_id, transaction_id) VALUES
+                    (1, 'CASH12345');",
+
+                "INSERT INTO Visa (payment_id, transaction_number, card_number) VALUES
+                    (2, 'VISA67890', '1234-5678-9876-5432');",
+
+                "INSERT INTO Instapay (payment_id, transaction_reference, account_number) VALUES
+                    (3, 'INSTA54321', '1234567890');", 
  
                 // Create Books Table (Child Table)
                 "CREATE TABLE Books (
