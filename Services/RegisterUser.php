@@ -1,9 +1,8 @@
 <?php
-
-require_once "./Services/User.php";
-require_once "../Charitable-Organization/models/RegisteredUserModel.php";
-require_once "../Charitable-Organization/models/DonorModel.php";
-require_once "./models/VolunteerModel.php";
+//CHANGE 
+require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/User.php";
+// require_once "../Charitable-Organization/models/DonorModel.php";
+// require_once "../Charitable-Organization/models/VolunteerModel.php";
 
 
 
@@ -47,13 +46,13 @@ class RegisterUser extends user {
            header("Location: ./views/HomeView.php?donor_id=$donorId");
         exit();
         }
-        elseif ($this->type === 'Volunteer') {
-            if (VolunteerModel::createVolunteer($this->id)) { // Assuming createVolunteer is a method to initialize volunteer data
-                $volunteerId = VolunteerModel::getLastInsertVolunteerId(); // Get the last inserted Volunteer ID
-                header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId"); // Redirect to volunteer dashboard
-                exit();
-            }
-        }
+        // elseif ($this->type === 'Volunteer') {
+        //     if (VolunteerModel::createVolunteer($this->id)) { // Assuming createVolunteer is a method to initialize volunteer data
+        //         $volunteerId = VolunteerModel::getLastInsertVolunteerId(); // Get the last inserted Volunteer ID
+        //         header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId"); // Redirect to volunteer dashboard
+        //         exit();
+        //     }
+        // }
     }
 
     public function getId() {

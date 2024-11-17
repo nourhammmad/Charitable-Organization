@@ -17,7 +17,7 @@ class BooksDonation extends DonationType {
         $this->publicationYear=$publicationYear; 
     }
 
-    public function donate():bool {
+    public function donate($donorid):bool {
         if(DonationModel::createBookDonation(2,1,$this->bookTitle,$this->author,$this->publicationYear,$this->getQuantity())){
             return true;
         }
@@ -40,7 +40,7 @@ class ClothesDonation extends DonationType {
         $this->color=$color; 
     }
 
-    public function donate():bool {
+    public function donate($donorid):bool {
         if(DonationModel::createClothesDonation(2,1,$this->clothesType,$this->size,$this->color,$this->getQuantity())){
             return true;
         }
@@ -49,25 +49,28 @@ class ClothesDonation extends DonationType {
     }
 }
 
-// class FeesDonation implements Donation {
-//     public function donate($donorId, $amount) {
-//         // Logic for donating fees
-//         $paymentId = DonationModel::createPayment('cash'); // Assuming a cash payment for simplicity
-//         DonationModel::createMoneyDonation($donorId, $amount, $paymentId);
-//     }
-// }
+class FeesDonation extends DonationType {
+    private Ipayment $paymentMethod;
+    
+
+    public function __construct($amount, Ipayment $paymentMethod)
+    {
+        parent::__construct(1,$amount);
+        $this->paymentMethod=$paymentMethod;
+    }
+
+    public function setProvider(Ipayment $paymentMethod)
+    {
+        $this->paymentMethod = $paymentMethod;
+    }
+
+    public function donate($donorid):bool {
+
+        if ($this->paymentMethod->processPayment($donorid)) return true;
+        return false;
+       
+
+    }
+}
 
 
-// class FeesDonation extends Donation {
-//     private $purpose;
-
-//     public function __construct($donationId, $quantityDonated, $purpose) {
-//         parent::__construct($donationId, $quantityDonated);
-//         $this->purpose = $purpose;
-//     }
-
-//     public function donate(): bool {
-//         echo "Donating $" . $this->quantityDonated . " for " . $this->purpose . ".\n";
-//         return true;
-//     }
-// }

@@ -146,11 +146,7 @@
                     <input type="number" id="publicationYear" placeholder="Publication Year" required>
                     <input type="number" id="quantity" placeholder="Quantity" required>
                 </div>
-                <!-- Money fields -->
-                <div id="moneyFields" style="display: none;">
-                    <input type="number" id="amount" placeholder="Amount" required>
-                </div>
-                <!-- Clothes fields -->
+        
                <!-- Clothes fields -->
                 <div id="clothesFields" style="display: none;">
                     <input type="text" id="size" placeholder="Size (e.g., M, L)" required>
@@ -158,6 +154,34 @@
                     <input type="text" id="clothesType" placeholder="Type of Clothes (e.g., Shirt, Jacket)" required>
                     <input type="text" id="clothesColor" placeholder="Color" required>
                 </div>
+                <div id="moneyFields" style="display: none;">
+                    <select id="paymentType" onchange="updatePaymentFields()">
+                        <option value="" disabled selected>Select Payment Method</option>
+                        <option value="cash">Cash</option>
+                        <option value="visa">Visa</option>
+                        <option value="instapay">Instapay</option>
+                    </select>
+                    <div id="cashFields" style="display: none;">
+                        <input type="number" id="cashAmount" placeholder="Amount" required>
+                        <input type="text" id="cashCurrency" placeholder="Currency" required>
+                    </div>
+                    <div id="visaFields" style="display: none;">
+                        <input type="number" id="visaAmount" placeholder="Amount" required>
+                        <input type="text" id="cardNumber" placeholder="Card Number" required>
+                        <input type="text" id="cardHolderName" placeholder="Card Holder Name" required>
+                        <input type="text" id="expiryDate" placeholder="Expiry Date (MM/YY)" required>
+                        <input type="number" id="cvv" placeholder="CVV" required>
+                    </div>
+                    <div id="instapayFields" style="display: none;">
+                        <input type="number" id="instapayAmount" placeholder="Amount" required>
+                        <input type="text" id="accountID" placeholder="Account ID" required>
+                        <input type="text" id="accountHolderName" placeholder="Account Holder Name" required>
+                        <input type="number" id="balance" placeholder="Balance" required>
+                        <input type="number" id="transactionFee" placeholder="Transaction Fee" required>
+                    </div>
+                </div>
+
+
                 <button type="button" onclick="submitDonationForm()">Donate</button>
             </form>
         </div>
@@ -178,6 +202,13 @@
             document.getElementById("donationModal").style.display = "none";
         }
 
+        function updatePaymentFields() {
+            const paymentType = document.getElementById("paymentType").value;
+            document.getElementById("cashFields").style.display = paymentType === "cash" ? "block" : "none";
+            document.getElementById("visaFields").style.display = paymentType === "visa" ? "block" : "none";
+            document.getElementById("instapayFields").style.display = paymentType === "instapay" ? "block" : "none";
+        }
+
         function submitDonationForm() {
             const formData = new URLSearchParams();
             const selectedType = document.getElementById("modalTitle").innerText.split(' ')[1].toLowerCase();
@@ -190,7 +221,12 @@
                 formData.append("publicationYear", document.getElementById("publicationYear").value);
                 formData.append("quantity", document.getElementById("quantity").value);
             } else if (selectedType === "money") {
-                formData.append("amount", document.getElementById("amount").value);
+               if (document.getElementById("paymentType").value === "cash") {
+                formData.append("paymentType", "cash");
+                formData.append("amount", document.getElementById("cashAmount").value);
+                formData.append("currency", document.getElementById("cashCurrency").value);
+                }
+                //add visa and insta pay
             } else if (selectedType === "clothes") {
                 formData.append("size", document.getElementById("size").value);
                 formData.append("quantity", document.getElementById("clothesQuantity").value);

@@ -3,6 +3,7 @@
 require_once "../Services/Donor.php";
 require_once "../Services/DonationProvider.php";
 require_once "../models/DonorModel.php";
+require_once "../Services/paymentMethods.php";
 
 
 if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
@@ -17,6 +18,15 @@ if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
         case 'clothes':
             $donationStrategy = new ClothesDonation($_POST['type'],$_POST['size'],$_POST['color'],$_POST['quantity']);
             break;
+        case 'money':
+            if($_POST['paymentType']='cash')
+             $donationStrategy = new FeesDonation($_POST['amount'],new cash($_POST['amount'],$_POST['currency']));
+
+            // else if($_POST['paymentType']='visa ')
+            //  $donationStrategy = new FeesDonation($_POST['amount'],new cash($_POST['amount'],$_POST['currency']));
+            // else if($_POST['paymentType']='instapay')
+            //  $donationStrategy = new FeesDonation($_POST['amount'],new cash($_POST['amount'],$_POST['currency']));
+            break;
         default:
             echo "Invalid donation type.";
             exit;
@@ -26,7 +36,7 @@ if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
 
         if($donor){
             $donor->setDonationStrategy($donationStrategy);
-            if ($donor->donate($donorId)) {
+            if ($donor->donate()) {
                 echo ucfirst($donationType) . " donation successful!";
             } 
             else {
