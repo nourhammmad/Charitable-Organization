@@ -56,7 +56,7 @@ class Populate {
                     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     registered_user_id INT NOT NULL,  
                     organization_id INT,  
-                    other_volunteer_specific_field VARCHAR(255),  
+                    -- other_volunteer_specific_field VARCHAR(255),  
                     skills ENUM('Cooking', 'Teaching', 'Building') NOT NULL,
                     FOREIGN KEY (registered_user_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
                     FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE
@@ -77,6 +77,9 @@ class Populate {
                     timeSlot VARCHAR(255), -- Time slot for the task
                     location VARCHAR(255) -- Location where the task will take place
                 );",    
+                "INSERT INTO Tasks (`name`, `description`, `requiredSkill`, `timeSlot`, `location`) 
+                VALUES ('Build a Website', 'Create a responsive website for the charity.', 'Web Development', '10:00 AM - 3:00 PM', 'Main Office');",
+                
             
                 // Create Donor Table
                 "CREATE TABLE Donor (

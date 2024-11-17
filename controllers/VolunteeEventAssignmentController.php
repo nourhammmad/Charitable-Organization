@@ -23,8 +23,7 @@ class VolunteeEventAssignmentController {
     // Method to assign a volunteer to a specific event
     public function assignVolunteer($volunteerId, $eventId) {
         // Initialize the volunteer with their ID
-        $volunteer = new Volunteer($volunteerId);
-
+      
         // Call the model to assign the volunteer to the event
         $result = VolunteerEventAssignementModel::assignVolunteerToEvent($volunteer, $eventId);
         
