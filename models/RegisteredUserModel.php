@@ -1,18 +1,18 @@
 <?php
 
 $server=$_SERVER['DOCUMENT_ROOT'];
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/UserModel.php";
+require_once "D:/SDP/project/Charitable-Organization/Database.php";
+require_once "D:/SDP/project/Charitable-Organization/models/UserModel.php";
 
 
 class RegisterUserTypeModel {
 
 
-    public static function save($email, $userName, $passwordHash, $category) { 
+    public static function save($email, $userName, $passwordHash, $phone ,$category) { 
         $type = 'RegisteredUserType';
         if (UserModel::createDefaultUser($type)) {
             $userId = (String) UserModel::getLastInsertId();
-            $insertRegisteredUserQuery = "INSERT INTO RegisteredUserType (`id`, `email`, `userName`, `passwordHash`, `category`) VALUES ('$userId', '$email', '$userName', '$passwordHash', '$category')";
+            $insertRegisteredUserQuery = "INSERT INTO RegisteredUserType (`id`, `email`, `userName`, `passwordHash`,`phone`,`category`) VALUES ('$userId', '$email', '$userName', '$passwordHash','$phone' ,'$category')";
             return Database::run_query($insertRegisteredUserQuery);
         }
         return false;
@@ -28,7 +28,7 @@ class RegisterUserTypeModel {
 
         if ($result && $result->num_rows > 0) {
             $data = $result->fetch_assoc();
-            return new RegisterUser($data['user_id'],$data['registered_user_id'], $data['email'], $data['userName'], $data['passwordHash'],$data['category'] );
+            return new RegisterUser($data['user_id'],$data['registered_user_id'], $data['email'], $data['userName'], $data['passwordHash'],$data['phone'],$data['category'] );
         }
         return null; 
     }
@@ -43,7 +43,7 @@ class RegisterUserTypeModel {
       
         if ($result && $result->num_rows > 0) {
             $data = $result->fetch_assoc();
-            return new RegisterUser($data['user_id'],$data['registered_user_id'], $data['email'], $data['userName'], $data['passwordHash'],$data['category']);
+            return new RegisterUser($data['user_id'],$data['registered_user_id'], $data['email'], $data['userName'], $data['passwordHash'],$data['phone'],$data['category']);
         }
         return null; 
     }
@@ -56,7 +56,7 @@ class RegisterUserTypeModel {
                                             WHERE `email` = '$email' AND `passwordHash` = '$pass'");
         if ($rows->num_rows > 0) {
             $data = $rows->fetch_assoc();
-            return new RegisterUser($data['user_id'],$data['id'], $data['email'], $data['userName'], $data['passwordHash'],$data['category'] );
+            return new RegisterUser($data['user_id'],$data['id'], $data['email'], $data['userName'], $data['passwordHash'],$data['phone'],$data['category'] );
         }
         return null;
     }

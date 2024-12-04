@@ -1,8 +1,7 @@
 
 <?php
-$server = $_SERVER['DOCUMENT_ROOT'];
 
-require_once $server."./Database.php";
+require_once "D:/SDP/project/Charitable-Organization/Database.php";
  
 
 
@@ -34,6 +33,7 @@ class Populate {
                     email VARCHAR(50) UNIQUE NOT NULL,
                     userName VARCHAR(50) UNIQUE NOT NULL,
                     passwordHash VARCHAR(255) NOT NULL,
+                    phone INT NOT NULL,
                     category ENUM('Volunteer', 'Donor'),
                     PRIMARY KEY (id),
                     FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE

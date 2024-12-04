@@ -114,6 +114,7 @@
             <input type="email" name="signup_email" placeholder="Email" required>
             <input type="text" name="signup_userName" placeholder="Username" required>
             <input type="password" name="signup_password" placeholder="Password" required>
+            <input type="text" name="phone" placeholder="phone" required>
             <select name="category" required>
                 <option value="">Select Category</option>
                 <option value="Volunteer">Volunteer</option>

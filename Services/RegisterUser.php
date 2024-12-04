@@ -1,10 +1,12 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT']."./Services/User.php";
-require_once $_SERVER['DOCUMENT_ROOT']."./models/RegisteredUserModel.php";
-require_once $_SERVER['DOCUMENT_ROOT']."./models/DonorModel.php";
-require_once $_SERVER['DOCUMENT_ROOT']."./models/VolunteerModel.php";
-require_once $_SERVER['DOCUMENT_ROOT']."./models/TaskModel.php";
+
+require_once "D:/SDP/project/Charitable-Organization/Services/User.php";
+require_once "D:/SDP/project/Charitable-Organization/models/RegisteredUserModel.php";
+require_once "D:/SDP/project/Charitable-Organization/models/DonorModel.php";
+require_once "D:/SDP/project/Charitable-Organization/models/VolunteerModel.php";
+require_once "D:/SDP/project/Charitable-Organization/models/VolunteerModel.php";
+require_once "D:/SDP/project/Charitable-Organization/models/TaskModel.php";
 
 
 
@@ -13,16 +15,17 @@ class RegisterUser extends user {
     private $email;
     private $userName;
     private $passwordHash;
-    //private $createdAt;
+    private $phone;
     private $category;
     
 
-    public function __construct($userid,$registeredUserId,$email, $userName, $passwordHash,$category ) {
+    public function __construct($userid,$registeredUserId,$email, $userName, $passwordHash,$phone,$category ) {
         parent::__construct($userid,'RegisteredUserType');
         $this->id =$registeredUserId;
         $this->email = $email;
         $this->userName = $userName;
         $this->passwordHash = $passwordHash;
+        $this->phone = $phone;
         $this->category=$category;
     }
 

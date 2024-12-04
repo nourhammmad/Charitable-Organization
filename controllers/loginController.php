@@ -19,7 +19,7 @@ class LoginController {
             if (isset($_POST['login'])) {
                 $this->loginRegisteredUser($_POST['email'], $_POST['password']);
             } elseif (isset($_POST['signup'])) {
-                $this->registerNewUser($_POST['signup_email'], $_POST['signup_userName'], $_POST['signup_password'], $_POST['category']);
+                $this->registerNewUser($_POST['signup_email'], $_POST['signup_userName'], $_POST['signup_password'], $_POST['phone'] ,$_POST['category']);
             } elseif (isset($_POST['guest'])) {
                 $this->loginGuestUser();
             } elseif (isset($_POST['google_login'])) {
@@ -68,10 +68,10 @@ class LoginController {
         }
     }
 
-        private function registerNewUser($email, $userName, $password, $category) {
+        private function registerNewUser($email, $userName, $password,$phone ,$category) {
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-            if (RegisterUserTypeModel::save($email, $userName, $passwordHash, $category)) {
-                $regUser = new RegisterUser(UserModel::getLastInsertId(),RegisterUserTypeModel::getLastInsertId(),$email, $userName, $passwordHash,$category);
+            if (RegisterUserTypeModel::save($email, $userName, $passwordHash,$phone ,$category)) {
+                $regUser = new RegisterUser(UserModel::getLastInsertId(),RegisterUserTypeModel::getLastInsertId(),$email, $userName, $passwordHash,$phone,$category);
                 $regUser->signUp();
             } else {
                 echo "Error registering new user.";
