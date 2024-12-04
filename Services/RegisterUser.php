@@ -1,9 +1,10 @@
 <?php
 
-require_once  $_SERVER['DOCUMENT_ROOT']."./Services/User.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."./models/RegisteredUserModel.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."./models/DonorModel.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."./models/VolunteerModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./Services/User.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/RegisteredUserModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/DonorModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/VolunteerModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/TaskModel.php";
 
 
 
@@ -52,7 +53,8 @@ class RegisterUser extends user {
             if (VolunteerModel::createVolunteer($this->id,1)) { // Assuming createVolunteer is a method to initialize volunteer data
                 echo "dakhalt";
                 $volunteerId = VolunteerModel::getLastInsertVolunteerId(); // Get the last inserted Volunteer ID
-                header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId"); // Redirect to volunteer dashboard
+                $taskId=TaskModel::getLastInsertTasksId();
+                header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId&task_id=$taskId"); // Redirect to volunteer dashboard
                 exit();
             }
         }
