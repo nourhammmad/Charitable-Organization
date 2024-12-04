@@ -1,14 +1,16 @@
 <?php
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/VolunteerModel.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/controllers/VolunteeEventAssignmentController.php";
+require_once $_SERVER['DOCUMENT_ROOT'] .'./models/VolunteerModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'./controllers/VolunteeEventAssignmentController.php';
 
 class VolunteerEventHandlerController {
     private $volunteerModel;
     private $assignEventController;
+    private $assignTaskController;
 
     public function __construct($volunteerId) {
         $this->volunteerModel = VolunteerModel::getVolunteerById($volunteerId);
         $this->assignEventController = new VolunteeEventAssignmentController();
+        $this->assignTaskController=new VolunteerTaskAssignmentController();
     }
 
     public function applyForEvent($eventId) {
@@ -19,12 +21,22 @@ class VolunteerEventHandlerController {
             return "Volunteer not found.";
         }
     }
+    public function applyForTask($taskId) {
+        if ($this->volunteerModel) {
+            $result = $this->assignTaskController->assignTaskToUser((int)$this->volunteerModel->getId(), $taskId);
+            return $result ? "Successfully applied to the task." : "Failed to apply to the task.";
+        } else {
+            return "Task not found.";
+        }
+    }
 }
 
 // Handle the POST request for applying to an event
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $volunteerId = isset($_POST['volunteerId']) ? $_POST['volunteerId'] : null;
     $eventId = isset($_POST['eventId']) ? $_POST['eventId'] : null;
+    $taskId = isset($_POST['taskId']) ? $_POST['taskId'] : null;
+
 
     // Debugging: Log the received data
     error_log("Volunteer ID: " . $volunteerId);

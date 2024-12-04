@@ -1,14 +1,14 @@
 <?php
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/FoodBank.php"; 
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/AccessabilityDecorator.php"; 
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/SignLangInterpret.php"; 
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/Wheelchair.php"; 
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/EventModel.php"; 
+require_once $_SERVER['DOCUMENT_ROOT']."./Services/FoodBank.php"; 
+require_once $_SERVER['DOCUMENT_ROOT']."./Services/AccessabilityDecorator.php"; 
+require_once $_SERVER['DOCUMENT_ROOT']."./Services/SignLangInterpret.php"; 
+require_once $_SERVER['DOCUMENT_ROOT']."./Services/Wheelchair.php"; 
+require_once $_SERVER['DOCUMENT_ROOT']."./models/EventModel.php"; 
 
 class FoodBankController {
 
     public static function createFoodBankEvent($eventName ,$date ,$capacity, $tickets, $signLangInterpret, $wheelchair) {
-        $eventName="Food Bank";
+        //$eventName="Food Bank";
         // $capacity=10;
         $foodQuantity=12;
         $foodType="VeggiesProtein";

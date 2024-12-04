@@ -1,9 +1,9 @@
 <?php
 
-require_once "../Services/Donor.php";
-require_once "../Services/DonationProvider.php";
-require_once "../models/DonorModel.php";
-require_once "F:\senior 2\Design Patterns\project\Charitable-Organization\Services\paymentMethods.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."./Services/Donor.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."./Services/DonationProvider.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."./models/DonorModel.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."./Services/paymentMethods.php";
 
 
 if (isset($_POST['donorId']) && isset($_POST['donationType'])) {

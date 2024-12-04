@@ -1,8 +1,11 @@
 
 <?php
+$server = $_SERVER['DOCUMENT_ROOT'];
+
+require_once $server."./Database.php";
+ 
 
 
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
  
 class Populate {
     public static function populate() {
@@ -10,7 +13,7 @@ class Populate {
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
                 "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
-                , organization, ipayment, cash, visa, instapay,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes;",
+                , organization, ipayment, cash, visa, instapay,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments;",
                 "SET FOREIGN_KEY_CHECKS = 1;",
  
                 // Create Users Table
@@ -113,6 +116,15 @@ class Populate {
                     donation_type_id INT AUTO_INCREMENT PRIMARY KEY,
                     type_name ENUM('Money', 'Books', 'Clothes') NOT NULL
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                "CREATE TABLE VolunteerTaskAssignments (
+                    volunteerId INT NOT NULL,
+                    taskId INT NOT NULL,
+                    assignedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (volunteerId, taskId),
+                    FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE,
+                    FOREIGN KEY (taskId) REFERENCES Tasks(id) ON DELETE CASCADE
+    );",
 
                 // Insert DonationTypes (Money, Books, Clothes)
                 "INSERT INTO DonationTypes (type_name) VALUES
@@ -339,13 +351,18 @@ class Populate {
   ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40, 1);",
 
 
-
-
+"INSERT INTO Tasks (name, description, requiredSkill, timeSlot, location)
+VALUES 
+('Donation Sorting', 'Organizing and categorizing donated items such as clothes, toys, and food', 'Organization Skills', '9:00 AM - 12:00 PM', 'Charity Warehouse'),
+('Volunteer Coordination', 'Supervising and guiding volunteers during a food drive', 'Leadership', '10:00 AM - 2:00 PM', 'Community Center'),
+('Event Promotion', 'Distributing flyers and promoting the charity event on social media', 'Marketing Skills', '10:00 AM - 1:00 PM', 'Office'),
+('Food Packing', 'Packing food items for distribution to families in need', 'Attention to Detail', '1:00 PM - 4:00 PM', 'Charity Kitchen'),
+('Cleanup Crew', 'Cleaning up after the charity gala event', 'Teamwork', '8:00 PM - 9:30 PM', 'Banquet Hall');"
 
 
 
             ]
-     );
+);
 }
 }
 ?>
