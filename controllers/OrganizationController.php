@@ -1,18 +1,19 @@
 <?php
 
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/OrganizationModel.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/EventModel.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/controllers/DonationManagement.php";
+require_once "D:/SDP/project/Charitable-Organization/models/OrganizationModel.php";
+require_once "D:/SDP/project/Charitable-Organization/models/EventModel.php";
+require_once "D:/SDP/project/Charitable-Organization/controllers/DonationManagement.php";
 
-require_once  "F:/senior 2/Design Patterns/project/Charitable-Organization/controllers/FamilyShelterController.php";
-require_once  "F:/senior 2/Design Patterns/project/Charitable-Organization/controllers/EducationalCenterController.php";
-require_once  "F:/senior 2/Design Patterns/project/Charitable-Organization/controllers/FoodBankController.php";
+require_once  "D:/SDP/project/Charitable-Organization/controllers/FamilyShelterController.php";
+require_once  "D:/SDP/project/Charitable-Organization/controllers/EducationalCenterController.php";
+require_once  "D:/SDP/project/Charitable-Organization/controllers/FoodBankController.php";
+require_once  "D:/SDP/project/Charitable-Organization/Services/CommunicationFacade.php";
  
     
     if (isset($_GET['action'])) {
     
         $action = $_GET['action'];
-    echo $action;
+        echo $action;
         switch ($action) {
             case 'getOrganizations':
                 handleGetOrganizations();
@@ -37,11 +38,21 @@ require_once  "F:/senior 2/Design Patterns/project/Charitable-Organization/contr
             case 'trackMoney':
                 handleMoney();
                 break;
+               
+            case 'sendAll':
+                SendNotification();
+                break;    
     
             default:
                 echo "Invalid action.";
                 break;
         }
+    }
+
+    function SendNotification() {
+        $result = CommunicationFacade::Sendall( $_POST['mail'], 
+           $_POST['subject'] ,
+           $_POST['body']);
     }
     
     function handleGetOrganizations() {
