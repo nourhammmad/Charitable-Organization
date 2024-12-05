@@ -16,6 +16,7 @@ if (Database::get_connection()) {
     $controller->handleRequest();
 } else {
     echo "Failed to connect to the database.";
+    
 }
 
 ?>
