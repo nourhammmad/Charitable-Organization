@@ -3,9 +3,20 @@ $server=$_SERVER['DOCUMENT_ROOT'];
 require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php";
 
 class DonationModel {
+    private static function getLastInsertedDonationItemId() {
+        $query = "SELECT donation_type_id FROM DonationItem ORDER BY donation_type_id DESC LIMIT 1;";
+        $result = Database::run_select_query(query: $query);
+    
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            print($row['donation_type_id']);
+            return $row['donation_type_id'];
+        }
+    
+        return null;
+    }
 
-
-    private static function insertDonationItem($donationManagementId, $donationTypeId, $descriptionn): bool {
+    private static function insertDonationItem($donationManagementId, $donationTypeId, $descriptionn, $donorId): bool {
         if (Database::get_connection()) {
             $descriptionn = mysqli_real_escape_string(Database::get_connection(), $descriptionn);
 
@@ -13,10 +24,17 @@ class DonationModel {
                                 VALUES ('$donationManagementId', '$donationTypeId', '$descriptionn', NOW())";
             $result = Database::run_query(query: $queryDonationItem);
             
-            // if (!$result) {
-            //     echo "Donation Type ID: $donationTypeId";
-
-            // }
+            if ($result) {
+                if ($donorId) {
+                    donarLogFile::createLog(
+                        userId: $donorId,
+                        organizationId: 1,
+                        donationItemId: self::getLastInsertedDonationItemId(),
+                        action: "Create",
+                        currentState: null
+                    );
+                }
+            }
             return $result;
         }
         else{
@@ -93,9 +111,9 @@ class DonationModel {
 
 
     // Function for book donations
-    public static function createBookDonation($donationTypeId=2,$donationManagementId, $bookTitle, $author, $publicationYear, $quantity): bool { 
+    public static function createBookDonation($donationTypeId=2,$donationManagementId, $bookTitle, $author, $publicationYear, $quantity,$donarID): bool { 
         $description = "$quantity copies of '$bookTitle' by $author";
-        self::insertDonationItem($donationManagementId, 2, $description);  
+        self::insertDonationItem($donationManagementId, 2, $description,$donarID);  
     
         $queryBooks = "INSERT INTO Books (donation_type_id,donation_management_id, book_title, author, publication_year, quantity, date_donated) 
                        VALUES ('$donationTypeId','$donationManagementId', '$bookTitle', '$author', '$publicationYear', '$quantity', NOW())";

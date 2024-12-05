@@ -1,12 +1,12 @@
 <?php
 
 
-require_once "D:/SDP/project/Charitable-Organization/Services/User.php";
-require_once "D:/SDP/project/Charitable-Organization/models/RegisteredUserModel.php";
-require_once "D:/SDP/project/Charitable-Organization/models/DonorModel.php";
-require_once "D:/SDP/project/Charitable-Organization/models/VolunteerModel.php";
-require_once "D:/SDP/project/Charitable-Organization/models/VolunteerModel.php";
-require_once "D:/SDP/project/Charitable-Organization/models/TaskModel.php";
+require_once "./Services/User.php";
+require_once "./models/RegisteredUserModel.php";
+require_once "./models/DonorModel.php";
+require_once "./models/VolunteerModel.php";
+require_once "./models/VolunteerModel.php";
+require_once "./models/TaskModel.php";
 
 
 
@@ -36,6 +36,7 @@ class RegisterUser extends user {
         if($this->category=='Donor'){
             $res=DonarModel::getDonorByRegisteredId($_SESSION['user_id']);
             if($res){
+
                 $donorId = $res->getId();
                 header("Location: ./views/HomeView.php?donor_id=$donorId");
             }
@@ -46,10 +47,15 @@ class RegisterUser extends user {
     public function signUp(){
         $_SESSION['user_id'] = $this->id;
         $_SESSION['user_category'] = $this->category;
+        echo("kjdhfjdg");
+        echo($this->category);
         if($this->category === 'Donor'){
+            echo ("2ay araf");
         if(DonarModel::createDonor($this->id,1)){
-           $donorId = DonarModel::getLastInsertDonorId();
-           header("Location: ./views/HomeView.php?donor_id=$donorId");
+            echo("AAAAAAAAAAAAAAAAAAA");
+            $donorId = DonarModel::getLastInsertDonorId();
+            echo("jdhadiyfgidasgf");
+           header("Location: ./views/HomeView.php?donor_id=$donorId ");
         exit();
         }}
         elseif ($this->category === 'Volunteer') {

@@ -71,6 +71,7 @@ class LoginController {
         private function registerNewUser($email, $userName, $password,$phone ,$category) {
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
             if (RegisterUserTypeModel::save($email, $userName, $passwordHash,$phone ,$category)) {
+                echo"blaba";
                 $regUser = new RegisterUser(UserModel::getLastInsertId(),RegisterUserTypeModel::getLastInsertId(),$email, $userName, $passwordHash,$phone,$category);
                 $regUser->signUp();
             } else {

@@ -1,3 +1,5 @@
+<?php $donorId = $_GET['donor_id']; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,6 +127,76 @@
             <div class="option-icon">👕</div>
             <a>Donate Clothes</a>
         </div>
+        
+    </div>
+    <div class="donation-history">
+        <button onclick="viewDonationHistory()">View Donation History</button>
+    </div>
+    <div id="donationHistory"></div>
+    
+    <script>
+    function viewDonationHistory() {
+        console.log("Function triggered"); // Debug statement
+
+        // Get the donorId from the input field
+        const donorId = document.querySelector('input[name="donorId"]').value;
+        console.log("Donor ID:", donorId); // Debug statement
+
+        // Prepare the form data
+        const formData = new FormData();
+        formData.append('action', 'view_history');
+        formData.append('donorId', donorId);
+
+        fetch("../controllers/DonationController.php", {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.text()) // Log raw response for debugging
+            .then(data => {
+                console.log("Raw response:", data); // Debugging
+                const parsedData = JSON.parse(data); // Parse JSON manually
+                if (parsedData.success) {
+                    displayDonationHistory(parsedData.donations);
+                } else {
+                    alert(parsedData.message || 'Error fetching donation history.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching donation history:', error);
+                alert('An error occurred while fetching donation history.');
+            });
+    }
+    function displayDonationHistory(donations) {
+        let historyContent = "<h2>Donation History</h2>";
+        if (donations && donations.length > 0) {
+            historyContent += "<ul>";
+            donations.forEach(donation => {
+                historyContent += `<li>${donation.donation_item_id}: ${donation.action}</li>`;
+            });
+            historyContent += "</ul>";
+        } else {
+            historyContent += "<p>No donations found.</p>";
+        }
+
+        // Display the donation history in a modal or a dedicated section
+        const historyModal = document.getElementById("historyModal");
+        historyModal.querySelector(".modal-content").innerHTML = historyContent;
+        historyModal.style.display = "flex";
+    }
+
+    function closeHistoryModal() {
+        document.getElementById("historyModal").style.display="none";
+    }
+
+
+    </script>
+
+    <!-- Donation History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeHistoryModal()">&times;</span>
+            <!-- Donation History content will be injected here -->
+        </div>
     </div>
 
     <div class="user-info">
@@ -220,7 +292,7 @@
                 formData.append("author", document.getElementById("author").value);
                 formData.append("publicationYear", document.getElementById("publicationYear").value);
                 formData.append("quantity", document.getElementById("quantity").value);
- } 
+            } 
             else if (selectedType === "money") {
         
                 if (document.getElementById("paymentType").value === "cash") {
@@ -228,7 +300,7 @@
                 formData.append("amount", document.getElementById("cashAmount").value);
                 formData.append("currency", document.getElementById("cashCurrency").value);
                 }
-   else if (document.getElementById("paymentType").value === "visa") {
+            else if (document.getElementById("paymentType").value === "visa") {
                 formData.append("paymentType", "visa");
                 formData.append("amount", document.getElementById("visaAmount").value);
                 formData.append("currency", document.getElementById("visaCurrency").value);
@@ -242,7 +314,7 @@
                 formData.append("type", document.getElementById("clothesType").value);
                 formData.append("color", document.getElementById("clothesColor").value);
             }
-  fetch("../controllers/DonationController.php", {
+             fetch("../controllers/DonationController.php", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formData.toString()
@@ -254,6 +326,8 @@
             })
             .catch(error => console.error('Error:', error));
         }
+
+       
 
     </script>
 </body>

@@ -1,8 +1,8 @@
 <?php
 $server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./models/VolunteerModel.php";
-require_once $server."./controllers/VolunteeEventAssignmentController.php";
-require_once $server."./controllers/VolunteerTaskAssignmentController.php";
+require_once $server."\models\VolunteerModel.php";
+require_once $server."\controllers\VolunteeEventAssignmentController.php";
+require_once $server."\controllers\VolunteerTaskAssignmentController.php";
 
 // require_once $server."./db-populate.php";
 

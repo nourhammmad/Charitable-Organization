@@ -1,9 +1,9 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT']."./Services/EducationalCenters.php"; 
-require_once $_SERVER['DOCUMENT_ROOT']."./Services/AccessabilityDecorator.php"; 
-require_once $_SERVER['DOCUMENT_ROOT']."./Services/SignLangInterpret.php";
-require_once $_SERVER['DOCUMENT_ROOT']."./Services/Wheelchair.php";
-require_once $_SERVER['DOCUMENT_ROOT']."./models/EventModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."\Services\EducationalCenters.php"; 
+require_once $_SERVER['DOCUMENT_ROOT']."\Services\AccessabilityDecorator.php"; 
+require_once $_SERVER['DOCUMENT_ROOT']."\Services\SignLangInterpret.php";
+require_once $_SERVER['DOCUMENT_ROOT']."\Services\Wheelchair.php";
+require_once $_SERVER['DOCUMENT_ROOT']."\models\EventModel.php";
 
 class EducationalCenterController {
 

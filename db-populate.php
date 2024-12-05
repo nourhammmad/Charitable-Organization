@@ -1,7 +1,7 @@
 
 <?php
 
-require_once "D:/SDP/project/Charitable-Organization/Database.php";
+require_once $_SERVER['DOCUMENT_ROOT']."\Database.php";
  
 
 
@@ -11,7 +11,7 @@ class Populate {
         Database::run_queries(
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
-                "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
+                "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, DonationLog,eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
                 , organization, ipayment, cash, visa, instapay,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments;",
                 "SET FOREIGN_KEY_CHECKS = 1;",
  
@@ -117,14 +117,17 @@ class Populate {
                     type_name ENUM('Money', 'Books', 'Clothes') NOT NULL
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
+
+
+
+
                 "CREATE TABLE VolunteerTaskAssignments (
                     volunteerId INT NOT NULL,
                     taskId INT NOT NULL,
                     assignedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
                     PRIMARY KEY (volunteerId, taskId),
                     FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE,
-                    FOREIGN KEY (taskId) REFERENCES Tasks(id) ON DELETE CASCADE
-    );",
+                    FOREIGN KEY (taskId) REFERENCES Tasks(id) ON DELETE CASCADE);",
 
                 // Insert DonationTypes (Money, Books, Clothes)
                 "INSERT INTO DonationTypes (type_name) VALUES
@@ -254,10 +257,25 @@ class Populate {
                         apartment INT,
                         city VARCHAR(100)
                     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                    //create table logs for the history of donations 
+                    "CREATE TABLE DonationLog (
+                        log_id INT AUTO_INCREMENT PRIMARY KEY,
+                        user_id INT NOT NULL,
+                        organization_id INT,
+                        donation_item_id INT,
+                        action ENUM('CREATE', 'UPDATE', 'DELETE') NOT NULL,
+                        previous_state TEXT, -- Stores JSON or serialized data of the donation's previous state
+                        current_state TEXT, -- Stores JSON or serialized data of the donation's current state
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (user_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
+                        FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE,
+                        FOREIGN KEY (donation_item_id) REFERENCES DonationItem(donation_item_id) ON DELETE CASCADE
+                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
  
-            // Insert sample address
-            "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
-                ('hkhk', '123 Main St', 5, 101, 'New York');",
+                    // Insert sample address
+                    "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
+                        ('hkhk', '123 Main St', 5, 101, 'New York');",
 
                      "CREATE TABLE EventTypes (
                         event_type_id INT AUTO_INCREMENT PRIMARY KEY,

@@ -18,7 +18,7 @@ class BooksDonation extends DonationType {
     }
 
     public function donate($donorid):bool {
-        if(DonationModel::createBookDonation(2,1,$this->bookTitle,$this->author,$this->publicationYear,$this->getQuantity())){
+        if(DonationModel::createBookDonation(2,1,$this->bookTitle,$this->author,$this->publicationYear,$this->getQuantity(),$donorid)){
             return true;
         }
         return false;

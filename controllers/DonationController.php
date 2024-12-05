@@ -1,9 +1,12 @@
 <?php
 
-require_once  $_SERVER['DOCUMENT_ROOT']."./Services/Donor.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."./Services/DonationProvider.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."./models/DonorModel.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."./Services/paymentMethods.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\Donor.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationProvider.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\models\DonorModel.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\paymentMethods.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\models\donarLogFile.php";
+
+
 
 
 if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
@@ -48,7 +51,26 @@ if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
             echo "coudnot create donor";
         }
     }
+    
 }
+else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'view_history') {
+    header('Content-Type: application/json'); // Ensure JSON response
+
+    $donorId = $_POST['donorId']; // Get donor ID from POST data
+
+    try {
+        $donations = donarLogFile::getLogsByUserId($donorId);
+        if ($donations) {
+            echo json_encode(['success' => true, 'donations' => $donations]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No donations found.']);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'An error occurred.', 'error' => $e->getMessage()]);
+    }
+    exit;
+}
+
 
 else {
     echo "Donor ID or Donation Type missing!";

@@ -1,8 +1,8 @@
 <?php
 
 $server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./Database.php";
-require_once $server.'./Services/IService.php';
+require_once $server."\Database.php";
+require_once $server.'\Services/IService.php';
 // Database::getInstance();
 // try {
 //     $db =  Database::getInstance();
