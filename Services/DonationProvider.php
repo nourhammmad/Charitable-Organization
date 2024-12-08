@@ -41,7 +41,7 @@ class ClothesDonation extends DonationType {
     }
 
     public function donate($donorid):bool {
-        if(DonationModel::createClothesDonation(2,1,$this->clothesType,$this->size,$this->color,$this->getQuantity())){
+        if(DonationModel::createClothesDonation(2,1,$this->clothesType,$this->size,$this->color,$this->getQuantity(),$donorid)){
             return true;
         }
         return false;
@@ -60,6 +60,7 @@ class FeesDonation extends DonationType {
     }
     public function setProvider(Ipayment $paymentMethod)
     {
+
         $this->paymentMethod = $paymentMethod;
     } public function donate($donorid):bool {
         if ($this->paymentMethod->processPayment($donorid)) return true;

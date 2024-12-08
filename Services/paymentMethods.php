@@ -1,5 +1,4 @@
 <?php
-
 require_once "../Services/IPayment.php";
 
 class cash implements Ipayment {
@@ -21,7 +20,7 @@ class cash implements Ipayment {
 
         ];
 
-        $result = DonationModel::createMoneyDonation(1, $this->amount, $this->currencyType, 'cash', $paymentDetails);
+        $result = DonationModel::createMoneyDonation(1,1,$this->amount, $this->currencyType, 'cash', $paymentDetails);
 
         if ($result) return true;
         return false;
@@ -50,12 +49,15 @@ class visa implements Ipayment {
     }
     public function processPayment($donorid):bool{
         echo "in visa \n";
+        $transactionNumber = 'TRANS' . uniqid() . random_int(1000, 9999);
         $paymentDetails = [
             'donor_id' => $donorid, 
             'cardNumber' => $this->cardNumber,
+            'transaction_number'=> $transactionNumber
+
         ];
         //should have an api to be called 
-        $result = DonationModel::createMoneyDonation(1, $this->amount,'USD', 'visa', $paymentDetails);
+        $result = DonationModel::createMoneyDonation(1,1, $this->amount,'USD', 'visa', $paymentDetails);
         if ($result) return true;
         return false;
     }
