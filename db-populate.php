@@ -12,7 +12,7 @@ class Populate {
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
                 "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, DonationLog,eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
-                , organization, ipayment, cash, visa, instapay,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments;",
+                , organization, ipayment, cash, visa, instapay,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs;",
                 "SET FOREIGN_KEY_CHECKS = 1;",
  
                 // Create Users Table
@@ -45,6 +45,17 @@ class Populate {
                     (2, 'jane.smith@example.com', 'jane_smith', 'hashedpassword2', 'Volunteer');",
                     
  
+                   " CREATE TABLE sms_logs (
+                        id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                        sender_id INT NOT NULL,              -- References Users table
+                        recipient_id INT NOT NULL,           -- References Users table
+                        message TEXT NOT NULL,               -- The SMS message content
+                        status TEXT DEFAULT 'pending',       -- Options: 'pending', 'sent', 'failed'
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp for the SMS
+                        FOREIGN KEY (sender_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
+                        FOREIGN KEY (recipient_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE
+                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                    
                 // Create Organization Table
                 "CREATE TABLE Organization (
                     id INT NOT NULL PRIMARY KEY,  
@@ -56,6 +67,9 @@ class Populate {
                 "INSERT INTO Organization (id, name) VALUES
                     (1, 'My Charitable Organization');",
  
+
+
+
                 // Continue with other tables...
                 // Create Volunteer Table
                 "CREATE TABLE Volunteer (

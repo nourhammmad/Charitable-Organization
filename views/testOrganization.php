@@ -128,6 +128,7 @@
                     <input type="text" name="mail" placeholder="Email Name" required>
                     <input type="text" name="subject" placeholder="Subject" required>
                     <input type="text" name="body" placeholder="Body" required>
+                    <input type="text" name="phone" placeholder="phone" required>    
                 `;
             }
             else if (type === "createEvent") {
