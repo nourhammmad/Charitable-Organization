@@ -29,7 +29,7 @@ class DonationModel {
                     donarLogFile::createLog(
                         userId: $donorId,
                         organizationId: 1,
-                        donationItemId: self::getLastInsertedDonationItemId(),
+                        donationItemId: $donationTypeId,
                         action: "Create",
                         currentState: null
                     );
@@ -56,26 +56,22 @@ class DonationModel {
     
 
     // Function for money donations
-    public static function createMoneyDonation($donationManagementId, $amount, $currency = 'USD', $paymentMethod, $paymentDetails): bool {
+    public static function createMoneyDonation($donationManagementId,$donationitemId ,$amount, $currency = 'USD', $paymentMethod, $paymentDetails): bool {
         $description = "Cash donation of $amount $currency";
         
-        // Insert the donation item for Money
-        self::insertDonationItem($donationManagementId, 1, $description);
+        self::insertDonationItem($donationManagementId, 1, $description,$paymentDetails['donor_id']);
 
-        // Insert the Money donation record
-        $queryMoney = "INSERT INTO Money (donation_management_id, amount, currency, date_donated) 
-                       VALUES ($donationManagementId, '$amount', '$currency', NOW())";
+        $queryMoney = "INSERT INTO Money (donation_type_id,donation_management_id, amount, currency, date_donated) 
+                       VALUES ($donationitemId,$donationManagementId, '$amount', '$currency', NOW())";
         $result = Database::run_query(query: $queryMoney);
 
         if (!$result) {
             return false;
         }
 
-        // Get the last inserted money_id
+
         $moneyId = Database::get_last_inserted_id();
 
-
-        // Insert payment record into Payments table
         $queryPayment = "INSERT INTO Payments (donor_id, money_id, amount, payment_method) 
                          VALUES ('{$paymentDetails['donor_id']}', '$moneyId', '$amount', '$paymentMethod')";
         $paymentResult = Database::run_query(query: $queryPayment);
@@ -84,7 +80,6 @@ class DonationModel {
             return false;
         }
 
-        // Based on the payment method, insert additional details into the corresponding payment table
         switch ($paymentMethod) {
             case 'cash':
                 $transactionId = $paymentDetails['transaction_number'];
@@ -93,7 +88,7 @@ class DonationModel {
                 return Database::run_query(query: $queryCash);
             case 'visa':
                 $transactionNumber = $paymentDetails['transaction_number'];
-                $cardNumber = $paymentDetails['card_number'];
+                $cardNumber = $paymentDetails['cardNumber'];
                 $queryVisa = "INSERT INTO Visa (payment_id, transaction_number, card_number) 
                               VALUES ((SELECT payment_id FROM Payments WHERE money_id = '$moneyId'), '$transactionNumber', '$cardNumber')";
                 return Database::run_query(query: $queryVisa);
@@ -121,9 +116,9 @@ class DonationModel {
     }
 
     // Function for clothes donations
-    public static function createClothesDonation($donationTypeId=3,$donationManagementId, $clothesType, $size, $color, $quantity): bool {
+    public static function createClothesDonation($donationTypeId=3,$donationManagementId, $clothesType, $size, $color, $quantity,$donarID): bool {
         $description = "$quantity $color $size $clothesType";
-        self::insertDonationItem($donationManagementId, 3, $description);
+        self::insertDonationItem($donationManagementId, 3, $description,$donarID);
 
         $queryClothes = "INSERT INTO Clothes (donation_type_id,donation_management_id, clothes_type, size, color, quantity, date_donated) 
                          VALUES ('$donationTypeId','$donationManagementId', '$clothesType', '$size', '$color', '$quantity', NOW())";

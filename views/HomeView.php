@@ -108,6 +108,46 @@
             font-size: 1.5rem;
             cursor: pointer;
         }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* Center the modal */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -134,15 +174,30 @@
     </div>
     <div id="donationHistory"></div>
     
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeHistoryModal()">&times;</span>
+            <div class="modal-body">
+                <!-- Donation History content will be injected here -->
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeHistoryModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+    
     <script>
     function viewDonationHistory() {
-        console.log("Function triggered"); // Debug statement
+        // Get donorId from the query string (URL)
+        const urlParams = new URLSearchParams(window.location.search);
+        const donorId = urlParams.get('donor_id');
+        if (!donorId) {
+        alert("Donor ID is missing.");
+        return;
+        }
 
-        // Get the donorId from the input field
-        const donorId = document.querySelector('input[name="donorId"]').value;
-        console.log("Donor ID:", donorId); // Debug statement
-
-        // Prepare the form data
         const formData = new FormData();
         formData.append('action', 'view_history');
         formData.append('donorId', donorId);
@@ -151,10 +206,9 @@
             method: 'POST',
             body: formData,
         })
-            .then(response => response.text()) // Log raw response for debugging
+            .then(response => response.text()) 
             .then(data => {
-                console.log("Raw response:", data); // Debugging
-                const parsedData = JSON.parse(data); // Parse JSON manually
+                const parsedData = JSON.parse(data); 
                 if (parsedData.success) {
                     displayDonationHistory(parsedData.donations);
                 } else {
@@ -167,6 +221,18 @@
             });
     }
     function displayDonationHistory(donations) {
+        const historyModal = document.getElementById("historyModal");
+        if (!historyModal) {
+            console.error("Modal with id 'historyModal' not found in the DOM.");
+            return;
+        }
+
+        const modalContent = historyModal.querySelector(".modal-content");
+        if (!modalContent) {
+            console.error("Element with class 'modal-content' not found inside #historyModal.");
+            return;
+        }
+
         let historyContent = "<h2>Donation History</h2>";
         if (donations && donations.length > 0) {
             historyContent += "<ul>";
@@ -178,26 +244,47 @@
             historyContent += "<p>No donations found.</p>";
         }
 
-        // Display the donation history in a modal or a dedicated section
-        const historyModal = document.getElementById("historyModal");
-        historyModal.querySelector(".modal-content").innerHTML = historyContent;
+        modalContent.innerHTML = historyContent;
         historyModal.style.display = "flex";
     }
 
     function closeHistoryModal() {
-        document.getElementById("historyModal").style.display="none";
+        const historyModal = document.getElementById("historyModal");
+        if (historyModal) {
+            historyModal.style.display = "none";
+        } else {
+            console.error("Modal with id 'historyModal' not found in the DOM.");
+        }
     }
+
+    // function displayDonationHistory(donations) {
+    //     let historyContent = "<h2>Donation History</h2>";
+    //     if (donations && donations.length > 0) {
+    //         historyContent += "<ul>";
+    //         donations.forEach(donation => {
+    //             historyContent += `<li>${donation.donation_item_id}: ${donation.action}</li>`;
+    //         });
+    //         historyContent += "</ul>";
+    //     } else {
+    //         historyContent += "<p>No donations found.</p>";
+    //     }
+
+    //     // Display the donation history in a modal or a dedicated section
+    //     const historyModal = document.getElementById("historyModal");
+    //     historyModal.querySelector(".modal-content").innerHTML = historyContent;
+    //     historyModal.style.display = "flex";
+
+    // }
+
+    // function closeHistoryModal() {
+    //     document.getElementById("historyModal").style.display="none";
+    // }
 
 
     </script>
 
-    <!-- Donation History Modal -->
-    <div id="historyModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeHistoryModal()">&times;</span>
-            <!-- Donation History content will be injected here -->
-        </div>
-    </div>
+
+
 
     <div class="user-info">
         <p id="user-id-display">Donor ID: <?php echo htmlspecialchars($_GET['donor_id'] ?? 'Not loaded'); ?></p>
@@ -281,6 +368,7 @@
             document.getElementById("instapayFields").style.display = paymentType === "instapay" ? "block" : "none";
         }
 
+
         function submitDonationForm() {
             const formData = new URLSearchParams();
             const selectedType = document.getElementById("modalTitle").innerText.split(' ')[1].toLowerCase();
@@ -292,29 +380,32 @@
                 formData.append("author", document.getElementById("author").value);
                 formData.append("publicationYear", document.getElementById("publicationYear").value);
                 formData.append("quantity", document.getElementById("quantity").value);
-            } 
-            else if (selectedType === "money") {
-        
-                if (document.getElementById("paymentType").value === "cash") {
-                formData.append("paymentType", "cash");
-                formData.append("amount", document.getElementById("cashAmount").value);
-                formData.append("currency", document.getElementById("cashCurrency").value);
-                }
-            else if (document.getElementById("paymentType").value === "visa") {
-                formData.append("paymentType", "visa");
-                formData.append("amount", document.getElementById("visaAmount").value);
-                formData.append("currency", document.getElementById("visaCurrency").value);
-                formData.append("cardNumber", document.getElementById("cardNumber").value);
-                }
-                //add instapay
-            } 
-            else if (selectedType === "clothes") {
+            } else if (selectedType === "clothes") {
                 formData.append("size", document.getElementById("size").value);
                 formData.append("quantity", document.getElementById("clothesQuantity").value);
                 formData.append("type", document.getElementById("clothesType").value);
                 formData.append("color", document.getElementById("clothesColor").value);
+            } else if (selectedType === "money") {
+                const paymentType = document.getElementById("paymentType").value;
+                formData.append("paymentType", paymentType);
+
+                if (paymentType === "cash") {
+                    formData.append("amount", document.getElementById("cashAmount").value);
+                    formData.append("currency", document.getElementById("cashCurrency").value);
+                } else if (paymentType === "visa") {
+                    formData.append("amount", document.getElementById("visaAmount").value);
+                    formData.append("cardNumber", document.getElementById("cardNumber").value);
+                    formData.append("currency", document.getElementById("visaCurrency").value);
+                } else if (paymentType === "instapay") {
+                    formData.append("amount", document.getElementById("instapayAmount").value);
+                    formData.append("accountID", document.getElementById("accountID").value);
+                    formData.append("accountHolderName", document.getElementById("accountHolderName").value);
+                    formData.append("balance", document.getElementById("balance").value);
+                    formData.append("transactionFee", document.getElementById("transactionFee").value);
+                }
             }
-             fetch("../controllers/DonationController.php", {
+
+            fetch("../controllers/DonationController.php", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formData.toString()
@@ -326,6 +417,7 @@
             })
             .catch(error => console.error('Error:', error));
         }
+
 
        
 

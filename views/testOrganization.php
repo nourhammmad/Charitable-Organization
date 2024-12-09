@@ -84,6 +84,7 @@
         <div class="option" onclick="openModal('books')">Track Books</div>
         <div class="option" onclick="openModal('clothes')">Track Clothes</div>
         <div class="option" onclick="openModal('money')">Track Money</div>
+        <div class="option" onclick="openModal('sendAll')">Send Notification</div>
     </div>
 
     <!-- Modal -->
@@ -120,6 +121,14 @@
             }
             else if(type === 'money'){
                 title.textContent = "Track Money Donations";
+            }
+            else if(type === 'sendAll'){
+                title.textContent = "Send Notification";
+                fields.innerHTML = `
+                    <input type="text" name="mail" placeholder="Email Name" required>
+                    <input type="text" name="subject" placeholder="Subject" required>
+                    <input type="text" name="body" placeholder="Body" required>
+                `;
             }
             else if (type === "createEvent") {
                 title.textContent = "Create New Event";
@@ -167,6 +176,7 @@
             if (modalTitle.includes("Track Money Donations")) endpoint = "../controllers/OrganizationController.php?action=trackMoney";
             if (modalTitle.includes("Event")) endpoint = "../controllers/OrganizationController.php?action=createEvent";
             if (modalTitle.includes("Track Book Donations")) endpoint = "../controllers/OrganizationController.php?action=trackBooks";
+            if (modalTitle.includes("Send Notification")) endpoint = "../controllers/OrganizationController.php?action=sendAll";
 
             fetch(endpoint, {
                 method: "POST",
