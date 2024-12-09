@@ -1,12 +1,12 @@
 <?php
 
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/OrganizationModel.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/EventModel.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/controllers/DonationManagement.php";
+require_once "models\OrganizationModel.php";
+require_once "models\EventModel.php";
+require_once "controllers\DonationManagement.php";
 
-require_once  "F:/senior 2/Design Patterns/project/Charitable-Organization/controllers/FamilyShelterController.php";
-require_once  "F:/senior 2/Design Patterns/project/Charitable-Organization/controllers/EducationalCenterController.php";
-require_once  "F:/senior 2/Design Patterns/project/Charitable-Organization/controllers/FoodBankController.php";
+require_once  "controllers\FamilyShelterController.php";
+require_once  "controllers\EducationalCenterController.php";
+require_once  "controllers\FoodBankController.php";
  
     
     if (isset($_GET['action'])) {

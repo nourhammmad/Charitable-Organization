@@ -1,6 +1,6 @@
 <?php
-require_once 'F:/senior 2/Design Patterns/project/Charitable-Organization/Database.php';
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/EventModel.php";
+require_once 'Database.php';
+require_once "models\EventModel.php";
 
 class EventManagementController{
     

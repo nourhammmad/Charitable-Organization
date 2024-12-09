@@ -1,5 +1,5 @@
 <?php
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/IServices.php";
+require_once "Services\IServices.php";
 class EducationalCenters implements IServices {
     private $quantity;
     private $NoCenters;
