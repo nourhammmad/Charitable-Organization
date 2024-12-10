@@ -31,7 +31,7 @@ require_once $server."./Services/CommunicationFacade.php";
             case 'createTask':
                 handleCreateTask();
                 break;    
-    
+
             case 'trackBooks':
                 handleBooks();
                 break;
