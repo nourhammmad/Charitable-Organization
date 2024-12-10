@@ -1,17 +1,24 @@
 <?php
-require_once "Services\Donation.php";
+require_once $_SERVER['DOCUMENT_ROOT']."\Services\Donation.php";
 
 
 
 class Donor {
     private $id;
     private DonationType $Dt;
+    private $donationState;
 
     public function __construct($id)
     {
         $this->id =$id;   
     }
+    public function setDonationState(IDonationState $state) {
+        $this->donationState = $state;
+    }
 
+    public function getDonationState() {
+        return $this->donationState;
+    }
     public function setDonationStrategy(DonationType $donationStrategy) {
         $this->Dt = $donationStrategy;
     }

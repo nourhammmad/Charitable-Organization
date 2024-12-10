@@ -71,6 +71,53 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'view_his
     }
     exit;
 }
+else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'undo') 
+    {
+
+        // Get the donorId and logId from the request
+        $donorId = $_POST['donorId'];
+        $logId = $_POST['log_id'];
+
+        // Get the donor details
+        $donor = DonarModel::getDonorById($donorId);
+
+        if ($donor) {
+            // Handle Undo based on the action
+
+            if ($donor->getDonationState()->canUndo()) {
+                $undoCommand = new UndoDonationCommand($donor);
+                $undoCommand->execute();
+                echo json_encode(['success' => true, 'message' => 'Undo successful.']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Undo not allowed in current state.']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Donor not found!']);
+        }
+    } elseif ($action === 'redo') {
+        echo "dakhalt";
+
+        // Get the donorId and logId from the request
+        $donorId = $_POST['donorId'];
+        $logId = $_POST['log_id'];
+
+        // Get the donor details
+        $donor = DonarModel::getDonorById($donorId);
+
+        if ($donor) {
+            // Handle Redo based on the action
+            if ($donor->getDonationState()->canRedo()) {
+                $redoCommand = new RedoDonationCommand($donor);
+                $redoCommand->execute();
+                echo json_encode(['success' => true, 'message' => 'Redo successful.']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Redo not allowed in current state.']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Donor not found!']);
+        }
+    }
+    
 
 
 else {

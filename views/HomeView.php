@@ -229,22 +229,23 @@
                 alert('An error occurred while fetching donation history.');
             });
     }
-    function displayDonationHistory(donations) {
-    // Prepare the modal content
+// Display Donation History with Undo/Redo buttons
+function displayDonationHistory(donations) {
     let historyContent = `
         <h2>Donation History</h2>
         <span class="close-button" style="position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px;">&times;</span>
     `;
-
     if (donations && donations.length > 0) {
         historyContent += "<ul>";
         donations.forEach(donation => {
+            const undoButtonDisabled = donation.current_state === "DELETE" ? "disabled" : "";
+            const redoButtonDisabled = donation.current_state === "CREATE" ? "disabled" : "";
+            
             historyContent += `
                 <li>
                     ${donation.donation_item_id}: ${donation.current_state}
-                    <button onclick="undoDonation(${donation.log_id})" style="margin-left: 10px;">Undo</button>
-                    <button onclick="redoDonation(${donation.log_id})" style="margin-left: 10px;">Redo</button>
-                    <hr>
+                    <button onclick="undoDonation(${donation.log_id})" ${undoButtonDisabled}>Undo</button>
+                    <button onclick="redoDonation(${donation.log_id})" ${redoButtonDisabled}>Redo</button>
                 </li>
             `;
         });
@@ -259,26 +260,56 @@
     modalContent.innerHTML = historyContent;
     historyModal.style.display = "flex";
 
-    // Add close button functionality
+    // Close button functionality
     const closeButton = modalContent.querySelector(".close-button");
     closeButton.addEventListener("click", () => {
         historyModal.style.display = "none";
     });
-
-    // Optional: Close the modal when clicking outside the content
-    historyModal.addEventListener("click", (event) => {
-        if (event.target === historyModal) {
-            historyModal.style.display = "none";
-        }
-    });
 }
+
 
 // Dummy functions for Undo and Redo
+// Handle Undo button click event
 function undoDonation(logId) {
-    // Implement undo functionality
-    console.log(`Undo donation action for log ID: ${logId}`);
-    // You would add logic here to reverse the action (e.g., delete or restore donation)
+    // Get donorId from the URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const donorId = urlParams.get('donor_id');
+
+    if (!donorId) {
+        alert("Donor ID is missing.");
+        return;
+    }
+
+    // Send the 'undo' action to the backend with the log_id and donorId
+    const formData = new FormData();
+    formData.append('action', 'undo');
+    formData.append('log_id', logId);  // Include the log ID
+    formData.append('donorId', donorId);  // Include the donor ID
+
+    fetch("../controllers/DonationController.php", {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.text())
+.then(data => {
+    try {
+        const parsedData = JSON.parse(data);
+        if (parsedData.success) {
+            alert(parsedData.message || "Undo successful.");
+            viewDonationHistory();
+        } else {
+            alert(parsedData.message || "Error undoing donation action.");
+        }
+    } catch (e) {
+        console.error('Invalid JSON response:', data);
+        alert('An unexpected error occurred.');
+    }
+})
+
+
 }
+
+
 
 function redoDonation(logId) {
     // Implement redo functionality
