@@ -1,6 +1,6 @@
 <?php 
 //$server=$_SERVER['DOCUMENT_ROOT'];
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/AccessabilityDecorator.php";
+require_once "Services\AccessabilityDecorator.php";
 
 class SignLangInterpret extends AcessabilityDecorator{
     

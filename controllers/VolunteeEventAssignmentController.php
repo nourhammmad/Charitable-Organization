@@ -1,9 +1,9 @@
 <?php
 //$server=$_SERVER['DOCUMENT_ROOT'];
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/VolunteerEventAssignmentModel.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/models/VolunteerModel.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/controllers/VolunteerCotroller.php";
-require_once "F:/senior 2/Design Patterns/project/Charitable-Organization/Services/Volunteer.php";
+require_once "models\VolunteerEventAssignmentModel.php";
+require_once "models\VolunteerModel.php";
+require_once "controllers\VolunteerCotroller.php";
+require_once "Services\Volunteer.php";
 
 
 
