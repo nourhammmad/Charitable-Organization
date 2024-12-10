@@ -81,11 +81,33 @@
         <div class="option" onclick="openModal('organization')">Get Organization</div>
         <div class="option" onclick="openModal('donors')">Get Donors</div>
         <div class="option" onclick="openModal('createEvent')">Create Event</div>
+        <div class="option" onclick="openModal('createTask')">Create Task</div>
         <div class="option" onclick="openModal('books')">Track Books</div>
         <div class="option" onclick="openModal('clothes')">Track Clothes</div>
         <div class="option" onclick="openModal('money')">Track Money</div>
         <div class="option" onclick="openModal('sendAll')">Send Notification</div>
     </div>
+    <!---style--->
+    <style>
+    .action-options {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .option {
+        background-color: #f1f1f1;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px 20px;
+        text-align: center;
+        cursor: pointer;
+        min-width: 120px;
+    }
+
+  
+</style>
 
     <!-- Modal -->
     <div id="actionModal" class="modal">
@@ -157,6 +179,17 @@
                     <br>
                 `;
             }
+            else if(type=="createTask"){
+                title.textContent = "Create New Task";
+                fields.innerHTML = `
+                    <input type="text" name="name" placeholder="Task Name" required>
+                    <textarea name="description" placeholder="Task Description" rows="3" required></textarea>
+                    <input type="text" name="requiredSkill" placeholder="Required Skill" required>
+                    <input type="text" name="timeSlot" placeholder="Time Slot" required>
+                    <input type="text" name="location" placeholder="Location" required>
+                `;
+
+            }
 
             modal.style.display = "flex";
         }
@@ -175,6 +208,7 @@
             if (modalTitle.includes("Track Clothes Donations")) endpoint = "../controllers/OrganizationController.php?action=trackClothes";
             if (modalTitle.includes("Track Money Donations")) endpoint = "../controllers/OrganizationController.php?action=trackMoney";
             if (modalTitle.includes("Event")) endpoint = "../controllers/OrganizationController.php?action=createEvent";
+            if (modalTitle.includes("Task")) endpoint = "../controllers/OrganizationController.php?action=createTask";
             if (modalTitle.includes("Track Book Donations")) endpoint = "../controllers/OrganizationController.php?action=trackBooks";
             if (modalTitle.includes("Send Notification")) endpoint = "../controllers/OrganizationController.php?action=sendAll";
 

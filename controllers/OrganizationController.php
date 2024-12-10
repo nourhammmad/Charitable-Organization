@@ -1,13 +1,15 @@
 <?php
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server."./models/OrganizationModel.php";
+require_once $server."./models/EventModel.php";
+require_once $server."./models/TaskModel.php";
+require_once $server."./controllers/DonationManagement.php";
 
-require_once "D:/SDP/project/Charitable-Organization/models/OrganizationModel.php";
-require_once "D:/SDP/project/Charitable-Organization/models/EventModel.php";
-require_once "D:/SDP/project/Charitable-Organization/controllers/DonationManagement.php";
-
-require_once  "D:/SDP/project/Charitable-Organization/controllers/FamilyShelterController.php";
-require_once  "D:/SDP/project/Charitable-Organization/controllers/EducationalCenterController.php";
-require_once  "D:/SDP/project/Charitable-Organization/controllers/FoodBankController.php";
-require_once  "D:/SDP/project/Charitable-Organization/Services/CommunicationFacade.php";
+require_once $server."./controllers/FamilyShelterController.php";
+require_once $server."./controllers/EducationalCenterController.php";
+require_once $server."./controllers/FoodBankController.php";
+require_once $server."./controllers/TaskManagementController.php";
+require_once $server."./Services/CommunicationFacade.php";
  
     
     if (isset($_GET['action'])) {
@@ -26,6 +28,9 @@ require_once  "D:/SDP/project/Charitable-Organization/Services/CommunicationFaca
             case 'createEvent':
                 handleCreateEvent();
                 break;
+            case 'createTask':
+                handleCreateTask();
+                break;    
     
             case 'trackBooks':
                 handleBooks();
@@ -39,9 +44,11 @@ require_once  "D:/SDP/project/Charitable-Organization/Services/CommunicationFaca
                 handleMoney();
                 break;
                
-            case 'sendAll':
-                SendNotification();
-                break;    
+            // case 'sendAll':
+            //     SendNotification();
+            //     break;   
+
+
     
             default:
                 echo "Invalid action.";
@@ -49,11 +56,11 @@ require_once  "D:/SDP/project/Charitable-Organization/Services/CommunicationFaca
         }
     }
 
-    function SendNotification() {
-        $result = CommunicationFacade::Sendall( $_POST['mail'], 
-           $_POST['subject'] ,
-           $_POST['body']);
-    }
+    // function SendNotification() {
+    //     $result = CommunicationFacade::Sendall( $_POST['mail'], 
+    //        $_POST['subject'] ,
+    //        $_POST['body']);
+    // }
     
     function handleGetOrganizations() {
         $result = OrganizationModel::getAllOrganizations();
@@ -155,6 +162,26 @@ require_once  "D:/SDP/project/Charitable-Organization/Services/CommunicationFaca
          
     
     }
+    function handleCreateTask() {
+        $name = $_POST['name'] ?? null;
+        $description = $_POST['description'] ?? null;
+        $requiredSkill = $_POST['requiredSkill'] ?? null;
+        $timeSlot = $_POST['timeSlot'] ?? null;
+        $location = $_POST['location'] ?? null;
+    
+        // Validate required fields
+        if (!$name || !$description || !$requiredSkill || !$timeSlot || !$location) {
+            echo "Missing required fields: name, description, requiredSkill, timeSlot, and location are mandatory.";
+            return;
+        }
+    
+        // Call the createTask method in TaskManagementController
+        $taskCreationMessage = TaskManagementController::createTask($name, $description, $requiredSkill, $timeSlot, $location);
+    
+        // Echo the response message from createTask
+        echo $taskCreationMessage;
+    }
+    
     
     function handleBooks() {
        // echo"ana f handle books fel cont ";
