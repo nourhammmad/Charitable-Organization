@@ -239,7 +239,14 @@
     if (donations && donations.length > 0) {
         historyContent += "<ul>";
         donations.forEach(donation => {
-            historyContent += `<li>${donation.donation_item_id}: ${donation.action}</li>`;
+            historyContent += `
+                <li>
+                    ${donation.donation_item_id}: ${donation.current_state}
+                    <button onclick="undoDonation(${donation.log_id})" style="margin-left: 10px;">Undo</button>
+                    <button onclick="redoDonation(${donation.log_id})" style="margin-left: 10px;">Redo</button>
+                    <hr>
+                </li>
+            `;
         });
         historyContent += "</ul>";
     } else {
@@ -265,6 +272,20 @@
         }
     });
 }
+
+// Dummy functions for Undo and Redo
+function undoDonation(logId) {
+    // Implement undo functionality
+    console.log(`Undo donation action for log ID: ${logId}`);
+    // You would add logic here to reverse the action (e.g., delete or restore donation)
+}
+
+function redoDonation(logId) {
+    // Implement redo functionality
+    console.log(`Redo donation action for log ID: ${logId}`);
+    // You would add logic here to redo the action (e.g., create or re-delete donation)
+}
+
 
     function closeHistoryModal() {
         const historyModal = document.getElementById("historyModal");
