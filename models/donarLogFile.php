@@ -1,15 +1,17 @@
 <?php
 $server = $_SERVER['DOCUMENT_ROOT'];
-require_once $server . "\Database.php";
+require_once $server."./Database.php";
 
 class donarLogFile {
 
+
     // CREATE DONATION LOG ENTRY
-    public static function createLog($userId, $organizationId, $donationItemId, $action, $previousState = null, $currentState = null) {
-        $prevState = $previousState ? "'" . mysqli_real_escape_string(Database::get_connection(), $previousState) . "'" : "NULL";
-        $currState = $currentState ? "'" . mysqli_real_escape_string(Database::get_connection(), $currentState) . "'" : "NULL";
-        $query = "INSERT INTO DonationLog (user_id, organization_id, donation_item_id, action, previous_state, current_state) 
-                  VALUES ('$userId', '$organizationId', '$donationItemId', '$action', $prevState, $currState)";
+    public static function createLog($donorId, $organizationId, $donationItemId,$donation_type, $previousState = null, $currentState = null) {
+        // $prevState = $previousState ? "'" . mysqli_real_escape_string(Database::get_connection(), $previousState) . "'" : "NULL";
+        // $currState = $currentState ? "'" . mysqli_real_escape_string(Database::get_connection(), $currentState) . "'" : "NULL";
+        echo "ana hgwa";
+        $query = "INSERT INTO DonationLog (donorId, organization_id, donation_item_id, donation_type_id, previous_state, current_state) 
+                  VALUES ('$donorId', '$organizationId', '$donationItemId', '$donation_type', '$previousState', '$currentState')";
         return Database::run_query($query);
     }
 
@@ -32,7 +34,7 @@ class donarLogFile {
 
     // GET LOGS FOR A USER
     public static function getLogsByUserId($userId) {
-        $query = "SELECT * FROM DonationLog WHERE user_id = $userId ORDER BY timestamp DESC";
+        $query = "SELECT * FROM DonationLog WHERE donorId = $userId ORDER BY timestamp DESC";
         $result = Database::run_select_query($query);
 
         if ($result === false) {

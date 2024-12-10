@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT']."\models\SMSModel.php";
 require_once $_SERVER['DOCUMENT_ROOT']."\models\RegisteredUserModel.php";
-require_once "D:\\engineering ASU\computer year 4\Fall 24\Software Design Patterns\CharetyOrg\Charitable-Organization-1\Services\RegisterUser.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./Services/RegisterUser.php";
 class SMScontroller {
     private $smsModel;
     private $registerUserService;

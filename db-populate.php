@@ -273,19 +273,7 @@ class Populate {
                     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
                     //create table logs for the history of donations 
-                    "CREATE TABLE DonationLog (
-                        log_id INT AUTO_INCREMENT PRIMARY KEY,
-                        user_id INT NOT NULL,
-                        organization_id INT,
-                        donation_item_id INT,
-                        action ENUM('CREATE', 'UPDATE', 'DELETE') NOT NULL,
-                        previous_state TEXT, -- Stores JSON or serialized data of the donation's previous state
-                        current_state TEXT, -- Stores JSON or serialized data of the donation's current state
-                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (user_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
-                        FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE,
-                        FOREIGN KEY (donation_item_id) REFERENCES DonationItem(donation_item_id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                   
  
                     // Insert sample address
                     "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
@@ -368,7 +356,20 @@ class Populate {
                         FOREIGN KEY (eventId) REFERENCES Event(eventId) ON DELETE CASCADE,
                         FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
                     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
- 
+                    "CREATE TABLE DonationLog (
+                        log_id INT AUTO_INCREMENT PRIMARY KEY,
+                        donorId INT NOT NULL,
+                        organization_id INT,
+                        donation_item_id INT,
+                        donation_type_id INT,
+                        previous_state ENUM('CREATE','DELETE'),
+                        current_state ENUM('CREATE', 'DELETE'), 
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id) ON DELETE CASCADE,
+                        FOREIGN KEY (donorId) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
+                        FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE,
+                        FOREIGN KEY (donation_item_id) REFERENCES DonationItem(donation_item_id) ON DELETE CASCADE
+                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
                    
                     // Insert a Volunteer association with the Event
                     // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES

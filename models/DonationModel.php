@@ -1,6 +1,6 @@
 <?php
 $server=$_SERVER['DOCUMENT_ROOT'];
-require_once "Database.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./Database.php";
 
 class DonationModel {
     private static function getLastInsertedDonationItemId() {
@@ -27,11 +27,13 @@ class DonationModel {
             if ($result) {
                 if ($donorId) {
                     donarLogFile::createLog(
-                        userId: $donorId,
+                        donorId: $donorId,
                         organizationId: 1,
-                        donationItemId: $donationTypeId,
-                        action: "Create",
-                        currentState: null
+                        donationItemId:Database::get_last_inserted_id(),
+                        donation_type:$donationTypeId,
+                        previousState:NULL,
+                        currentState:'CREATE',
+                        // action: "Create",
                     );
                 }
             }

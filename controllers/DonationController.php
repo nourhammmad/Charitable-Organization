@@ -1,10 +1,10 @@
 <?php
 
-require_once  $_SERVER['DOCUMENT_ROOT']."\Services\Donor.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationProvider.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."\models\DonorModel.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."\Services\paymentMethods.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."\models\donarLogFile.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."./Services/Donor.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."./Services/DonationProvider.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."./models/DonorModel.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."./Services/paymentMethods.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."./models/donarLogFile.php";
 
 
 
