@@ -147,6 +147,15 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .close-button {
+    color: #aaa;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+.close-button:hover {
+    color: black;
+}
+
 
     </style>
 </head>
@@ -221,32 +230,41 @@
             });
     }
     function displayDonationHistory(donations) {
-        const historyModal = document.getElementById("historyModal");
-        if (!historyModal) {
-            console.error("Modal with id 'historyModal' not found in the DOM.");
-            return;
-        }
+    // Prepare the modal content
+    let historyContent = `
+        <h2>Donation History</h2>
+        <span class="close-button" style="position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px;">&times;</span>
+    `;
 
-        const modalContent = historyModal.querySelector(".modal-content");
-        if (!modalContent) {
-            console.error("Element with class 'modal-content' not found inside #historyModal.");
-            return;
-        }
-
-        let historyContent = "<h2>Donation History</h2>";
-        if (donations && donations.length > 0) {
-            historyContent += "<ul>";
-            donations.forEach(donation => {
-                historyContent += `<li>${donation.donation_item_id}: ${donation.action}</li>`;
-            });
-            historyContent += "</ul>";
-        } else {
-            historyContent += "<p>No donations found.</p>";
-        }
-
-        modalContent.innerHTML = historyContent;
-        historyModal.style.display = "flex";
+    if (donations && donations.length > 0) {
+        historyContent += "<ul>";
+        donations.forEach(donation => {
+            historyContent += `<li>${donation.donation_item_id}: ${donation.action}</li>`;
+        });
+        historyContent += "</ul>";
+    } else {
+        historyContent += "<p>No donations found.</p>";
     }
+
+    // Display the donation history in the modal
+    const historyModal = document.getElementById("historyModal");
+    const modalContent = historyModal.querySelector(".modal-content");
+    modalContent.innerHTML = historyContent;
+    historyModal.style.display = "flex";
+
+    // Add close button functionality
+    const closeButton = modalContent.querySelector(".close-button");
+    closeButton.addEventListener("click", () => {
+        historyModal.style.display = "none";
+    });
+
+    // Optional: Close the modal when clicking outside the content
+    historyModal.addEventListener("click", (event) => {
+        if (event.target === historyModal) {
+            historyModal.style.display = "none";
+        }
+    });
+}
 
     function closeHistoryModal() {
         const historyModal = document.getElementById("historyModal");
