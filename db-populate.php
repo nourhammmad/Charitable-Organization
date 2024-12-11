@@ -90,12 +90,12 @@ class Populate {
 
 
                 " CREATE TABLE Tasks (
-                    id INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each task, with auto-increment
-                    name VARCHAR(255) NOT NULL, -- Name of the task
-                    description TEXT NOT NULL, -- Detailed description of the task
-                    requiredSkill VARCHAR(255), -- Skills required for the task
-                    timeSlot VARCHAR(255), -- Time slot for the task
-                    location VARCHAR(255) -- Location where the task will take place
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    name VARCHAR(255) NOT NULL, 
+                    description TEXT NOT NULL, 
+                    requiredSkill VARCHAR(255), 
+                    timeSlot VARCHAR(255),
+                    location VARCHAR(255) 
                 );",    
             
                 // Create Donor Table
@@ -122,8 +122,7 @@ class Populate {
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
  
                 // Insert a single DonationManagement record for the organization
-                "INSERT INTO DonationManagement (organization_id) VALUES
-                    (1);",
+                "INSERT INTO DonationManagement (organization_id) VALUES(1);",
  
                 // Create DonationTypes Table (Parent Table)
                 "CREATE TABLE DonationTypes (
@@ -229,7 +228,6 @@ class Populate {
                 "INSERT INTO Books (donation_type_id, donation_management_id, book_title, author, publication_year, quantity, date_donated) VALUES
                     (2, 1, 'The Great Gatsby', 'F. Scott Fitzgerald', 1925, 10, '2024-11-01 12:00:00');",
 
-                // Create Clothes Table (Child Table)
                 "CREATE TABLE Clothes (
                     clothes_id INT AUTO_INCREMENT PRIMARY KEY,
                     donation_type_id INT,
@@ -243,7 +241,8 @@ class Populate {
                     FOREIGN KEY (donation_management_id) REFERENCES DonationManagement(donation_management_id) ON DELETE CASCADE
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                // Insert Clothes Donation
+    
+               // Insert Clothes Donation
                 "INSERT INTO Clothes (donation_type_id, donation_management_id, clothes_type, size, color, quantity, date_donated) VALUES
                     (3, 1, 'Winter Jacket', 'L', 'Red', 20, '2024-11-01 12:00:00');",
 
@@ -364,6 +363,7 @@ class Populate {
                         donation_type_id INT,
                         previous_state ENUM('CREATE','DELETE'),
                         current_state ENUM('CREATE', 'DELETE'), 
+                        donationId INT NOT NULL,
                         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id) ON DELETE CASCADE,
                         FOREIGN KEY (donorId) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,

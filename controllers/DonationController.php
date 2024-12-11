@@ -1,10 +1,18 @@
 <?php
 
-require_once  $_SERVER['DOCUMENT_ROOT']."./Services/Donor.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."./Services/DonationProvider.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."./models/DonorModel.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."./Services/paymentMethods.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."./models/donarLogFile.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\Donor.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationProvider.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\models\DonorModel.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\paymentMethods.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\models\donarLogFile.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationLog.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\CreateState.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\UndoDonationCommand.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoDonationCommand.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoOnlyState.php";
+
+
+
 
 
 
@@ -41,7 +49,16 @@ if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
 
         if($donor){
             $donor->setDonationStrategy($donationStrategy);
+
             if ($donor->donate($donorId)) {
+                $donarLog= donarLogFile::getLastLogByDonorId($donorId);
+                if($donationType=='money'){
+                   $donarLog->setDonationState(new RedoOnlyState());
+                }
+               else{ 
+                    $donarLog->setDonationState(new CreateState());
+                }
+
                 echo ucfirst($donationType) . " donation successful!";
             } 
             else {
@@ -55,38 +72,52 @@ if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
     
 }
 else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'view_history') {
-    header('Content-Type: application/json'); // Ensure JSON response
-
-    $donorId = $_POST['donorId']; // Get donor ID from POST data
+    header('Content-Type: application/json'); 
+    $donorId = $_POST['donorId']; 
 
     try {
         $donations = donarLogFile::getLogsByUserId($donorId);
         if ($donations) {
-            echo json_encode(['success' => true, 'donations' => $donations]);
+            $donationsArray = array_map(function ($donation) {
+                $donationItemId = $donation->getLogitemId();
+                $description = '';
+                if ($donationItemId) {
+                    $description = DonationModel::getDescriptionByitemId($donationItemId);
+                }
+                if (!$description) {
+                    error_log("No description found for donation_item_id: $donationItemId");
+                }
+                $donationArray = $donation->toArray();
+                $donationArray['description'] = $description;
+                return $donationArray;
+            }, $donations);
+    
+            // Return the result as JSON
+            echo json_encode(['success' => true, 'donations' => $donationsArray]);
         } else {
             echo json_encode(['success' => false, 'message' => 'No donations found.']);
         }
     } catch (Exception $e) {
-        echo json_encode(['success' => false, 'message' => 'An error occurred.', 'error' => $e->getMessage()]);
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage(),
+            'error' => $e->getMessage()
+        ]);
     }
     exit;
 }
 else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'undo') 
     {
-
-        // Get the donorId and logId from the request
         $donorId = $_POST['donorId'];
         $logId = $_POST['log_id'];
 
-        // Get the donor details
         $donor = DonarModel::getDonorById($donorId);
+        $donationLog = donarLogFile::getLogById($logId);
 
-        if ($donor) {
-            // Handle Undo based on the action
-
-            if ($donor->getDonationState()->canUndo()) {
-                $undoCommand = new UndoDonationCommand($donor);
-                $undoCommand->execute();
+        if ($donor &&$donationLog ) {
+            if ($donationLog->getDonationState()->canUndo()) {
+                $donor->setDonationCommand(new UndoDonationCommand($donationLog));
+                $donor->executeCommand();
                 echo json_encode(['success' => true, 'message' => 'Undo successful.']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Undo not allowed in current state.']);
@@ -94,21 +125,18 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'undo')
         } else {
             echo json_encode(['success' => false, 'message' => 'Donor not found!']);
         }
-    } elseif ($action === 'redo') {
-        echo "dakhalt";
-
-        // Get the donorId and logId from the request
+    } 
+elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action']==='redo') {
         $donorId = $_POST['donorId'];
         $logId = $_POST['log_id'];
 
-        // Get the donor details
         $donor = DonarModel::getDonorById($donorId);
+        $donationLog = donarLogFile::getLogById($logId);
 
-        if ($donor) {
-            // Handle Redo based on the action
-            if ($donor->getDonationState()->canRedo()) {
-                $redoCommand = new RedoDonationCommand($donor);
-                $redoCommand->execute();
+        if ($donor &&$donationLog ) {
+            if ($donationLog->getDonationState()->canRedo()) {
+                $donor->setDonationCommand(new RedoDonationCommand($donationLog,$donorId));
+                $donor->executeCommand();
                 echo json_encode(['success' => true, 'message' => 'Redo successful.']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Redo not allowed in current state.']);
@@ -116,7 +144,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'undo')
         } else {
             echo json_encode(['success' => false, 'message' => 'Donor not found!']);
         }
-    }
+}
     
 
 

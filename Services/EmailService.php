@@ -1,5 +1,6 @@
 <?php
-require "D:/SDP/project/Charitable-Organization/vendor/autoload.php";
+//require "D:/SDP/project/Charitable-Organization/vendor/autoload.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/vendor/autoload.php";
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 

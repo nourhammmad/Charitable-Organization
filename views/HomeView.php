@@ -148,13 +148,56 @@
             cursor: pointer;
         }
         .close-button {
-    color: #aaa;
-    font-weight: bold;
-    transition: color 0.3s;
-}
-.close-button:hover {
-    color: black;
-}
+            color: #aaa;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .close-button:hover {
+            color: black;
+        }
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .history-list ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .history-list li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .styled-button {
+        background: linear-gradient(135deg, #4CAF50, #81C784); /* Gradient background */
+        color: white; /* Text color */
+        border: none; /* No border */
+        border-radius: 25px; /* Rounded corners */
+        padding: 10px 20px; /* Padding */
+        font-size: 16px; /* Font size */
+        font-weight: bold; /* Bold text */
+        cursor: pointer; /* Pointer cursor on hover */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        transition: all 0.3s ease; /* Smooth transition */
+    }
+    
+    .styled-button:hover {
+        background: linear-gradient(135deg, #388E3C, #66BB6A); /* Darker gradient on hover */
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow */
+        transform: translateY(-2px); /* Lift effect */
+    }
+    
+    .styled-button:active {
+        transform: translateY(0); /* Remove lift effect on click */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Return to original shadow */
+    }
 
 
     </style>
@@ -179,7 +222,7 @@
         
     </div>
     <div class="donation-history">
-        <button onclick="viewDonationHistory()">View Donation History</button>
+        <button class="styled-button" onclick="viewDonationHistory()">View Donation History</button>
     </div>
     <div id="donationHistory"></div>
     
@@ -187,7 +230,6 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeHistoryModal()">&times;</span>
             <div class="modal-body">
-                <!-- Donation History content will be injected here -->
             </div>
             <div class="modal-footer">
                 <button onclick="closeHistoryModal()">Close</button>
@@ -229,8 +271,8 @@
                 alert('An error occurred while fetching donation history.');
             });
     }
-// Display Donation History with Undo/Redo buttons
-function displayDonationHistory(donations) {
+    // Display Donation History with Undo/Redo buttons
+    function displayDonationHistory(donations) {
     let historyContent = `
         <h2>Donation History</h2>
         <span class="close-button" style="position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px;">&times;</span>
@@ -238,14 +280,31 @@ function displayDonationHistory(donations) {
     if (donations && donations.length > 0) {
         historyContent += "<ul>";
         donations.forEach(donation => {
-            const undoButtonDisabled = donation.current_state === "DELETE" ? "disabled" : "";
-            const redoButtonDisabled = donation.current_state === "CREATE" ? "disabled" : "";
-            
+
+            let donationType;
+            switch (donation.donation_type_id) {
+                case '1':
+                    donationType = "Money";
+                    break;
+                case '2':
+                    donationType = "Books";
+                    break;
+                case '3':
+                    donationType = "Clothes";
+                    break;
+                default:
+                    donationType = "Unknown";
+            }
+
+            const undoButtonDisabled = "DELETE";
+            const redoButtonDisabled = "CREATE";
+
             historyContent += `
                 <li>
-                    ${donation.donation_item_id}: ${donation.current_state}
+                    ${donationType}: ${donation.description}
                     <button onclick="undoDonation(${donation.log_id})" ${undoButtonDisabled}>Undo</button>
                     <button onclick="redoDonation(${donation.log_id})" ${redoButtonDisabled}>Redo</button>
+                    <hr>
                 </li>
             `;
         });
@@ -265,13 +324,10 @@ function displayDonationHistory(donations) {
     closeButton.addEventListener("click", () => {
         historyModal.style.display = "none";
     });
-}
+    }
 
 
-// Dummy functions for Undo and Redo
-// Handle Undo button click event
 function undoDonation(logId) {
-    // Get donorId from the URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const donorId = urlParams.get('donor_id');
 
@@ -280,18 +336,18 @@ function undoDonation(logId) {
         return;
     }
 
-    // Send the 'undo' action to the backend with the log_id and donorId
+
     const formData = new FormData();
     formData.append('action', 'undo');
-    formData.append('log_id', logId);  // Include the log ID
-    formData.append('donorId', donorId);  // Include the donor ID
+    formData.append('log_id', logId);  
+    formData.append('donorId', donorId);  
 
     fetch("../controllers/DonationController.php", {
         method: 'POST',
         body: formData,
     })
     .then(response => response.text())
-.then(data => {
+    .then(data => {
     try {
         const parsedData = JSON.parse(data);
         if (parsedData.success) {
@@ -312,9 +368,39 @@ function undoDonation(logId) {
 
 
 function redoDonation(logId) {
-    // Implement redo functionality
-    console.log(`Redo donation action for log ID: ${logId}`);
-    // You would add logic here to redo the action (e.g., create or re-delete donation)
+    const urlParams = new URLSearchParams(window.location.search);
+    const donorId = urlParams.get('donor_id');
+
+    if (!donorId) {
+        alert("Donor ID is missing.");
+        return;
+    }
+
+
+    const formData = new FormData();
+    formData.append('action', 'redo');
+    formData.append('log_id', logId);  
+    formData.append('donorId', donorId);  
+
+    fetch("../controllers/DonationController.php", {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.text())
+    .then(data => {
+        try {
+            const parsedData = JSON.parse(data);
+            if (parsedData.success) {
+                alert(parsedData.message || "Redo successful.");
+                viewDonationHistory();
+            } else {
+                alert(parsedData.message || "Error undoing donation action.");
+            }
+        } catch (e) {
+            console.error('Invalid JSON response:', data);
+            alert('An unexpected error occurred.');
+        }
+    })
 }
 
 
@@ -326,29 +412,6 @@ function redoDonation(logId) {
             console.error("Modal with id 'historyModal' not found in the DOM.");
         }
     }
-
-    // function displayDonationHistory(donations) {
-    //     let historyContent = "<h2>Donation History</h2>";
-    //     if (donations && donations.length > 0) {
-    //         historyContent += "<ul>";
-    //         donations.forEach(donation => {
-    //             historyContent += `<li>${donation.donation_item_id}: ${donation.action}</li>`;
-    //         });
-    //         historyContent += "</ul>";
-    //     } else {
-    //         historyContent += "<p>No donations found.</p>";
-    //     }
-
-    //     // Display the donation history in a modal or a dedicated section
-    //     const historyModal = document.getElementById("historyModal");
-    //     historyModal.querySelector(".modal-content").innerHTML = historyContent;
-    //     historyModal.style.display = "flex";
-
-    // }
-
-    // function closeHistoryModal() {
-    //     document.getElementById("historyModal").style.display="none";
-    // }
 
 
     </script>

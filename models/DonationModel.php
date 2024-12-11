@@ -1,6 +1,6 @@
 <?php
 $server=$_SERVER['DOCUMENT_ROOT'];
-require_once $_SERVER['DOCUMENT_ROOT']."./Database.php";
+require_once $_SERVER['DOCUMENT_ROOT']."\Database.php";
 
 class DonationModel {
     private static function getLastInsertedDonationItemId() {
@@ -23,20 +23,7 @@ class DonationModel {
             $queryDonationItem = "INSERT INTO DonationItem (donation_management_id, donation_type_id, description, date_donated)
                                 VALUES ('$donationManagementId', '$donationTypeId', '$descriptionn', NOW())";
             $result = Database::run_query(query: $queryDonationItem);
-            
-            if ($result) {
-                if ($donorId) {
-                    donarLogFile::createLog(
-                        donorId: $donorId,
-                        organizationId: 1,
-                        donationItemId:Database::get_last_inserted_id(),
-                        donation_type:$donationTypeId,
-                        previousState:NULL,
-                        currentState:'CREATE',
-                        // action: "Create",
-                    );
-                }
-            }
+        
             return $result;
         }
         else{
@@ -62,7 +49,7 @@ class DonationModel {
         $description = "Cash donation of $amount $currency";
         
         self::insertDonationItem($donationManagementId, 1, $description,$paymentDetails['donor_id']);
-
+        $donationitem= Database::get_last_inserted_id();
         $queryMoney = "INSERT INTO Money (donation_type_id,donation_management_id, amount, currency, date_donated) 
                        VALUES ($donationitemId,$donationManagementId, '$amount', '$currency', NOW())";
         $result = Database::run_query(query: $queryMoney);
@@ -77,13 +64,21 @@ class DonationModel {
         $queryPayment = "INSERT INTO Payments (donor_id, money_id, amount, payment_method) 
                          VALUES ('{$paymentDetails['donor_id']}', '$moneyId', '$amount', '$paymentMethod')";
         $paymentResult = Database::run_query(query: $queryPayment);
-
+        donarLogFile::createLog(
+            donorId: $paymentDetails['donor_id'],
+            organizationId: 1,
+            donationItemId:$donationitem,
+            donation_type:1,
+            previousState:NULL,
+            currentState:'CREATE',
+            donationId: $moneyId,
+        );
         if (!$paymentResult) {
             return false;
         }
-
         switch ($paymentMethod) {
             case 'cash':
+
                 $transactionId = $paymentDetails['transaction_number'];
                 $queryCash = "INSERT INTO Cash (payment_id, transaction_id) 
                               VALUES ((SELECT payment_id FROM Payments WHERE money_id = '$moneyId'), '$transactionId')";
@@ -108,25 +103,161 @@ class DonationModel {
 
 
     // Function for book donations
-    public static function createBookDonation($donationTypeId=2,$donationManagementId, $bookTitle, $author, $publicationYear, $quantity,$donarID): bool { 
+    public static function createBookDonation($donationTypeId=2,$donationManagementId=1, $bookTitle, $author, $publicationYear, $quantity,$donarID): bool { 
         $description = "$quantity copies of '$bookTitle' by $author";
         self::insertDonationItem($donationManagementId, 2, $description,$donarID);  
+        $donationitem= Database::get_last_inserted_id();
     
         $queryBooks = "INSERT INTO Books (donation_type_id,donation_management_id, book_title, author, publication_year, quantity, date_donated) 
                        VALUES ('$donationTypeId','$donationManagementId', '$bookTitle', '$author', '$publicationYear', '$quantity', NOW())";
-        return Database::run_query(query: $queryBooks);
+        Database::run_query(query: $queryBooks);
+        donarLogFile::createLog(
+            donorId: $donarID,
+            organizationId: 1,
+            donationItemId:$donationitem,
+            donation_type:$donationTypeId,
+            previousState:NULL,
+            currentState:'CREATE',
+            donationId: Database::get_last_inserted_id(),
+            // action: "Create",
+        );
+        return true;
+
     }
 
     // Function for clothes donations
-    public static function createClothesDonation($donationTypeId=3,$donationManagementId, $clothesType, $size, $color, $quantity,$donarID): bool {
+    public static function createClothesDonation($donationTypeId=3,$donationManagementId=1, $clothesType, $size, $color, $quantity,$donarID): bool {
         $description = "$quantity $color $size $clothesType";
         self::insertDonationItem($donationManagementId, 3, $description,$donarID);
-
+        $donationitem= Database::get_last_inserted_id();
         $queryClothes = "INSERT INTO Clothes (donation_type_id,donation_management_id, clothes_type, size, color, quantity, date_donated) 
-                         VALUES ('$donationTypeId','$donationManagementId', '$clothesType', '$size', '$color', '$quantity', NOW())";
-        return Database::run_query(query: $queryClothes);
+                         VALUES (3,'$donationManagementId', '$clothesType', '$size', '$color', '$quantity', NOW())";
+         Database::run_query(query: $queryClothes);
+         donarLogFile::createLog(
+            donorId: $donarID,
+            organizationId: 1,
+            donationItemId:$donationitem,
+            donation_type:3,
+            previousState:NULL,
+            currentState:'CREATE',
+            donationId: Database::get_last_inserted_id(),
+            // action: "Create",
+        );
+        return true;
+
     }
 
+    //get book by id 
+    public static function getBookInfoById($bookId) {
+        $query = "SELECT book_id, donation_type_id,donation_management_id, book_title,author, publication_year,quantity,date_donated FROM Books WHERE book_id = '$bookId'";
+        
+        $result = Database::run_select_query($query);
+        
+        if ($result && $row = $result->fetch_assoc()) {
+            return $row;
+        }
+
+        return null;
+    }
+
+    //get clothes by id 
+    public static function getClothesInfoById($clothesId) {
+        $query = "SELECT 
+                      clothes_id,
+                      donation_type_id,
+                      donation_management_id,
+                      clothes_type,
+                      size,
+                      color,
+                      quantity,
+                      date_donated
+                  FROM Clothes 
+                  WHERE clothes_id = '$clothesId'";
+        $result = Database::run_select_query($query);
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc(); 
+        }
+        return null; // No clothes found
+    }
+
+    //get money by id
+    public static function getMoneyInfoById($moneyId) {
+        $query = "SELECT 
+                      money_id,
+                      donation_type_id,
+                      donation_management_id,
+                      amount,
+                      currency,
+                      date_donated
+                  FROM Money 
+                  WHERE money_id = '$moneyId'";
+        $result = Database::run_select_query($query);
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc(); // Returns associative array of money donation info
+        }
+        return null; // No record found
+    }
+
+    //get trans number  by money id
+    public static function getPaymentIdByMoneyId($moneyId) {
+
+        $query = "SELECT payment_method FROM Payments WHERE money_id = '$moneyId'";
+        $result = Database::run_select_query($query);
+        if ($result && mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            return $row['payment_method']; 
+        }
+        return null;
+    }
+    //get cash by payment id 
+    public static function getTransactionIdByPaymentId($paymentId) {
+        $query = "SELECT transaction_id FROM Cash WHERE payment_id = '$paymentId'";
+        
+        $result = Database::run_select_query($query);
+        
+        // Check if a result is returned
+        if ($result && mysqli_num_rows($result) > 0) {
+            // Fetch the row
+            $row = mysqli_fetch_assoc($result);
+            return $row['transaction_id']; // Return the transaction_id
+        }
+        
+        // Return null if no matching record is found
+        return null;
+    }
+
+    //delete doantion from table 
+    public static function deleteFromTableByDonationItemId($tableName, $donationItemId,$itemId) {
+        $allowedTables = ['Books', 'Clothes']; 
+        if (!in_array($tableName, $allowedTables)) {
+            throw new InvalidArgumentException("Invalid table name: $tableName");
+        }
+     
+        if($tableName =='Clothes'){
+            $query = "DELETE FROM $tableName WHERE clothes_id = '$donationItemId'";
+            Database::run_query($query);
+        }
+        else if ($tableName =='Books'){
+            $query = "DELETE FROM $tableName WHERE book_id = '$donationItemId'";
+            Database::run_query($query);
+        }
+        return self:: deleteDonationitem($itemId);
+    }
+    public static function deleteDonationitem($itemId){
+        $query = "DELETE FROM DonationItem  WHERE donation_item_id = '$itemId'";
+        return Database::run_query($query);
+    }
+
+    //get desc by donation item id
+    public static function getDescriptionByitemId($itemId){
+        $query = "SELECT description FROM DonationItem WHERE donation_item_id = '$itemId' ";
+        $result = Database::run_select_query($query);
+        if ($row = $result->fetch_assoc()) {
+            return $row['description'];
+        }
+        return false;
+        
+    }
     // Get all donations by type (Money, Books, Clothes)
     public static function getDonationsByType($donationTypeId) {
         $query = "SELECT * FROM DonationItem di

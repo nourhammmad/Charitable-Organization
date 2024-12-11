@@ -1,15 +1,15 @@
 <?php
 $server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."./models/OrganizationModel.php";
-require_once $server."./models/EventModel.php";
-require_once $server."./models/TaskModel.php";
-require_once $server."./controllers/DonationManagement.php";
+require_once $server."\models\OrganizationModel.php";
+require_once $server."\models\EventModel.php";
+require_once $server."\models\TaskModel.php";
+require_once $server."\controllers\DonationManagement.php";
 
-require_once $server."./controllers/FamilyShelterController.php";
-require_once $server."./controllers/EducationalCenterController.php";
-require_once $server."./controllers/FoodBankController.php";
-require_once $server."./controllers/TaskManagementController.php";
-require_once $server."./Services/CommunicationFacade.php";
+require_once $server."\controllers\FamilyShelterController.php";
+require_once $server."\controllers\EducationalCenterController.php";
+require_once $server."\controllers\FoodBankController.php";
+require_once $server."\controllers\TaskManagementController.php";
+require_once $server."\Services\CommunicationFacade.php";
  
     
     if (isset($_GET['action'])) {

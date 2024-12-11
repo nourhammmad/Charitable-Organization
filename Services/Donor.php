@@ -1,24 +1,25 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT']."\Services\Donation.php";
+require_once $_SERVER['DOCUMENT_ROOT']."\Services\ICommand.php";
 
 
 
 class Donor {
     private $id;
     private DonationType $Dt;
-    private $donationState;
+    private ICommand $donationCommand;
 
     public function __construct($id)
     {
         $this->id =$id;   
     }
-    public function setDonationState(IDonationState $state) {
-        $this->donationState = $state;
+    public function setDonationCommand(ICommand $donationCommand) {
+        $this->donationCommand = $donationCommand;
     }
-
-    public function getDonationState() {
-        return $this->donationState;
+    public function executeCommand(){
+        $this->donationCommand->execute();
     }
+   
     public function setDonationStrategy(DonationType $donationStrategy) {
         $this->Dt = $donationStrategy;
     }

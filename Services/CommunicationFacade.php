@@ -1,6 +1,8 @@
 <?php 
-require_once  "D:\\engineering ASU\computer year 4\Fall 24\Software Design Patterns\CharetyOrg\Charitable-Organization-1\Services\EmailService.php";
-require_once  "D:\\engineering ASU\computer year 4\Fall 24\Software Design Patterns\CharetyOrg\Charitable-Organization-1\controllers\SMScontroller.php";
+require_once $_SERVER['DOCUMENT_ROOT']."\Services\EmailService.php";
+require_once $_SERVER['DOCUMENT_ROOT']."\controllers\SMScontroller.php";
+//require_once  "D:\\engineering ASU\computer year 4\Fall 24\Software Design Patterns\CharetyOrg\Charitable-Organization-1\Services\EmailService.php";
+//require_once  "D:\\engineering ASU\computer year 4\Fall 24\Software Design Patterns\CharetyOrg\Charitable-Organization-1\controllers\SMScontroller.php";
 
 
 class CommunicationFacade{
