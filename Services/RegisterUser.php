@@ -1,12 +1,13 @@
 <?php
 
 
-require_once "./Services/User.php";
-require_once "./models/RegisteredUserModel.php";
-require_once "./models/DonorModel.php";
-require_once "./models/VolunteerModel.php";
-require_once "./models/VolunteerModel.php";
-require_once "./models/TaskModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./Services/User.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/RegisteredUserModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/DonorModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/VolunteerModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/VolunteerModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./models/TaskModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./controllers/VolunteerCotroller.php";
 
 
 
@@ -63,6 +64,12 @@ class RegisterUser extends user {
                 echo "dakhalt";
                 $volunteerId = VolunteerModel::getLastInsertVolunteerId(); // Get the last inserted Volunteer ID
                 $taskId=TaskModel::getLastInsertTasksId();
+                $handler = new VolunteerCotroller($volunteerId);
+                $events = $handler->displayAvailableEvents();
+                $tasks = $handler->displayAllTasks();
+                // Store events and tasks in session (for use in the dashboard)
+                $_SESSION['volunteer_events'] = $events;
+                $_SESSION['volunteer_tasks'] = $tasks;
                 header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId&task_id=$taskId"); // Redirect to volunteer dashboard
                 exit();
             }

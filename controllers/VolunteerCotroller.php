@@ -3,18 +3,7 @@ $server=$_SERVER['DOCUMENT_ROOT'];
 require_once $server."\models\VolunteerModel.php";
 require_once $server."\controllers\VolunteeEventAssignmentController.php";
 require_once $server."\controllers\VolunteerTaskAssignmentController.php";
-
-// require_once $server."./db-populate.php";
-
-// try {
-//     $db =  Database::getInstance();
-//     Populate::populate();
-// } catch (Exception $e) {
-//     echo "Error initializing Database: " . $e->getMessage();
-//     exit;
-// }
-
-
+ 
 class VolunteerCotroller {
     private $volunteerModel;
     private $assignEventController;
@@ -25,33 +14,17 @@ class VolunteerCotroller {
         $this->volunteerModel = VolunteerModel::getVolunteerById($volunteerId);
         $this->assignEventController = new VolunteeEventAssignmentController();
         $this->assignTaskController = new VolunteerTaskAssignmentController();
-
-       
     }
     public function getAssignEventController() {
         return $this->assignEventController;
     }
 
     public function displayAvailableEvents() {
-        // Ensure $this->assignEventController->getAvailableEvents() is returning an array
-        $events = $this->assignEventController->getAvailableEvents();
-        
-        // Check if events are returned and not an error message
-        if (is_array($events) && !empty($events)) {
-            return $events;
-        } else {
-            return [];  // Return an empty array if no events found
-        }
+        return $this->assignEventController->getAvailableEvents() ?: [];
     }
     public function displayAllTasks() {
-        // Fetch all tasks using the TaskModel
-        $tasks = $this ->assignTaskController->viewAllTasks();  // Call the method from TaskModel
-    
-        if (is_array($tasks) && !empty($tasks)) {
-            return $tasks;
-        } else {
-            return [];
-}}
+        return $this->assignTaskController->viewAllTasks() ?: [];
+    }
     
     public function applyForEvent($eventId) {
         if ($this->volunteerModel) {
@@ -80,4 +53,4 @@ class VolunteerCotroller {
         echo "Notification for Volunteer {$this->volunteerModel->getId()}: {$message}<br>";
 }
 }
-//$volu=new VolunteerCotroller(1);
+ 

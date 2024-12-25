@@ -1,16 +1,9 @@
 <?php
-// Assuming $volunteerId is passed from session or login process
+// Ensure variables are defined
+session_start();
 $volunteerId = $_GET['volunteer_id'];  // Example of a logged-in volunteer
-$server = $_SERVER['DOCUMENT_ROOT'];
-
-require_once $server.'./controllers/VolunteerCotroller.php';  // Corrected typo in class name ('VolunteerCotroller' -> 'VolunteerController')
-
-// Create a new VolunteerController
-$volunteerController = new VolunteerCotroller($volunteerId);
-
-// Fetch available events
-$events = $volunteerController->displayAvailableEvents();
-$tasks = $volunteerController->displayAllTasks();
+$events = $_SESSION['volunteer_events'] ?? [];
+$tasks = $_SESSION['volunteer_tasks'] ?? [];
 
 ?>
 
