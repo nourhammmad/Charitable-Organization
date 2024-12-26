@@ -124,11 +124,11 @@
             <button type="submit" name="signup">Sign Up</button>
         </form>
 
-        <h2>Or Login as Guest</h2>
+        <h2>Login as Guest</h2>
         <form method="post">
             <button type="submit" name="guest">Continue as Guest</button>
         </form>
-
+        <h2>Login as Organization</h2>
         <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
     <button type="submit" name="org_pressed" class="organization-button">Log in as Organization</button>
 

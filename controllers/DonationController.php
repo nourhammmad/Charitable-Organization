@@ -146,17 +146,19 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action']==='redo') {
 }
 //echo "bara 5ales";
 else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'view_notifications') {
-    header('Content-Type: application/json');  // Set the content type to JSON
+   // header('Content-Type: application/json');  // Set the content type to JSON
 
     $donorId = $_POST['donorId'] ?? null;  // Get donorId from POST data
+
 
     try {
         if ($donorId) {
             // Assuming getNotificationsForDonor is a function that retrieves notifications for the given donor ID
             $notifications = getNotificationsForDonor($donorId);
-
+            //print($notifications);
             // Check if notifications were found
             if ($notifications) {
+                //print('k');
                 echo json_encode([
                     'success' => true,
                     'notifications' => $notifications  // Return notifications data as part of the response
@@ -206,6 +208,6 @@ else {
 }
 
 function getNotificationsForDonor($donorid){
-    echo "yarab ab2a hena";
-    RegisterUserTypeModel::getNotifications($donorid);
+   // echo "yarab ab2a hena";
+    return RegisterUserTypeModel::getNotifications($donorid);
    }

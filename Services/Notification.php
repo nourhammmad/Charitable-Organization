@@ -3,14 +3,17 @@ class Notification {
     public $id;
     public $recipientId;
     public $message;
-    public $timestamp;
+    public $createdAt;
+    public $senderId;
+    public $senderName;
 
-    public function __construct($id, $recipientId, $message, $timestamp) {
+    public function __construct($id, $recipientId, $message, $createdAt, $senderId, $senderName) {
         $this->id = $id;
         $this->recipientId = $recipientId;
         $this->message = $message;
-        $this->timestamp = $timestamp;
+        $this->createdAt = $createdAt;
+        $this->senderId = $senderId;
+        $this->senderName = $senderName;
     }
-
-    // Optionally, you could add methods to format the data or other functionality
 }
+

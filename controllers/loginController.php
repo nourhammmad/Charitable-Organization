@@ -78,11 +78,13 @@ class LoginController {
         }
 
         private function loginGuestUser() {
-            $guest = new Guest();
-            UserModel::createDefaultUser('Guest');
-            $guestId = UserModel::getLastinsertId();
-            $guest->setId($guestId);
-            $guest->login();
+            // $guest = new Guest();
+            // UserModel::createDefaultUser('Guest');
+            // $guestId = UserModel::getLastinsertId();
+            // $guest->setId($guestId);
+            // $guest->login();
+            require_once "./views/guestView.php";
+            exit(); 
         }
         private function loginWithGoogle() {
             $msg ='';

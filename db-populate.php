@@ -57,8 +57,8 @@ class Populate {
                     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
                     
                     "INSERT INTO sms_logs (id, sender_id, recipient_id, message, status) VALUES
-                    (1, 2, 1, 'yarab','sent');",
-                 
+                    (1, 2, 1, 'yarab','sent'),
+                    (2, 2, 1, 'cry','sent');",
                     
 
                 // Create Organization Table

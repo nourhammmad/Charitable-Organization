@@ -223,6 +223,7 @@
 
 <!-- Modal for Notifications -->
 <div id="notificationsModal" style="display: none; position: fixed; top: 20%; left: 30%; width: 40%; background: #fff; border: 1px solid #ccc; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); padding: 20px; z-index: 1000;">
+<span class="close-button" style="position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px;">&times;</span>
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
         <h2>Notifications</h2>
@@ -320,28 +321,30 @@ function viewNotifications() {
         return;
     }
 
-    alert("Donor ID: " + donorId);
-
     // Prepare form data to send to the controller
     const formData = new FormData();
     formData.append('action', 'view_notifications');
     formData.append('donorId', donorId);
-    alert(formData.get);
+
     // Fetch notifications from the server
     fetch("../controllers/DonationController.php", {
         method: 'POST',
         body: formData,
     })
-    .then(response => response.json())  // Automatically parse as JSON
-    .then(data => {
-        alert(response.json);
-        alert("Response Data:", data);  // Log the response for debugging
-
-        // Check if the response is successful
-        if (data.success) {
-            displayNotifications(data.notifications);  // Display notifications
-        } else {
-            alert(data.message || 'Error fetching notifications.');
+    .then(response => response.text())  // Get raw text response
+    .then(rawData => {
+        alert("Raw Data: " + rawData);  // Print raw data before parsing
+        try {
+            const data = JSON.parse(rawData);  // Parse JSON from raw data
+            // Check if the response is successful
+            if (data.success) {
+                displayNotifications(data.notifications);  // Display notifications
+            } else {
+                alert(data.message || 'Error fetching notifications.');
+            }
+        } catch (error) {
+            console.error("Error parsing JSON:", error);
+            alert("Invalid JSON format.");
         }
     })
     .catch(error => {
@@ -361,7 +364,10 @@ function displayNotifications(notifications) {
     if (notifications && notifications.length > 0) {
         notifications.forEach(notification => {
             const li = document.createElement('li');
-            li.textContent = notification.message || 'No message available';
+            
+            // Create a string containing sender's name and the message
+            li.textContent = `${notification.senderName}: ${notification.message  || 'No message available'} : ${notification.createdAt}`;
+            
             notificationList.appendChild(li);
         });
     } else {
@@ -375,9 +381,14 @@ function displayNotifications(notifications) {
 
     // Close button functionality
     const closeButton = notificationsModal.querySelector(".close-button");
-    closeButton.addEventListener("click", () => {
-        notificationsModal.style.display = 'none';
-    });
+    if (closeButton) {
+        console.log("Close button found"); // Debugging: Log if close button is found
+        closeButton.addEventListener("click", () => {
+            notificationsModal.style.display = 'none';
+        });
+    } else {
+        console.error("Close button not found");
+    }
 }
 
 
