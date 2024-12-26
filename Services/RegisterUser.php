@@ -3,6 +3,9 @@
 $server=$_SERVER['DOCUMENT_ROOT'];
 
 
+$server=$_SERVER['DOCUMENT_ROOT'];
+
+
 
 require_once $server."/Services/User.php";
 require_once $server."/models/RegisteredUserModel.php";
@@ -66,6 +69,12 @@ class RegisterUser extends user {
                 echo "dakhalt";
                 $volunteerId = VolunteerModel::getLastInsertVolunteerId(); // Get the last inserted Volunteer ID
                 $taskId=TaskModel::getLastInsertTasksId();
+                $handler = new VolunteerCotroller($volunteerId);
+                $events = $handler->displayAvailableEvents();
+                $tasks = $handler->displayAllTasks();
+                // Store events and tasks in session (for use in the dashboard)
+                $_SESSION['volunteer_events'] = $events;
+                $_SESSION['volunteer_tasks'] = $tasks;
                 header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId&task_id=$taskId"); // Redirect to volunteer dashboard
                 exit();
             }
