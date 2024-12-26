@@ -1,9 +1,9 @@
 <?php
-//$server=$_SERVER['DOCUMENT_ROOT'];
-require_once "models\VolunteerEventAssignmentModel.php";
-require_once "models\VolunteerModel.php";
-require_once "controllers\VolunteerCotroller.php";
-require_once "Services\Volunteer.php";
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server."\models\VolunteerEventAssignmentModel.php";
+require_once $server."\models\VolunteerModel.php";
+require_once $server."\controllers\VolunteerCotroller.php";
+require_once $server."\Services\Volunteer.php";
 
 
 

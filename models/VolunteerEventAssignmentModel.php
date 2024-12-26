@@ -1,8 +1,8 @@
 <?php
-//$server=$_SERVER['DOCUMENT_ROOT'];
-require_once "Database.php";
-require_once "models\VolunteerModel.php";
-require_once "models\EventModel.php";
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server."\Database.php";
+require_once $server."\models\VolunteerModel.php";
+require_once $server."\models\EventModel.php";
 
 class VolunteerEventAssignementModel{
 

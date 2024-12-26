@@ -219,6 +219,79 @@
             <div class="option-icon">👕</div>
             <a>Donate Clothes</a>
         </div>
+        <button id="view_notifications" onclick="viewNotifications()">View Notifications</button>
+
+<!-- Modal for Notifications -->
+<div id="notificationsModal" style="display: none; position: fixed; top: 20%; left: 30%; width: 40%; background: #fff; border: 1px solid #ccc; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); padding: 20px; z-index: 1000;">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2>Notifications</h2>
+        <ul id="notification-list">
+            <!-- Notifications will be dynamically added here -->
+        </ul>
+    </div>
+</div>
+       <!--    <script>
+         if (selectedType === "not"){
+                let endpoint = "";
+                endpoint = "../controllers/DonationController.php?action=getNotifications";
+         
+            }</script>  -->
+<!--          
+            <div class="option" id="show-notifications">
+            <a href="#">Show Notifications</a>
+            </div>
+<script>
+    document.getElementById("show-notifications").addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default link behavior
+
+        // Extract the user ID (donor ID) from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const donorId = urlParams.get('donor_id');
+        if (!donorId) {
+            alert("Donor ID is missing.");
+            return;
+        }
+
+        // Include donorId as a parameter in the endpoint URL
+           //header("Location: ./views/HomeView.php?donor_id=$donorId");
+        const endpoint = `./controllers/DonationController.php?donor_id=${donorId}&action=getNotifications`;
+
+        fetch(endpoint)
+            .then(response => response.json())
+            .then(notifications => {
+                const notificationList = document.getElementById('notification-list');
+                notificationList.innerHTML = ''; // Clear any previous notifications
+
+                if (notifications.length === 0) {
+                    notificationList.innerHTML = '<li>No notifications available.</li>';
+                } else {
+                    notifications.forEach(notification => {
+                        // Create a list item for each notification
+                        const li = document.createElement('li');
+                        li.textContent = notification.message || JSON.stringify(notification); // Adjust key as per structure
+                        notificationList.appendChild(li);
+                    });
+                }
+
+                // Show the popup and overlay
+                document.getElementById('notification-popup').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error fetching notifications:', error);
+                alert('Failed to fetch notifications.');
+            });
+    });
+
+    function closePopup() {
+        document.getElementById('notification-popup').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+    }
+</script>
+ -->
+
+
         
     </div>
     <div class="donation-history">
@@ -237,9 +310,84 @@
         </div>
     </div>
 
+<script>
+function viewNotifications() {
+    // Get donorId from the query string (URL)
+    const urlParams = new URLSearchParams(window.location.search);
+    const donorId = urlParams.get('donor_id');
+    if (!donorId) {
+        alert("Donor ID is missing.");
+        return;
+    }
+
+    alert("Donor ID: " + donorId);
+
+    // Prepare form data to send to the controller
+    const formData = new FormData();
+    formData.append('action', 'view_notifications');
+    formData.append('donorId', donorId);
+    alert(formData.get);
+    // Fetch notifications from the server
+    fetch("../controllers/DonationController.php", {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())  // Automatically parse as JSON
+    .then(data => {
+        alert(response.json);
+        alert("Response Data:", data);  // Log the response for debugging
+
+        // Check if the response is successful
+        if (data.success) {
+            displayNotifications(data.notifications);  // Display notifications
+        } else {
+            alert(data.message || 'Error fetching notifications.');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching notifications:', error);
+        alert('An error occurred while fetching notifications.');
+    });
+}
+
+function displayNotifications(notifications) {
+    const notificationsModal = document.getElementById("notificationsModal");
+    const notificationList = document.getElementById("notification-list");
+
+    // Clear previous notifications
+    notificationList.innerHTML = '';
+
+    // If there are no notifications
+    if (notifications && notifications.length > 0) {
+        notifications.forEach(notification => {
+            const li = document.createElement('li');
+            li.textContent = notification.message || 'No message available';
+            notificationList.appendChild(li);
+        });
+    } else {
+        const li = document.createElement('li');
+        li.textContent = 'No notifications found.';
+        notificationList.appendChild(li);
+    }
+
+    // Show the modal
+    notificationsModal.style.display = 'block';
+
+    // Close button functionality
+    const closeButton = notificationsModal.querySelector(".close-button");
+    closeButton.addEventListener("click", () => {
+        notificationsModal.style.display = 'none';
+    });
+}
+
+
+</script>
+
 
     
     <script>
+  
+
     function viewDonationHistory() {
         // Get donorId from the query string (URL)
         const urlParams = new URLSearchParams(window.location.search);
@@ -513,7 +661,8 @@ function redoDonation(logId) {
                 formData.append("author", document.getElementById("author").value);
                 formData.append("publicationYear", document.getElementById("publicationYear").value);
                 formData.append("quantity", document.getElementById("quantity").value);
-            } else if (selectedType === "clothes") {
+            }
+            else if (selectedType === "clothes") {
                 formData.append("size", document.getElementById("size").value);
                 formData.append("quantity", document.getElementById("clothesQuantity").value);
                 formData.append("type", document.getElementById("clothesType").value);

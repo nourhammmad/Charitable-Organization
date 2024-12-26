@@ -40,9 +40,9 @@ class Populate {
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
  
                 // Insert sample RegisteredUserType
-                "INSERT INTO RegisteredUserType (id, email, userName, passwordHash, category) VALUES
-                    (1, 'john.doe@example.com', 'john_doe', 'hashedpassword1', 'Donor'),
-                    (2, 'jane.smith@example.com', 'jane_smith', 'hashedpassword2', 'Volunteer');",
+                "INSERT INTO RegisteredUserType (id, email, userName, passwordHash, phone ,category) VALUES
+                    (1, 'john.doe@example.com', 'john_doe', 'hashedpassword1', 0100, 'Donor'),
+                    (2, 'jane.smith@example.com', 'jane_smith', 'hashedpassword2', 0102, 'Volunteer');",
                     
  
                    " CREATE TABLE sms_logs (
@@ -56,6 +56,11 @@ class Populate {
                         FOREIGN KEY (recipient_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE
                     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
                     
+                    "INSERT INTO sms_logs (id, sender_id, recipient_id, message, status) VALUES
+                    (1, 2, 1, 'yarab','sent');",
+                 
+                    
+
                 // Create Organization Table
                 "CREATE TABLE Organization (
                     id INT NOT NULL PRIMARY KEY,  

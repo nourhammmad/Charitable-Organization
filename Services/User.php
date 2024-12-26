@@ -1,6 +1,6 @@
 <?php
-
-require_once "./models/UserModel.php";
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server."/models/UserModel.php";
 
 abstract class User {
     protected $userid;

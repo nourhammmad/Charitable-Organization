@@ -1,5 +1,7 @@
 <?php
-require_once "Services\IServices.php";
+$server=$_SERVER['DOCUMENT_ROOT'];
+
+require_once $server."\Services\IServices.php";
 class EducationalCenters implements IServices {
     private $quantity;
     private $NoCenters;

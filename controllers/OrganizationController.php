@@ -11,8 +11,8 @@ require_once $server."\controllers\FoodBankController.php";
 require_once $server."\controllers\TaskManagementController.php";
 require_once $server."\Services\CommunicationFacade.php";
  
-    
-    if (isset($_GET['action'])) {
+
+  if (isset($_GET['action'])) {
     
         $action = $_GET['action'];
         echo $action;
@@ -44,23 +44,40 @@ require_once $server."\Services\CommunicationFacade.php";
                 handleMoney();
                 break;
                
-            // case 'sendAll':
-            //     SendNotification();
-            //     break;   
+            case 'sendAll':
+                SendNotification();
+                break;   
+
+            // case 'logout':
+            //     logout();
+            //     break;    
 
 
     
-            default:
-                echo "Invalid action.";
-                break;
+            // default:
+            //     echo "Invalid action.";
+            //     break;
         }
     }
 
-    // function SendNotification() {
-    //     $result = CommunicationFacade::Sendall( $_POST['mail'], 
-    //        $_POST['subject'] ,
-    //        $_POST['body']);
-    // }
+    if ($_SERVER["REQUEST_METHOD"] == "POST"){
+        if (isset($_POST['logout'])) {
+            logout();
+           
+         }
+        }
+
+    function logout(){
+        require_once $_SERVER['DOCUMENT_ROOT']."/views/loginView.php";
+         exit(); 
+    }
+
+    function SendNotification() {
+        $result = CommunicationFacade::Sendall( $_POST['mail'], 
+           $_POST['subject'] ,
+           $_POST['body'],
+           $_POST['phone']);
+    }
     
     function handleGetOrganizations() {
         $result = OrganizationModel::getAllOrganizations();

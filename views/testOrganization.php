@@ -77,6 +77,7 @@
 <body>
     <h1>Organization Management</h1>
 
+ 
     <div class="action-options">
         <div class="option" onclick="openModal('organization')">Get Organization</div>
         <div class="option" onclick="openModal('donors')">Get Donors</div>
@@ -87,6 +88,9 @@
         <div class="option" onclick="openModal('money')">Track Money</div>
         <div class="option" onclick="openModal('sendAll')">Send Notification</div>
     </div>
+
+  
+
     <!---style--->
     <style>
     .action-options {
@@ -122,6 +126,11 @@
         </div>
     </div>
 
+
+    <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+    <button type="submit" name="logout" class="organization-button">Logout</button>
+
+
     <script>
         function openModal(type) {
             const modal = document.getElementById("actionModal");
@@ -144,6 +153,9 @@
             else if(type === 'money'){
                 title.textContent = "Track Money Donations";
             }
+            // else if (type === 'logout'){
+            //     title.textContent = "Logout";
+            // }
             else if(type === 'sendAll'){
                 title.textContent = "Send Notification";
                 fields.innerHTML = `
@@ -195,6 +207,9 @@
             modal.style.display = "flex";
         }
 
+        
+
+
         function closeModal() {
             document.getElementById("actionModal").style.display = "none";
         }
@@ -212,7 +227,7 @@
             if (modalTitle.includes("Task")) endpoint = "../controllers/OrganizationController.php?action=createTask";
             if (modalTitle.includes("Track Book Donations")) endpoint = "../controllers/OrganizationController.php?action=trackBooks";
             if (modalTitle.includes("Send Notification")) endpoint = "../controllers/OrganizationController.php?action=sendAll";
-
+         //   if (modalTitle.includes("Logout")) endpoint = "../controllers/OrganizationController.php?action=logout";
             fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },

@@ -1,12 +1,15 @@
 <?php
 
+$server=$_SERVER['DOCUMENT_ROOT'];
 
-require_once "./Services/User.php";
-require_once "./models/RegisteredUserModel.php";
-require_once "./models/DonorModel.php";
-require_once "./models/VolunteerModel.php";
-require_once "./models/VolunteerModel.php";
-require_once "./models/TaskModel.php";
+
+
+require_once $server."/Services/User.php";
+require_once $server."/models/RegisteredUserModel.php";
+require_once $server."/models/DonorModel.php";
+require_once $server."/models/VolunteerModel.php";
+require_once $server."/models/VolunteerModel.php";
+require_once $server."/models/TaskModel.php";
 
 
 

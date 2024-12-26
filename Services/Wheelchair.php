@@ -1,6 +1,6 @@
 <?php 
-//$server=$_SERVER['DOCUMENT_ROOT'];
-require_once "Services\AccessabilityDecorator.php";
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server."\Services\AccessabilityDecorator.php";
 
 class Wheelchair extends AcessabilityDecorator{
     

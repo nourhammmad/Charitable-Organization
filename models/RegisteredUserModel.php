@@ -1,11 +1,53 @@
 <?php
 
 $server=$_SERVER['DOCUMENT_ROOT'];
-require_once "./Database.php";
-require_once "./models/UserModel.php";
+require_once $server."/Database.php";
+require_once $server."/models/UserModel.php";
+require_once $server."/Services/Notification.php";
 
 
 class RegisterUserTypeModel {
+
+    public static function getNotifications($recipientId) {
+        // Prepare the query to select notifications based on recipient ID
+        $query = "SELECT * FROM sms_logs WHERE recipient_id = '$recipientId'";
+        $result = Database::run_select_query($query);
+    
+        // Check if the query returned false (error in the query)
+        if ($result === false) {
+            return []; // Return an empty array if no results
+        }
+    
+        // Initialize an array to store notification objects
+        $notifications = [];
+    
+        // Fetch each row from the result set
+        while ($row = $result->fetch_assoc()) {
+            // Add each notification to the array (using message from the row)
+            $notifications[] = new Notification(
+                $row['id'],             // Notification ID (adjust based on your db schema)
+                $row['recipient_id'],   // Recipient ID
+                $row['message'],        // Message content
+                $row['timestamp']       // Timestamp (adjust based on your db schema)
+            );
+        }
+    
+        // Check if notifications were found
+        if (count($notifications) > 0) {
+            // Return the notifications as a JSON response with success
+            return json_encode([
+                'success' => true,
+                'notifications' => $notifications
+            ]);
+        } else {
+            // If no notifications are found, return a failure message
+            return json_encode([
+                'success' => false,
+                'message' => 'No notifications found.'
+            ]);
+        }
+    }
+    
 
 
     public static function save($email, $userName, $passwordHash, $phone ,$category) { 

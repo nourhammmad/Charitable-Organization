@@ -26,9 +26,7 @@ class LoginController {
                 $this->loginWithGoogle();
             } elseif (isset($_POST['facebook_login'])) {
                 $this->loginWithFacebook();
-            }
-            // Handle organization login
-            elseif (isset($_POST['org_pressed'])) {
+            }elseif (isset($_POST['org_pressed'])) {
                $this->loginorg();
               
             }
@@ -104,7 +102,7 @@ class LoginController {
             if ($reguser) {
                 $reguser->login();
                 } else {
-                    $msg .= '<strong>Error:Can not register using google account </strong>';   
+                    $msg .= '<strong>Error:Can not register using facebook account </strong>';   
             }
         }
 }

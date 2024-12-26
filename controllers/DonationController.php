@@ -1,5 +1,5 @@
 <?php
-
+require_once  $_SERVER['DOCUMENT_ROOT']."\models\RegisteredUserModel.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\Donor.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationProvider.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\models\DonorModel.php";
@@ -16,8 +16,7 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoOnlyState.php";
 
 
 
-
-if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
+ if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
     $donationType = $_POST['donationType'];
     $donorId =(int) $_POST['donorId'];
     $donationStrategy = null;
@@ -145,9 +144,68 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action']==='redo') {
             echo json_encode(['success' => false, 'message' => 'Donor not found!']);
         }
 }
+//echo "bara 5ales";
+else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'view_notifications') {
+    header('Content-Type: application/json');  // Set the content type to JSON
+
+    $donorId = $_POST['donorId'] ?? null;  // Get donorId from POST data
+
+    try {
+        if ($donorId) {
+            // Assuming getNotificationsForDonor is a function that retrieves notifications for the given donor ID
+            $notifications = getNotificationsForDonor($donorId);
+
+            // Check if notifications were found
+            if ($notifications) {
+                echo json_encode([
+                    'success' => true,
+                    'notifications' => $notifications  // Return notifications data as part of the response
+                ]);
+            } else {
+                // No notifications found for the donor
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'No notifications found.'
+                ]);
+            }
+        } else {
+            // If donorId is missing from the request
+            echo json_encode([
+                'success' => false,
+                'message' => 'Donor ID is missing.'
+            ]);
+        }
+    } catch (Exception $e) {
+        // Handle any errors that occur during the process
+        echo json_encode([
+            'success' => false,
+            'message' => 'An error occurred while fetching notifications.',
+            'error' => $e->getMessage()  // Include the exception message for debugging
+        ]);
+    }
+
+    exit;
+}
+
+
+// else if ($_POST['action'] === 'mark_as_read') {
+//     $notificationId = $_POST['notificationId'] ?? null;
+//     if ($notificationId) {
+//         markNotificationAsRead($notificationId); // Implement this function to update the notification status
+//         echo json_encode(['success' => true]);
+//     } else {
+//         echo json_encode(['success' => false, 'message' => 'Notification ID is missing.']);
+//     }
+// }
+
     
 
 
 else {
     echo "Donor ID or Donation Type missing!";
 }
+
+function getNotificationsForDonor($donorid){
+    echo "yarab ab2a hena";
+    RegisterUserTypeModel::getNotifications($donorid);
+   }

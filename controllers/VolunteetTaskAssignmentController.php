@@ -1,7 +1,7 @@
 <?php
-
-require_once $_SERVER['DOCUMENT_ROOT']."./models/VolunteerTaskAssignmentModel.php";
-require_once $_SERVER['DOCUMENT_ROOT']."./models/TaskModel.php";
+$server = $_SERVER['DOCUMENT_ROOT'];
+require_once $server."/models/VolunteerTaskAssignmentModel.php";
+require_once $server."/models/TaskModel.php";
 
 class VolunteerTaskAssignmentController {
 
