@@ -17,11 +17,11 @@ class RegisterUserTypeModel {
     sms_logs.message,
     sms_logs.created_at,
     sms_logs.sender_id,
-    registeredusertype.userName AS sender_name
+    organization.name AS sender_name
 FROM 
     sms_logs
 LEFT JOIN 
-    registeredusertype ON sms_logs.sender_id = registeredusertype.id
+    organization ON sms_logs.sender_id = organization.id
 WHERE 
     sms_logs.recipient_id = '$recipientId'
 ORDER BY 

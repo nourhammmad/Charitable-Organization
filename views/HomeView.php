@@ -1,4 +1,5 @@
 <?php $donorId = $_GET['donor_id']; ?>
+<?php $userId = $_GET['user_id']; ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -315,16 +316,16 @@
 function viewNotifications() {
     // Get donorId from the query string (URL)
     const urlParams = new URLSearchParams(window.location.search);
-    const donorId = urlParams.get('donor_id');
-    if (!donorId) {
-        alert("Donor ID is missing.");
+    const userId = urlParams.get('user_id');
+    if (!userId) {
+        alert("user ID is missing.");
         return;
     }
 
     // Prepare form data to send to the controller
     const formData = new FormData();
     formData.append('action', 'view_notifications');
-    formData.append('donorId', donorId);
+    formData.append('userId', userId);
 
     // Fetch notifications from the server
     fetch("../controllers/DonationController.php", {

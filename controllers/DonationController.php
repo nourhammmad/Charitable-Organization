@@ -148,7 +148,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action']==='redo') {
 else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'view_notifications') {
    // header('Content-Type: application/json');  // Set the content type to JSON
 
-    $donorId = $_POST['donorId'] ?? null;  // Get donorId from POST data
+    $donorId = $_POST['userId'] ?? null;  // Get donorId from POST data
 
 
     try {

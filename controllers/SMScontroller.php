@@ -23,7 +23,7 @@ class SMScontroller {
                 throw new Exception("Sender ID does not exist.");
             }
 
-            $senderId = RegisterUserTypeModel::getLastInsertId();
+            $senderId = 1;
             if (!$senderId) {
                 throw new Exception("Sender  does not exist.");
             }

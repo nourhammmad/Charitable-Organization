@@ -1,12 +1,13 @@
 <?php
 //require "D:/SDP/project/Charitable-Organization/vendor/autoload.php";
 require_once $_SERVER['DOCUMENT_ROOT']."/vendor/autoload.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/Services/IMailer.php";
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-class EmailService{
+class EmailService implements IMailer{
 
-function sendMail($toemail , $subject, $body){
+function sendEmail($toemail , $subject, $body){
    $mail = new PHPMailer(true);
 
    try {
@@ -30,8 +31,10 @@ function sendMail($toemail , $subject, $body){
 
     $mail->send();
     echo 'Message has been sent';
+    return true;
 } catch (Exception $e) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    return false;
 }
     }
 }

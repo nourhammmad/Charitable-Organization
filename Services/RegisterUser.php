@@ -44,7 +44,7 @@ class RegisterUser extends user {
             if($res){
 
                 $donorId = $res->getId();
-                header("Location: ./views/HomeView.php?donor_id=$donorId");
+                header("Location: ./views/HomeView.php?donor_id=$donorId&user_id=$this->id");
             }
         }
         exit();
