@@ -400,47 +400,60 @@ function displayNotifications(notifications) {
     <script>
   
 
-    function viewDonationHistory() {
-        // Get donorId from the query string (URL)
-        const urlParams = new URLSearchParams(window.location.search);
-        const donorId = urlParams.get('donor_id');
-        if (!donorId) {
+ // Update the viewDonationHistory function to ensure the dropdown reflects the 'all' option by default
+function viewDonationHistory() {
+    // Get donorId from the query string (URL)
+    const urlParams = new URLSearchParams(window.location.search);
+    const donorId = urlParams.get('donor_id');
+    if (!donorId) {
         alert("Donor ID is missing.");
         return;
-        }
-
-        const formData = new FormData();
-        formData.append('action', 'view_history');
-        formData.append('donorId', donorId);
-
-        fetch("../controllers/DonationController.php", {
-            method: 'POST',
-            body: formData,
-        })
-            .then(response => response.text()) 
-            .then(data => {
-                const parsedData = JSON.parse(data); 
-                if (parsedData.success) {
-                    displayDonationHistory(parsedData.donations);
-                } else {
-                    alert(parsedData.message || 'Error fetching donation history.');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching donation history:', error);
-                alert('An error occurred while fetching donation history.');
-            });
     }
-    // Display Donation History with Undo/Redo buttons
-    function displayDonationHistory(donations) {
+
+    const formData = new FormData();
+    formData.append('action', 'view_history');  // Default action for "all donations"
+    formData.append('donorId', donorId);
+
+    fetch("../controllers/DonationController.php", {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.text())
+    .then(data => {
+        const parsedData = JSON.parse(data); 
+        if (parsedData.success) {
+            window.donations = parsedData.donations;  // Save donations to global window object
+            displayDonationHistory(parsedData.donations, "all"); // Default to 'all'
+        } else {
+            alert(parsedData.message || 'Error fetching donation history.');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching donation history:', error);
+        alert('An error occurred while fetching donation history.');
+    });
+}
+
+// Display Donation History with Undo/Redo buttons
+function displayDonationHistory(donations, selectedFilter) {
     let historyContent = `
         <h2>Donation History</h2>
         <span class="close-button" style="position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px;">&times;</span>
+        <!-- Filter Dropdown -->
+        <div>
+            <label for="filterDropdown">Filter by Donation Type:</label>
+            <select id="filterDropdown" onchange="filterDonations()">
+                <option value="all" ${selectedFilter === 'all' ? 'selected' : ''}>All Types</option>
+                <option value="1" ${selectedFilter === '1' ? 'selected' : ''}>Money</option>
+                <option value="2" ${selectedFilter === '2' ? 'selected' : ''}>Books</option>
+                <option value="3" ${selectedFilter === '3' ? 'selected' : ''}>Clothes</option>
+            </select>
+        </div>
     `;
+
     if (donations && donations.length > 0) {
         historyContent += "<ul>";
         donations.forEach(donation => {
-
             let donationType;
             switch (donation.donation_type_id) {
                 case '1':
@@ -484,9 +497,52 @@ function displayNotifications(notifications) {
     closeButton.addEventListener("click", () => {
         historyModal.style.display = "none";
     });
+}
+
+// Handle the filter logic and pass the selected filter value to the controller
+function filterDonations() {
+    const filterType = document.getElementById("filterDropdown").value;
+    let actionType = "view_history"; // Default action for all donations
+
+    if (filterType === "1") {
+        actionType = "view_history_money";
+    } else if (filterType === "2") {
+        actionType = "view_history_books";
+    } else if (filterType === "3") {
+        actionType = "view_history_clothes";
     }
 
+    // Get donorId from the query string (URL)
+    const urlParams = new URLSearchParams(window.location.search);
+    const donorId = urlParams.get('donor_id');
+    if (!donorId) {
+        alert("Donor ID is missing.");
+        return;
+    }
 
+    const formData = new FormData();
+    formData.append('action', actionType);
+    formData.append('donorId', donorId);
+
+    fetch("../controllers/DonationController.php", {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.text())
+    .then(data => {
+        const parsedData = JSON.parse(data);
+        if (parsedData.success) {
+            window.donations = parsedData.donations;  // Save donations to global window object
+            displayDonationHistory(parsedData.donations, filterType);  // Pass the selected filter to be reflected in the dropdown
+        } else {
+            alert(parsedData.message || 'Error fetching filtered donation history.');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching filtered donation history:', error);
+        alert('An error occurred while fetching donation history.');
+    });
+}
 function undoDonation(logId) {
     const urlParams = new URLSearchParams(window.location.search);
     const donorId = urlParams.get('donor_id');
@@ -524,9 +580,6 @@ function undoDonation(logId) {
 
 
 }
-
-
-
 function redoDonation(logId) {
     const urlParams = new URLSearchParams(window.location.search);
     const donorId = urlParams.get('donor_id');

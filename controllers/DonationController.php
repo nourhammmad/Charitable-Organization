@@ -10,6 +10,7 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\CreateState.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\UndoDonationCommand.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoDonationCommand.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoOnlyState.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationLogIterator.php";
 
 
 
@@ -44,7 +45,8 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoOnlyState.php";
         
             }
 
-
+            // else if($_POST['paymentType']='instapay')
+            //  $donationStrategy = new FeesDonation($_POST['amount'],new cash($_POST['amount'],$_POST['currency']));
             break;
         default:
             echo "Invalid donation type.";
@@ -77,31 +79,58 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoOnlyState.php";
     }
     
 }
-else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'view_history') {
-    header('Content-Type: application/json'); 
-    $donorId = $_POST['donorId']; 
+else if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_POST['action'], 'view_history') !== false) {
+    $donorId = $_POST['donorId'];
+    $action = $_POST['action'];
 
     try {
-        $donations = donarLogFile::getLogsByUserId($donorId);
-        if ($donations) {
-            $donationsArray = array_map(function ($donation) {
+        // Check if the action contains 'view_history' as part of its value
+        if (strpos($action, 'view_history') !== false) {
+            $donations = donarLogFile::getLogsByUserId($donorId);
+
+            // Apply filtering based on the specific action type (clothes, books, money, etc.)
+            $iterator = new DonationLogIterator($donations);
+            // Determine donation type based on the action
+            if ($action === 'view_history_clothes') {
+                $iterator->filterByType(3); // Filter for clothes
+            } elseif ($action === 'view_history_books') {
+                $iterator->filterByType(2); // Filter for books
+            } elseif ($action === 'view_history_money') {
+                $iterator->filterByType(1); // Filter for money
+            } else {
+                // Handle the default 'view_history' case (all donations)
+                $iterator->filterByType(null); // No filter, all donations
+            }
+
+            $donationArray = [];
+
+            foreach ($iterator as $donation) {
+                // Fetch the description for each donation item
                 $donationItemId = $donation->getLogitemId();
                 $description = '';
+
                 if ($donationItemId) {
                     $description = DonationModel::getDescriptionByitemId($donationItemId);
                 }
+
                 if (!$description) {
                     error_log("No description found for donation_item_id: $donationItemId");
                 }
-                $donationArray = $donation->toArray();
-                $donationArray['description'] = $description;
-                return $donationArray;
-            }, $donations);
-    
-            // Return the result as JSON
-            echo json_encode(['success' => true, 'donations' => $donationsArray]);
+
+                // Convert donation to array and add description at the same level as other properties
+                $donationArray[] = array_merge($donation->toArray(), ['description' => $description]);
+            }
+
+            error_log("Arrasy ba3d el for loop: " . print_r($donationArray, true));
+
+            // Return the donations with description in the response
+            echo json_encode(['success' => true, 'donations' => $donationArray]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'No donations found.']);
+            // Handle case where the action does not contain 'view_history'
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid action.'
+            ]);
         }
     } catch (Exception $e) {
         echo json_encode([
@@ -110,8 +139,8 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'view_his
             'error' => $e->getMessage()
         ]);
     }
-    exit;
 }
+
 else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'undo') 
     {
         $donorId = $_POST['donorId'];
