@@ -61,7 +61,7 @@ class RegisterUser extends user {
             echo("AAAAAAAAAAAAAAAAAAA");
             $donorId = DonarModel::getLastInsertDonorId();
             echo("jdhadiyfgidasgf");
-           header("Location: ./views/HomeView.php?donor_id=$donorId ");
+           header("Location: ./views/HomeView.php?donor_id=$donorId&user_id=$this->id");
         exit();
         }}
         elseif ($this->category === 'Volunteer') {
