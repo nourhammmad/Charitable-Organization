@@ -10,7 +10,7 @@ class DonationLogIterable implements DonationLogIterableInterface {
         $this->logs = $logs;
     }
 
-    public function getIterator(): Iterator {
+    public function getIterator(): DonationLogIterator {
         return new DonationLogIterator($this->logs);
     }
 }

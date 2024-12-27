@@ -11,6 +11,7 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\UndoDonationCommand.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoDonationCommand.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoOnlyState.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationLogIterator.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationLogIterable.php";
 
 
 
@@ -89,7 +90,8 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_POST['action'], 'view
             $donations = donarLogFile::getLogsByUserId($donorId);
 
             // Apply filtering based on the specific action type (clothes, books, money, etc.)
-            $iterator = new DonationLogIterator($donations);
+            $donationLogIterable = new DonationLogIterable($donations);
+            $iterator =$donationLogIterable->getIterator();
             // Determine donation type based on the action
             if ($action === 'view_history_clothes') {
                 $iterator->filterByType(3); // Filter for clothes
