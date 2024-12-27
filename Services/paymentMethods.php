@@ -1,5 +1,6 @@
 <?php
 require_once "../Services/IPayment.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\stripe.php";
 
 class cash implements Ipayment {
     private $amount;
@@ -65,5 +66,30 @@ class visa implements Ipayment {
     public function getPaymentDetails():string{
         return 'Visa Payement method of '.$this->amount .' '.$this->currency;
     }
-   // public function refund($amount): Bool;
+   
+}
+
+
+class StripeAdapter implements IPayment {
+    private $stripe;
+    private $amount;
+    private $currency;
+    private $cardNumber;
+
+    public function __construct($amount, $currency, $cardNumber) {
+        $this->stripe = new StripeAPI(); // Integrating the Stripe API
+        $this->amount = $amount;
+        $this->currency = $currency;
+        $this->cardNumber = $cardNumber;
+    }
+
+    public function processPayment($donorId): bool {
+        // Charge via Stripe API
+        return $this->stripe->charge($this->amount, $this->currency, $this->cardNumber);
+        //after that db save
+    }
+
+    public function getPaymentDetails(): string {
+        return $this->stripe->getTransactionDetails();
+    }
 }

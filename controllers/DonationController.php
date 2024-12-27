@@ -35,9 +35,16 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoOnlyState.php";
             else if($_POST['paymentType']=='visa'){
              $donationStrategy = new FeesDonation($_POST['amount'],new visa($_POST['amount'],$_POST['cardNumber'],$_POST['currency']));
             }
+            else if($_POST['paymentType']=='stripe'){
+                $donationStrategy = new FeesDonation(
+                    $_POST['amount'], 
+                    new StripeAdapter($_POST['amount'], $_POST['currency'], $_POST['cardNumber'])
+                );
+                break;
+        
+            }
 
-            // else if($_POST['paymentType']='instapay')
-            //  $donationStrategy = new FeesDonation($_POST['amount'],new cash($_POST['amount'],$_POST['currency']));
+
             break;
         default:
             echo "Invalid donation type.";

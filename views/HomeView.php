@@ -606,32 +606,30 @@ function redoDonation(logId) {
                     <input type="text" id="clothesColor" placeholder="Color" required>
                 </div>
                 <div id="moneyFields" style="display: none;">
-                    <select id="paymentType" onchange="updatePaymentFields()">
-                        <option value="" disabled selected>Select Payment Method</option>
-                        <option value="cash">Cash</option>
-                        <option value="visa">Visa</option>
-                        <option value="instapay">Instapay</option>
-                    </select>
-                    <div id="cashFields" style="display: none;">
-                        <input type="number" id="cashAmount" placeholder="Amount" required>
-                        <input type="text" id="cashCurrency" placeholder="Currency" required>
-                    </div>
-                    <div id="visaFields" style="display: none;">
-                        <input type="number" id="visaAmount" placeholder="Amount" required>
-<input type="text"   id="cardNumber" placeholder="Card Number" required>
-                        <input type="text"   id="visaCurrency" placeholder="Currency" required>
-                        <!-- <input type="text" id="cardHolderName" placeholder="Card Holder Name" required>
-                        <input type="text" id="expiryDate" placeholder="Expiry Date (MM/YY)" required>
-  <input type="number" id="cvv" placeholder="CVV" required> -->
-                    </div>
-                    <div id="instapayFields" style="display: none;">
-                        <input type="number" id="instapayAmount" placeholder="Amount" required>
-                        <input type="text" id="accountID" placeholder="Account ID" required>
-                        <input type="text" id="accountHolderName" placeholder="Account Holder Name" required>
-                        <input type="number" id="balance" placeholder="Balance" required>
-                        <input type="number" id="transactionFee" placeholder="Transaction Fee" required>
-                    </div>
+                <select id="paymentType" onchange="updatePaymentFields()">
+                    <option value="" disabled selected>Select Payment Method</option>
+                    <option value="cash">Cash</option>
+                    <option value="visa">Visa</option>
+                    <option value="stripe">Stripe</option>
+                </select>
+
+                <div id="cashFields" style="display: none;">
+                    <input type="number" id="cashAmount" placeholder="Amount" required>
+                    <input type="text" id="cashCurrency" placeholder="Currency" required>
                 </div>
+
+                <div id="visaFields" style="display: none;">
+                    <input type="number" id="visaAmount" placeholder="Amount" required>
+                    <input type="text" id="cardNumber" placeholder="Card Number" required>
+                    <input type="text" id="visaCurrency" placeholder="Currency" required>
+                </div>
+
+                <div id="stripeFields" style="display: none;">
+                    <input type="number" id="stripeAmount" placeholder="Amount" required>
+                    <input type="text" id="cardNumber" placeholder="Card Number" required>
+                    <input type="text" id="stripeCurrency" placeholder="Currency" required>
+                </div>
+            </div>
 
 
                 <button type="button" onclick="submitDonationForm()">Donate</button>
@@ -658,7 +656,7 @@ function redoDonation(logId) {
             const paymentType = document.getElementById("paymentType").value;
             document.getElementById("cashFields").style.display = paymentType === "cash" ? "block" : "none";
             document.getElementById("visaFields").style.display = paymentType === "visa" ? "block" : "none";
-            document.getElementById("instapayFields").style.display = paymentType === "instapay" ? "block" : "none";
+            document.getElementById("stripeFields").style.display = paymentType === "stripe" ? "block" : "none";
         }
 
 
@@ -690,12 +688,11 @@ function redoDonation(logId) {
                     formData.append("amount", document.getElementById("visaAmount").value);
                     formData.append("cardNumber", document.getElementById("cardNumber").value);
                     formData.append("currency", document.getElementById("visaCurrency").value);
-                } else if (paymentType === "instapay") {
-                    formData.append("amount", document.getElementById("instapayAmount").value);
-                    formData.append("accountID", document.getElementById("accountID").value);
-                    formData.append("accountHolderName", document.getElementById("accountHolderName").value);
-                    formData.append("balance", document.getElementById("balance").value);
-                    formData.append("transactionFee", document.getElementById("transactionFee").value);
+                } else if (paymentType === "stripe") {
+                    formData.append("amount", document.getElementById("stripeAmount").value);
+                    formData.append("currency", document.getElementById("stripeCurrency").value);
+                    formData.append("cardNumber", document.getElementById("cardNumber").value);
+                
                 }
             }
 
