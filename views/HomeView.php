@@ -626,7 +626,6 @@ function redoDonation(logId) {
 
                 <div id="stripeFields" style="display: none;">
                     <input type="number" id="stripeAmount" placeholder="Amount" required>
-                    <input type="text" id="cardNumber" placeholder="Card Number" required>
                     <input type="text" id="stripeCurrency" placeholder="Currency" required>
                 </div>
             </div>
@@ -691,7 +690,7 @@ function redoDonation(logId) {
                 } else if (paymentType === "stripe") {
                     formData.append("amount", document.getElementById("stripeAmount").value);
                     formData.append("currency", document.getElementById("stripeCurrency").value);
-                    formData.append("cardNumber", document.getElementById("cardNumber").value);
+                
                 
                 }
             }

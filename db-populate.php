@@ -12,7 +12,7 @@ class Populate {
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
                 "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, DonationLog,eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
-                , organization, ipayment, cash, visa, instapay,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs;",
+                , organization, ipayment, cash, visa, stripe,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs;",
                 "SET FOREIGN_KEY_CHECKS = 1;",
  
                 // Create Users Table
@@ -176,7 +176,7 @@ class Populate {
                     donor_id INT,
                     money_id INT,
                     amount DECIMAL(10, 2) NOT NULL,
-                    payment_method ENUM('Cash', 'Visa', 'Instapay') NOT NULL,
+                    payment_method ENUM('Cash', 'Visa', 'Stripe') NOT NULL,
                     FOREIGN KEY (donor_id) REFERENCES Donor(id) ON DELETE CASCADE,
                     FOREIGN KEY (money_id) REFERENCES Money(money_id) ON DELETE CASCADE
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
@@ -198,13 +198,14 @@ class Populate {
                     card_number VARCHAR(50),
                     FOREIGN KEY (payment_id) REFERENCES Payments(payment_id) ON DELETE CASCADE
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-                // Create Instapay Table (Specific Fields for Instapay Payments)
-                "CREATE TABLE Instapay (
+                // Create stripe Table 
+                "CREATE TABLE Stripe (
                     payment_id INT NOT NULL,
-                    transaction_reference VARCHAR(100) UNIQUE,
-                    account_number VARCHAR(50),
+                    transaction_reference VARCHAR(100),
+                    stripe_account VARCHAR(50),
                     FOREIGN KEY (payment_id) REFERENCES Payments(payment_id) ON DELETE CASCADE
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                
                 // Insert into specific payment tables
                 "INSERT INTO Cash (payment_id, transaction_id) VALUES
                     (1, 'CASH12345');",
@@ -212,8 +213,8 @@ class Populate {
                 "INSERT INTO Visa (payment_id, transaction_number, card_number) VALUES
                     (2, 'VISA67890', '1234-5678-9876-5432');",
                 
-                "INSERT INTO Instapay (payment_id, transaction_reference, account_number) VALUES
-                    (3, 'INSTA54321', '1234567890');",  
+                // "INSERT INTO Instapay (payment_id, transaction_reference, account_number) VALUES
+                //     (3, 'INSTA54321', '1234567890');",  
  
                 // Create Books Table (Child Table)
                 "CREATE TABLE Books (

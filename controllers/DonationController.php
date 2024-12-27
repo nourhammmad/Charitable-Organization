@@ -38,13 +38,11 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoOnlyState.php";
             else if($_POST['paymentType']=='stripe'){
                 $donationStrategy = new FeesDonation(
                     $_POST['amount'], 
-                    new StripeAdapter($_POST['amount'], $_POST['currency'], $_POST['cardNumber'])
+                    new StripeAdapter($_POST['amount'], $_POST['currency'],"tok_unionpay")
                 );
                 break;
         
             }
-
-
             break;
         default:
             echo "Invalid donation type.";

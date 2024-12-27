@@ -46,7 +46,7 @@ class DonationModel {
 
     // Function for money donations
     public static function createMoneyDonation($donationManagementId,$donationitemId ,$amount, $currency = 'USD', $paymentMethod, $paymentDetails): bool {
-        $description = "Cash donation of $amount $currency";
+        $description = "$paymentMethod donation of $amount $currency";
         
         self::insertDonationItem($donationManagementId, 1, $description,$paymentDetails['donor_id']);
         $donationitem= Database::get_last_inserted_id();
@@ -89,12 +89,12 @@ class DonationModel {
                 $queryVisa = "INSERT INTO Visa (payment_id, transaction_number, card_number) 
                               VALUES ((SELECT payment_id FROM Payments WHERE money_id = '$moneyId'), '$transactionNumber', '$cardNumber')";
                 return Database::run_query(query: $queryVisa);
-            case 'Instapay':
-                $transactionReference = $paymentDetails['transaction_reference'];
-                $accountNumber = $paymentDetails['account_number'];
-                $queryInstapay = "INSERT INTO Instapay (payment_id, transaction_reference, account_number) 
-                                  VALUES ((SELECT payment_id FROM Payments WHERE money_id = '$moneyId'), '$transactionReference', '$accountNumber')";
-                return Database::run_query(query: $queryInstapay);
+                case 'stripe':
+                    $transactionReference = $paymentDetails['transaction_reference'];
+                    $stripeAccount = $paymentDetails['stripe_account'];
+                    $queryStripe = "INSERT INTO stripe (payment_id, transaction_reference, stripe_account) 
+                                    VALUES ((SELECT payment_id FROM Payments WHERE money_id = '$moneyId'), '$transactionReference', '$stripeAccount')";
+                    return Database::run_query(query: $queryStripe);
             default:
                 return false;
         }
