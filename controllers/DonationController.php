@@ -1,7 +1,9 @@
 <?php
 require_once  $_SERVER['DOCUMENT_ROOT']."\models\RegisteredUserModel.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\Donor.php";
-require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationProvider.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\BooksDonationFactory.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\ClothesDonationFactory.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\FeesDonationFactory.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\models\DonorModel.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\paymentMethods.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\models\donarLogFile.php";
@@ -12,6 +14,7 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoDonationCommand.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\RedoOnlyState.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationLogIterator.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationLogIterable.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationFactory.php";
 
 
 
@@ -22,25 +25,24 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationLogIterable.php";
     $donationType = $_POST['donationType'];
     $donorId =(int) $_POST['donorId'];
     $donationStrategy = null;
-
-    switch ($donationType) {
-        case 'book':
-            $donationStrategy = new BooksDonation($_POST['bookTitle'], $_POST['author'], $_POST['publicationYear'], $_POST['quantity']);
+   
+     switch ($donationType) {
+         case 'book':
+            $donationStrategy =  BooksDonationFactory::createDonation($donationType,$donorId,null, null, null, $_POST['quantity'], $_POST['bookTitle'], $_POST['author'], $_POST['publicationYear'],null, null, null );
             break;
-        case 'clothes':
-            $donationStrategy = new ClothesDonation($_POST['type'],$_POST['size'],$_POST['color'],$_POST['quantity']);
+         case 'clothes':
+            $donationStrategy =  ClothesDonationFactory::createDonation($donationType,$donorId, $_POST['type'],$_POST['size'],$_POST['color'],$_POST['quantity'], null, null, null, null, null, null);
             break;
-        case 'money':
+         case 'money':
             if($_POST['paymentType']=='cash')
-             $donationStrategy = new FeesDonation($_POST['amount'],new cash($_POST['amount'],$_POST['currency']));
+             $donationStrategy =  FeesDonationFactory::createDonation($_POST['paymentType'], $donorId, null, null, null, null ,null, null, null,$_POST['amount'],$_POST['currency'], null );
 
             else if($_POST['paymentType']=='visa'){
-             $donationStrategy = new FeesDonation($_POST['amount'],new visa($_POST['amount'],$_POST['cardNumber'],$_POST['currency']));
+             $donationStrategy =  FeesDonationFactory::createDonation($_POST['paymentType'], $donorId, null, null, null, null ,null, null, null,$_POST['amount'],$_POST['currency'], $_POST['cardNumber'] );
             }
             else if($_POST['paymentType']=='stripe'){
-                $donationStrategy = new FeesDonation(
-                    $_POST['amount'], 
-                    new StripeAdapter($_POST['amount'], $_POST['currency'],"tok_unionpay")
+                $donationStrategy =  FeesDonationFactory::createDonation(
+                    $_POST['paymentType'], $donorId, null, null, null, null ,null, null, null,$_POST['amount'],$_POST['currency'], null 
                 );
                 break;
         
@@ -49,32 +51,8 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationLogIterable.php";
         default:
             echo "Invalid donation type.";
             exit;
-    }
-    if ($donationStrategy) {
-        $donor = DonarModel::getDonorById($donorId);
-
-        if($donor){
-            $donor->setDonationStrategy($donationStrategy);
-
-            if ($donor->donate($donorId)) {
-                $donarLog= donarLogFile::getLastLogByDonorId($donorId);
-                if($donationType=='money'){
-                   $donarLog->setDonationState(new RedoOnlyState());
-                }
-               else{ 
-                    $donarLog->setDonationState(new CreateState());
-                }
-
-                echo ucfirst($donationType) . " donation successful!";
-            } 
-            else {
-                echo "Failed to donate " . $donationType . ".";
-            }
-        }
-        else{
-            echo "coudnot create donor";
-        }
-    }
+     }
+   
     
 }
 else if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_POST['action'], 'view_history') !== false) {
@@ -179,41 +157,38 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action']==='redo') {
             echo json_encode(['success' => false, 'message' => 'Donor not found!']);
         }
 }
-//echo "bara 5ales";
+
 else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'view_notifications') {
-   // header('Content-Type: application/json');  // Set the content type to JSON
 
     $donorId = $_POST['userId'] ?? null;  // Get donorId from POST data
 
 
     try {
         if ($donorId) {
-            // Assuming getNotificationsForDonor is a function that retrieves notifications for the given donor ID
             $notifications = getNotificationsForDonor($donorId);
-            //print($notifications);
-            // Check if notifications were found
+      
             if ($notifications) {
-                //print('k');
+         
                 echo json_encode([
                     'success' => true,
-                    'notifications' => $notifications  // Return notifications data as part of the response
+                    'notifications' => $notifications  
                 ]);
             } else {
-                // No notifications found for the donor
+           
                 echo json_encode([
                     'success' => false,
                     'message' => 'No notifications found.'
                 ]);
             }
         } else {
-            // If donorId is missing from the request
+         
             echo json_encode([
                 'success' => false,
                 'message' => 'Donor ID is missing.'
             ]);
         }
     } catch (Exception $e) {
-        // Handle any errors that occur during the process
+       
         echo json_encode([
             'success' => false,
             'message' => 'An error occurred while fetching notifications.',
@@ -225,15 +200,6 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'view_not
 }
 
 
-// else if ($_POST['action'] === 'mark_as_read') {
-//     $notificationId = $_POST['notificationId'] ?? null;
-//     if ($notificationId) {
-//         markNotificationAsRead($notificationId); // Implement this function to update the notification status
-//         echo json_encode(['success' => true]);
-//     } else {
-//         echo json_encode(['success' => false, 'message' => 'Notification ID is missing.']);
-//     }
-// }
 
     
 
@@ -243,6 +209,6 @@ else {
 }
 
 function getNotificationsForDonor($donorid){
-   // echo "yarab ab2a hena";
+
     return RegisterUserTypeModel::getNotifications($donorid);
    }

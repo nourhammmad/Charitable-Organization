@@ -48,19 +48,17 @@ require_once $server."\Services\CommunicationFacade.php";
                 SendNotification();
                 break;  
                  
-            case 'getModalContent':
-                getModalContent(); // Added this for the Factory
-                break;
+       
 
-            // case 'logout':
-            //     logout();
-            //     break;    
+            case 'logout':
+                logout();
+                break;    
 
 
     
-            // default:
-            //     echo "Invalid action.";
-            //     break;
+            default:
+                echo "Invalid action.";
+                break;
         }
     }
 
@@ -214,14 +212,5 @@ require_once $server."\Services\CommunicationFacade.php";
         DonationManagement::handelTrack(1);
         echo "Money tracked successfully.";
     }
-    function getModalContent() {
-        $type = $_POST['type'] ?? null;
-        if ($type) {
-            // Use the factory to create the modal content
-            $content = ModalContentFactory::create($type);
-            echo json_encode($content);
-        } else {
-            echo json_encode(["error" => "Action type not specified."]);
-        }
-    }
+
     ?>
