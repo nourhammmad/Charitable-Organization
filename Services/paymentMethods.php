@@ -74,7 +74,6 @@ class StripeAdapter implements IPayment {
     private $stripe;
     private $amount;
     private $currency;
-    private $cardNumber;
     private $source;
 
     public function __construct($amount, $currency,$source) {

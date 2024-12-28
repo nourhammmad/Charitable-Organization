@@ -54,6 +54,6 @@ class StripeAPI {
     
         public function getTransactionDetails() {
 
-            return "Stripe Transaction: Amount charged successfully!";
+            return "Stripe Transaction: $this->apiKey charged successfully!";
         }
 }

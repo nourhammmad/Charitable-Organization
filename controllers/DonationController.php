@@ -21,7 +21,7 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationFactory.php";
 
 
 
- if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
+if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
     $donationType = $_POST['donationType'];
     $donorId =(int) $_POST['donorId'];
     $donationStrategy = null;

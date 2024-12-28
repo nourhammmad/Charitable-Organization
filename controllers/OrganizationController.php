@@ -9,6 +9,8 @@ require_once $server."\controllers\EducationalCenterController.php";
 require_once $server."\controllers\FoodBankController.php";
 require_once $server."\controllers\TaskManagementController.php";
 require_once $server."\Services\CommunicationFacade.php";
+require_once $server."\Services\Resources.php";
+
  
 
   if (isset($_GET['action'])) {
@@ -45,8 +47,24 @@ require_once $server."\Services\CommunicationFacade.php";
                
             case 'sendAll':
                 SendNotification();
-                break;  
-                 
+                break; 
+
+            case 'getResources':
+                    echo json_encode(resource::getAllResources());
+                    break;
+        
+            case 'createResource':
+                    $name = $_POST['resourceName'] ?? null;
+                    if ($name) {
+                        if (resource::createResource($name)) {
+                            echo "Resource created successfully.";
+                        } else {
+                            echo "Failed to create resource.";
+                        }
+                    } else {
+                        echo "Resource name is required.";
+                    }
+                    break;      
        
 
             case 'logout':
@@ -66,7 +84,7 @@ require_once $server."\Services\CommunicationFacade.php";
             logout();
            
          }
-        }
+    }
 
     function logout(){
         require_once $_SERVER['DOCUMENT_ROOT']."/views/loginView.php";
