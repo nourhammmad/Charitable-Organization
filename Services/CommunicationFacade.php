@@ -16,7 +16,7 @@ class CommunicationFacade{
         $Pemail->sendEmail($toemail, $subject, $body);
 
         // Send SMS (senderId is fetched dynamically inside SMSController)
-        $result = $SMS->sendSMS(null, $recipientPhoneNumber, $body);
+        $result = $SMS->sendSMS(1, $recipientPhoneNumber, $body);
 
         // Handle the result or log success/failure
         if (!$result['success']) {

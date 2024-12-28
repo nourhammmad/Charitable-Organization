@@ -4,7 +4,6 @@ require_once $server."\models\OrganizationModel.php";
 require_once $server."\models\EventModel.php";
 require_once $server."\models\TaskModel.php";
 require_once $server."\controllers\DonationManagement.php";
-
 require_once $server."\controllers\FamilyShelterController.php";
 require_once $server."\controllers\EducationalCenterController.php";
 require_once $server."\controllers\FoodBankController.php";
@@ -66,6 +65,11 @@ require_once $server."\Services\Resources.php";
                         echo "Resource name is required.";
                     }
                     break;      
+       
+
+            case 'logout':
+                logout();
+                break;    
 
 
     
@@ -80,7 +84,7 @@ require_once $server."\Services\Resources.php";
             logout();
            
          }
-        }
+    }
 
     function logout(){
         require_once $_SERVER['DOCUMENT_ROOT']."/views/loginView.php";
@@ -187,12 +191,6 @@ require_once $server."\Services\Resources.php";
     
         }
     
-    
-    
-    
-    
-         
-    
     }
     function handleCreateTask() {
         $name = $_POST['name'] ?? null;
@@ -231,5 +229,5 @@ require_once $server."\Services\Resources.php";
         DonationManagement::handelTrack(1);
         echo "Money tracked successfully.";
     }
-    
+
     ?>

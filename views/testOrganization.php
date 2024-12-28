@@ -55,7 +55,13 @@
         <div class="option" onclick="openModal('sendAll')">Send Notification</div>
 
         <div class="option" onclick="openModal('addResource')">Add Resource</div>
+        <div class="option" onclick="openModal('logout')">logout</div>
+        
     </div>
+
+    <!-- <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+    <button type="submit" name="logout" class="organization-button">Logout</button>
+    </form> -->
 
     <!-- Modal -->
     <div id="actionModal" class="modal" style="display: none;">
@@ -71,9 +77,16 @@
 
     <script>
         function openModal(type) {
-            const modal = document.getElementById("actionModal");
-            const title = document.getElementById("modalTitle");
-            const fields = document.getElementById("dynamicFields");
+            fetch('../controllers/OrganizationController.php?action=getModalContent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `type=${type}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const modal = document.getElementById("actionModal");
+                const title = document.getElementById("modalTitle");
+                const fields = document.getElementById("dynamicFields");
 
             fields.innerHTML = ""; // Reset fields
 
@@ -138,8 +151,16 @@
                 `;
 
             }
+            else if (type=='logout'){
+                title.textContent = "logout";
+            }
 
-            modal.style.display = "flex";
+                modal.style.display = "flex";
+            })
+            .catch(error => {
+                console.error("Error occurred:", error);
+                alert("An error occurred while loading the modal content. Please try again.");
+            });
         }
 
         function closeModal() {
@@ -165,6 +186,8 @@
             if (modalTitle.includes("Task")) endpoint = "../controllers/OrganizationController.php?action=createTask";
             if (modalTitle.includes("Track Book Donations")) endpoint = "../controllers/OrganizationController.php?action=trackBooks";
             if (modalTitle.includes("Send Notification")) endpoint = "../controllers/OrganizationController.php?action=sendAll";
+            if (modalTitle.includes("logout")) endpoint = "../controllers/OrganizationController.php?action=logout";
+
             fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
