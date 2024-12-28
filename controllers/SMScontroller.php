@@ -5,25 +5,23 @@ require_once $_SERVER['DOCUMENT_ROOT']."\models\RegisteredUserModel.php";
 require_once $_SERVER['DOCUMENT_ROOT']."\Services\RegisterUser.php";
 class SMScontroller {
     private $smsModel;
-    private $registerUserService;
+ 
 
     public function __construct() {
         $this->smsModel = new SMSModel();
-        //$this->registerUserService = new RegisterUser();
+       
 
     }
 
    
     public function sendSMS($senderId, $recipientPhoneNumber, $message) {
         try {
-            // Validate inputs
            
-            // Check if sender exists
             if (!$this->smsModel->doesUserExist($senderId)) {
                 throw new Exception("Sender ID does not exist.");
             }
 
-            $senderId = 1;
+           
             if (!$senderId) {
                 throw new Exception("Sender  does not exist.");
             }

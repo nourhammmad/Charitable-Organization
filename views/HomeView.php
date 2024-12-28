@@ -314,7 +314,6 @@
 
 <script>
 function viewNotifications() {
-    // Get donorId from the query string (URL)
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('user_id');
     if (!userId) {
@@ -322,24 +321,21 @@ function viewNotifications() {
         return;
     }
 
-    // Prepare form data to send to the controller
+   
     const formData = new FormData();
     formData.append('action', 'view_notifications');
     formData.append('userId', userId);
 
-    // Fetch notifications from the server
     fetch("../controllers/DonationController.php", {
         method: 'POST',
         body: formData,
     })
-    .then(response => response.text())  // Get raw text response
+    .then(response => response.text())  
     .then(rawData => {
-        alert("Raw Data: " + rawData);  // Print raw data before parsing
         try {
-            const data = JSON.parse(rawData);  // Parse JSON from raw data
-            // Check if the response is successful
+            const data = JSON.parse(rawData);  
             if (data.success) {
-                displayNotifications(data.notifications);  // Display notifications
+                displayNotifications(data.notifications); 
             } else {
                 alert(data.message || 'Error fetching notifications.');
             }
@@ -358,15 +354,14 @@ function displayNotifications(notifications) {
     const notificationsModal = document.getElementById("notificationsModal");
     const notificationList = document.getElementById("notification-list");
 
-    // Clear previous notifications
+   
     notificationList.innerHTML = '';
 
-    // If there are no notifications
+    
     if (notifications && notifications.length > 0) {
         notifications.forEach(notification => {
             const li = document.createElement('li');
             
-            // Create a string containing sender's name and the message
             li.textContent = `${notification.senderName}: ${notification.message  || 'No message available'} : ${notification.createdAt}`;
             
             notificationList.appendChild(li);
@@ -377,13 +372,11 @@ function displayNotifications(notifications) {
         notificationList.appendChild(li);
     }
 
-    // Show the modal
     notificationsModal.style.display = 'block';
 
-    // Close button functionality
     const closeButton = notificationsModal.querySelector(".close-button");
     if (closeButton) {
-        console.log("Close button found"); // Debugging: Log if close button is found
+        console.log("Close button found"); 
         closeButton.addEventListener("click", () => {
             notificationsModal.style.display = 'none';
         });

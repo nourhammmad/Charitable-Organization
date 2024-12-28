@@ -39,7 +39,8 @@ class LoginController {
     }
 
     private function loginorg() {
-        
+
+        header("Location: ./views/testOrganization.php");
         require_once "./views/testOrganization.php";
          exit(); 
     }

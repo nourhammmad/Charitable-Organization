@@ -4,12 +4,13 @@ require_once $server."\models\OrganizationModel.php";
 require_once $server."\models\EventModel.php";
 require_once $server."\models\TaskModel.php";
 require_once $server."\controllers\DonationManagement.php";
-require_once $server."\models\ModalFactory.php";
 require_once $server."\controllers\FamilyShelterController.php";
 require_once $server."\controllers\EducationalCenterController.php";
 require_once $server."\controllers\FoodBankController.php";
 require_once $server."\controllers\TaskManagementController.php";
 require_once $server."\Services\CommunicationFacade.php";
+require_once $server."\Services\Resources.php";
+
  
 
   if (isset($_GET['action'])) {
@@ -46,21 +47,35 @@ require_once $server."\Services\CommunicationFacade.php";
                
             case 'sendAll':
                 SendNotification();
-                break;  
-                 
-            case 'getModalContent':
-                getModalContent(); // Added this for the Factory
-                break;
+                break; 
 
-            // case 'logout':
-            //     logout();
-            //     break;    
+            case 'getResources':
+                    echo json_encode(resource::getAllResources());
+                    break;
+        
+            case 'createResource':
+                    $name = $_POST['resourceName'] ?? null;
+                    if ($name) {
+                        if (resource::createResource($name)) {
+                            echo "Resource created successfully.";
+                        } else {
+                            echo "Failed to create resource.";
+                        }
+                    } else {
+                        echo "Resource name is required.";
+                    }
+                    break;      
+       
+
+            case 'logout':
+                logout();
+                break;    
 
 
     
-            // default:
-            //     echo "Invalid action.";
-            //     break;
+            default:
+                echo "Invalid action.";
+                break;
         }
     }
 
@@ -69,7 +84,7 @@ require_once $server."\Services\CommunicationFacade.php";
             logout();
            
          }
-        }
+    }
 
     function logout(){
         require_once $_SERVER['DOCUMENT_ROOT']."/views/loginView.php";
@@ -214,14 +229,5 @@ require_once $server."\Services\CommunicationFacade.php";
         DonationManagement::handelTrack(1);
         echo "Money tracked successfully.";
     }
-    function getModalContent() {
-        $type = $_POST['type'] ?? null;
-        if ($type) {
-            // Use the factory to create the modal content
-            $content = ModalContentFactory::create($type);
-            echo json_encode($content);
-        } else {
-            echo json_encode(["error" => "Action type not specified."]);
-        }
-    }
+
     ?>
