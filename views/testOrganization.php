@@ -77,7 +77,6 @@
 <body>
     <h1>Organization Management</h1>
 
- 
     <div class="action-options">
         <div class="option" onclick="openModal('organization')">Get Organization</div>
         <div class="option" onclick="openModal('donors')">Get Donors</div>
@@ -89,29 +88,9 @@
         <div class="option" onclick="openModal('sendAll')">Send Notification</div>
     </div>
 
-  
-
-    <!---style--->
-    <style>
-    .action-options {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .option {
-        background-color: #f1f1f1;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 10px 20px;
-        text-align: center;
-        cursor: pointer;
-        min-width: 120px;
-    }
-
-  
-</style>
+    <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+    <button type="submit" name="logout" class="organization-button">Logout</button>
+    </form>
 
     <!-- Modal -->
     <div id="actionModal" class="modal">
@@ -119,96 +98,48 @@
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle"></h2>
             <form id="actionForm">
-                <!-- Dynamic fields -->
                 <div id="dynamicFields"></div>
                 <button type="button" onclick="submitForm()">Submit</button>
             </form>
         </div>
     </div>
 
-
-    <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
-    <button type="submit" name="logout" class="organization-button">Logout</button>
-
-
     <script>
         function openModal(type) {
-            const modal = document.getElementById("actionModal");
-            const title = document.getElementById("modalTitle");
-            const fields = document.getElementById("dynamicFields");
+            fetch('../controllers/OrganizationController.php?action=getModalContent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `type=${type}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const modal = document.getElementById("actionModal");
+                const title = document.getElementById("modalTitle");
+                const fields = document.getElementById("dynamicFields");
 
-            // Reset fields
-            fields.innerHTML = "";
+                title.textContent = data.title;
+                fields.innerHTML = "";
 
-            if (type === "organization") {
-                title.textContent = "Retrieve Organization";
-            } else if (type === "donors") {
-                title.textContent = "Retrieve Donors";
-            } else if(type === 'books'){
-                title.textContent = "Track Book Donations";
-            }
-            else if(type === 'clothes'){
-                title.textContent = "Track Clothes Donations";
-            }
-            else if(type === 'money'){
-                title.textContent = "Track Money Donations";
-            }
-            // else if (type === 'logout'){
-            //     title.textContent = "Logout";
-            // }
-            else if(type === 'sendAll'){
-                title.textContent = "Send Notification";
-                fields.innerHTML = `
-                    <input type="text" name="mail" placeholder="Email Name" required>
-                    <input type="text" name="subject" placeholder="Subject" required>
-                    <input type="text" name="body" placeholder="Body" required>
-                    <input type="text" name="phone" placeholder="phone" required>    
-                `;
-            }
-            else if (type === "createEvent") {
-                title.textContent = "Create New Event";
-                fields.innerHTML = `
-                    <input type="text" name="name" placeholder="Event Name" required>
-                    <input type="text" name="date" placeholder="Event Date" required>
-                    <input type="text" name="address" placeholder="Event Address" required>
-                    <input type="number" name="capacity" placeholder="Capacity" required>
-                    <input type="number" name="tickets" placeholder="Tickets" required>
+                data.fields.forEach(field => {
+                    if (field.type === "text" || field.type === "number") {
+                        fields.innerHTML += `<input type="${field.type}" name="${field.name}" placeholder="${field.placeholder}" required>`;
+                    } else if (field.type === "textarea") {
+                        fields.innerHTML += `<textarea name="${field.name}" placeholder="${field.placeholder}" rows="3" required></textarea>`;
+                    } else if (field.type === "checkbox") {
+                        fields.innerHTML += `<label><input type="checkbox" name="${field.name}"> ${field.label}</label><br>`;
+                    } else if (field.type === "select") {
+                        let options = field.options.map(opt => `<option value="${opt}">${opt}</option>`).join("");
+                        fields.innerHTML += `<label>${field.name}:</label><select name="${field.name}">${options}</select><br>`;
+                    }
+                });
 
-                    
-                    <label for="service">Service:</label>
-                    <select name="service" id="service">
-                        <option value="educationalCenter">Educational Center</option>
-                        <option value="foodBank">Food Bank</option>
-                        <option value="familyShelter">Family Shelter</option>
-                    </select>
-                    <br>
-
-                    <label for="signLang">Sign Language Interpretation:</label>
-                    <input type="checkbox" name="signLang" id="signLang">
-                    <br>
-
-                    <label for="wheelchair">Wheelchair Access:</label>
-                    <input type="checkbox" name="wheelchair" id="wheelchair">
-                    <br>
-                `;
-            }
-            else if(type=="createTask"){
-                title.textContent = "Create New Task";
-                fields.innerHTML = `
-                    <input type="text" name="name" placeholder="Task Name" required>
-                    <textarea name="description" placeholder="Task Description" rows="3" required></textarea>
-                    <input type="text" name="requiredSkill" placeholder="Required Skill" required>
-                    <input type="text" name="timeSlot" placeholder="Time Slot" required>
-                    <input type="text" name="location" placeholder="Location" required>
-                `;
-
-            }
-
-            modal.style.display = "flex";
+                modal.style.display = "flex";
+            })
+            .catch(error => {
+                console.error("Error occurred:", error);
+                alert("An error occurred while loading the modal content. Please try again.");
+            });
         }
-
-        
-
 
         function closeModal() {
             document.getElementById("actionModal").style.display = "none";
@@ -227,7 +158,7 @@
             if (modalTitle.includes("Task")) endpoint = "../controllers/OrganizationController.php?action=createTask";
             if (modalTitle.includes("Track Book Donations")) endpoint = "../controllers/OrganizationController.php?action=trackBooks";
             if (modalTitle.includes("Send Notification")) endpoint = "../controllers/OrganizationController.php?action=sendAll";
-         //   if (modalTitle.includes("Logout")) endpoint = "../controllers/OrganizationController.php?action=logout";
+
             fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
