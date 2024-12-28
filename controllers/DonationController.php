@@ -18,7 +18,7 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationLogIterable.php";
 
 
 
- if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
+if (isset($_POST['donorId']) && isset($_POST['donationType'])) {
     $donationType = $_POST['donationType'];
     $donorId =(int) $_POST['donorId'];
     $donationStrategy = null;
@@ -179,7 +179,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action']==='redo') {
             echo json_encode(['success' => false, 'message' => 'Donor not found!']);
         }
 }
-//echo "bara 5ales";
+
 else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'view_notifications') {
    // header('Content-Type: application/json');  // Set the content type to JSON
 

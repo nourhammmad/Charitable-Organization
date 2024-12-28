@@ -16,11 +16,13 @@
             margin: 0;
             color: #333;
         }
-        h1, h2 {
+        h1 {
             margin-bottom: 20px;
         }
         .action-options {
             display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 20px;
         }
         .option {
@@ -37,47 +39,11 @@
             transform: translateY(-10px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            width: 300px;
-            text-align: center;
-            position: relative;
-        }
-        .modal-content button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
     <h1>Organization Management</h1>
 
- 
     <div class="action-options">
         <div class="option" onclick="openModal('organization')">Get Organization</div>
         <div class="option" onclick="openModal('donors')">Get Donors</div>
@@ -87,49 +53,21 @@
         <div class="option" onclick="openModal('clothes')">Track Clothes</div>
         <div class="option" onclick="openModal('money')">Track Money</div>
         <div class="option" onclick="openModal('sendAll')">Send Notification</div>
+
+        <div class="option" onclick="openModal('addResource')">Add Resource</div>
     </div>
 
-  
-
-    <!---style--->
-    <style>
-    .action-options {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .option {
-        background-color: #f1f1f1;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 10px 20px;
-        text-align: center;
-        cursor: pointer;
-        min-width: 120px;
-    }
-
-  
-</style>
-
     <!-- Modal -->
-    <div id="actionModal" class="modal">
+    <div id="actionModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle"></h2>
             <form id="actionForm">
-                <!-- Dynamic fields -->
                 <div id="dynamicFields"></div>
                 <button type="button" onclick="submitForm()">Submit</button>
             </form>
         </div>
     </div>
-
-
-    <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
-    <button type="submit" name="logout" class="organization-button">Logout</button>
-
 
     <script>
         function openModal(type) {
@@ -137,35 +75,32 @@
             const title = document.getElementById("modalTitle");
             const fields = document.getElementById("dynamicFields");
 
-            // Reset fields
-            fields.innerHTML = "";
+            fields.innerHTML = ""; // Reset fields
 
-            if (type === "organization") {
+            if (type === "addResource") {
+                title.textContent = "Add Resource";
+                fields.innerHTML = `
+                    <input type="text" name="resourceName" placeholder="Resource Name" required>
+                `;
+            } else if (type === "organization") {
                 title.textContent = "Retrieve Organization";
             } else if (type === "donors") {
                 title.textContent = "Retrieve Donors";
-            } else if(type === 'books'){
+            } else if (type === "books") {
                 title.textContent = "Track Book Donations";
-            }
-            else if(type === 'clothes'){
+            } else if (type === "clothes") {
                 title.textContent = "Track Clothes Donations";
-            }
-            else if(type === 'money'){
+            } else if (type === "money") {
                 title.textContent = "Track Money Donations";
-            }
-            // else if (type === 'logout'){
-            //     title.textContent = "Logout";
-            // }
-            else if(type === 'sendAll'){
+            } else if (type === "sendAll") {
                 title.textContent = "Send Notification";
                 fields.innerHTML = `
                     <input type="text" name="mail" placeholder="Email Name" required>
                     <input type="text" name="subject" placeholder="Subject" required>
                     <input type="text" name="body" placeholder="Body" required>
-                    <input type="text" name="phone" placeholder="phone" required>    
+                    <input type="text" name="phone" placeholder="Phone" required>
                 `;
-            }
-            else if (type === "createEvent") {
+            } else if (type === "createEvent") {
                 title.textContent = "Create New Event";
                 fields.innerHTML = `
                     <input type="text" name="name" placeholder="Event Name" required>
@@ -207,9 +142,6 @@
             modal.style.display = "flex";
         }
 
-        
-
-
         function closeModal() {
             document.getElementById("actionModal").style.display = "none";
         }
@@ -217,8 +149,14 @@
         function submitForm() {
             const form = new URLSearchParams(new FormData(document.getElementById("actionForm")));
             const modalTitle = document.getElementById("modalTitle").textContent;
-           
             let endpoint = "";
+
+            if (modalTitle.includes("Add Resource")) {
+                endpoint = "../controllers/OrganizationController.php?action=createResource";
+            }
+            if (modalTitle.includes("Retrieve Organization")) {
+                endpoint = "../controllers/OrganizationController.php?action=getOrganizations";
+            }
             if (modalTitle.includes("Retrieve Organization")) endpoint = "../controllers/OrganizationController.php?action=getOrganizations";
             if (modalTitle.includes("Donors")) endpoint = "../controllers/OrganizationController.php?action=getDonors";
             if (modalTitle.includes("Track Clothes Donations")) endpoint = "../controllers/OrganizationController.php?action=trackClothes";
@@ -227,7 +165,6 @@
             if (modalTitle.includes("Task")) endpoint = "../controllers/OrganizationController.php?action=createTask";
             if (modalTitle.includes("Track Book Donations")) endpoint = "../controllers/OrganizationController.php?action=trackBooks";
             if (modalTitle.includes("Send Notification")) endpoint = "../controllers/OrganizationController.php?action=sendAll";
-         //   if (modalTitle.includes("Logout")) endpoint = "../controllers/OrganizationController.php?action=logout";
             fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
