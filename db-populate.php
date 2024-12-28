@@ -12,7 +12,7 @@ class Populate {
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
                 "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, DonationLog,eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
-                , organization, ipayment, cash, visa, stripe,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs;",
+                , organization, ipayment, cash, visa, stripe,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs, travel_plans;",
                 "SET FOREIGN_KEY_CHECKS = 1;",
  
                 // Create Users Table
@@ -353,7 +353,27 @@ class Populate {
             // (2, 10, 'Northside Family Shelter', 50, 'Restrooms, Showers, Sleeping Areas', 2);",
  
                     // Create EventVolunteer Table to link Events and Volunteers
-                    
+
+
+
+                // Create Travel Plans Table
+                "CREATE TABLE travel_plans (
+                    id INT AUTO_INCREMENT PRIMARY KEY,          -- Unique identifier for each travel plan
+                    type ENUM('resource_delivery', 'volunteer_travel') NOT NULL, -- Type of travel plan
+                    destination VARCHAR(255) NOT NULL,          -- Destination of the travel plan
+                    attributes TEXT NOT NULL                  -- Dynamic attributes stored as JSON
+        
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+                // Insert Sample Travel Plans
+                "INSERT INTO travel_plans (type, destination, attributes) 
+                VALUES 
+                    ('resource_delivery', 'Village A', '{\"resources\": [\"Food\", \"Clothing\"], \"vehicles\": [\"Truck 1\", \"Truck 2\"]}'),
+                    ('volunteer_travel', 'Community Center', '{\"volunteers\": [\"John Doe\", \"Jane Smith\"], \"event\": \"Community Outreach\"}');",
+
+
+
+
                     "CREATE TABLE EventVolunteer (
                         eventId INT,
                         volunteerId INT,
@@ -397,6 +417,7 @@ VALUES
 ('Event Promotion', 'Distributing flyers and promoting the charity event on social media', 'Marketing Skills', '10:00 AM - 1:00 PM', 'Office'),
 ('Food Packing', 'Packing food items for distribution to families in need', 'Attention to Detail', '1:00 PM - 4:00 PM', 'Charity Kitchen'),
 ('Cleanup Crew', 'Cleaning up after the charity gala event', 'Teamwork', '8:00 PM - 9:30 PM', 'Banquet Hall');"
+
 
 
 
