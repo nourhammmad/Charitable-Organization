@@ -4,7 +4,7 @@ require_once $server."\models\OrganizationModel.php";
 require_once $server."\models\EventModel.php";
 require_once $server."\models\TaskModel.php";
 require_once $server."\controllers\DonationManagement.php";
-
+require_once $server."\models\ModalFactory.php";
 require_once $server."\controllers\FamilyShelterController.php";
 require_once $server."\controllers\EducationalCenterController.php";
 require_once $server."\controllers\FoodBankController.php";
@@ -46,7 +46,11 @@ require_once $server."\Services\CommunicationFacade.php";
                
             case 'sendAll':
                 SendNotification();
-                break;   
+                break;  
+                 
+            case 'getModalContent':
+                getModalContent(); // Added this for the Factory
+                break;
 
             // case 'logout':
             //     logout();
@@ -172,12 +176,6 @@ require_once $server."\Services\CommunicationFacade.php";
     
         }
     
-    
-    
-    
-    
-         
-    
     }
     function handleCreateTask() {
         $name = $_POST['name'] ?? null;
@@ -216,5 +214,14 @@ require_once $server."\Services\CommunicationFacade.php";
         DonationManagement::handelTrack(1);
         echo "Money tracked successfully.";
     }
-    
+    function getModalContent() {
+        $type = $_POST['type'] ?? null;
+        if ($type) {
+            // Use the factory to create the modal content
+            $content = ModalContentFactory::create($type);
+            echo json_encode($content);
+        } else {
+            echo json_encode(["error" => "Action type not specified."]);
+        }
+    }
     ?>
