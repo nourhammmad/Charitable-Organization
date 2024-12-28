@@ -233,67 +233,7 @@
         </ul>
     </div>
 </div>
-       <!--    <script>
-         if (selectedType === "not"){
-                let endpoint = "";
-                endpoint = "../controllers/DonationController.php?action=getNotifications";
-         
-            }</script>  -->
-<!--          
-            <div class="option" id="show-notifications">
-            <a href="#">Show Notifications</a>
-            </div>
-<script>
-    document.getElementById("show-notifications").addEventListener("click", function (event) {
-        event.preventDefault(); // Prevent default link behavior
-
-        // Extract the user ID (donor ID) from the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const donorId = urlParams.get('donor_id');
-        if (!donorId) {
-            alert("Donor ID is missing.");
-            return;
-        }
-
-        // Include donorId as a parameter in the endpoint URL
-           //header("Location: ./views/HomeView.php?donor_id=$donorId");
-        const endpoint = `./controllers/DonationController.php?donor_id=${donorId}&action=getNotifications`;
-
-        fetch(endpoint)
-            .then(response => response.json())
-            .then(notifications => {
-                const notificationList = document.getElementById('notification-list');
-                notificationList.innerHTML = ''; // Clear any previous notifications
-
-                if (notifications.length === 0) {
-                    notificationList.innerHTML = '<li>No notifications available.</li>';
-                } else {
-                    notifications.forEach(notification => {
-                        // Create a list item for each notification
-                        const li = document.createElement('li');
-                        li.textContent = notification.message || JSON.stringify(notification); // Adjust key as per structure
-                        notificationList.appendChild(li);
-                    });
-                }
-
-                // Show the popup and overlay
-                document.getElementById('notification-popup').style.display = 'block';
-                document.getElementById('overlay').style.display = 'block';
-            })
-            .catch(error => {
-                console.error('Error fetching notifications:', error);
-                alert('Failed to fetch notifications.');
-            });
-    });
-
-    function closePopup() {
-        document.getElementById('notification-popup').style.display = 'none';
-        document.getElementById('overlay').style.display = 'none';
-    }
-</script>
- -->
-
-
+     
         
     </div>
     <div class="donation-history">
