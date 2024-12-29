@@ -362,7 +362,6 @@ class Populate {
                     type ENUM('resource_delivery', 'volunteer_travel') NOT NULL, -- Type of travel plan
                     destination VARCHAR(255) NOT NULL,          -- Destination of the travel plan
                     attributes TEXT NOT NULL                  -- Dynamic attributes stored as JSON
-        
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
                 // Insert Sample Travel Plans

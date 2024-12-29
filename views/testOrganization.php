@@ -73,7 +73,6 @@
     <div class="action-options">
         <div class="option" onclick="openModal('organization')">Get Organization</div>
         <div class="option" onclick="openModal('donors')">Get Donors</div>
-
         <div class="option" onclick="openModal('clothes')">Track Clothes</div>
         <div class="option" onclick="openModal('money')">Track Money</div>
         <div class="option" onclick="openModal('sendAll')">Send Notification</div>
@@ -81,6 +80,7 @@
         <div class="option" onclick="openModal('addPlan')">Add Plan</div>
         <div class="option" onclick="openModal('createTask')">Create Task</div>
         <div class="option" onclick="openModal('createEvent')">Create Event</div>
+        <div class="option" onclick="openModal('ExecuteTravelPlan')"> Execute Plan</div>
     
        
         
@@ -157,7 +157,15 @@
             }
             else if (type === "organization") {
                 title.textContent = "Retrieve Organization";
-            } else if (type === "donors") {
+            } 
+
+            else if (type=="ExecuteTravelPlan")
+            {
+                title.textContent = "Execute the plan";
+
+            }
+            
+            else if (type === "donors") {
                 title.textContent = "Retrieve Donors";
             } else if(type === 'books'){
                 title.textContent = "Track Book Donations";
@@ -358,6 +366,14 @@
                 closeModal();
                 return; // Prevent further execution for "Add Plan"
             }
+            else if (type == "ExecuteTravelPlan") {
+                title.textContent = "Execute the plan";
+                fields.innerHTML = `
+                    <label for="planId">Plan ID:</label>
+                    <input type="number" name="planId" id="planId" required>
+                `;
+            }
+
 
             // General fetch logic for other modal actions
             fetch(endpoint, {
