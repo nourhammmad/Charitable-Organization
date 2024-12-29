@@ -12,8 +12,6 @@ require_once $server."\Services\CommunicationFacade.php";
 require_once $server."\Services\Resources.php";
 require_once $server."\Services\TravelManagement.php";
 
-
-//case fehom teb2a nafs eesm el 7aga el gaya men view 
 class OrganizationController{
  
     function handleRequest(){
@@ -24,7 +22,7 @@ class OrganizationController{
        // echo $action;
         switch ($action) {
             case 'getOrganizations':
-                $this->handleGetOrganizations();
+               $this->handleGetOrganizations();
                 break;
     
             case 'getDonors':
@@ -35,7 +33,7 @@ class OrganizationController{
                 $this->handleCreateEvent();
                 break;
             case 'createTask':
-                $this-> handleCreateTask();
+                $this->handleCreateTask();
                 break;    
 
             case 'trackBooks':
@@ -87,7 +85,7 @@ class OrganizationController{
                 break; 
 
             case 'logout':
-                $this->logout();
+                $this->$this->logout();
                 break;  
 
 
@@ -279,4 +277,7 @@ class OrganizationController{
     }
     $controller = new OrganizationController();
     $controller->handleRequest();
+
+
+
     ?>

@@ -19,6 +19,17 @@
             margin: 0;
             color: #333;
         }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
         h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
@@ -208,19 +219,27 @@
     <p>Choose a type of donation to help those in need</p>
 
     <div class="donation-options">
-        <div class="option" onclick="openModal('book')">
-            <div class="option-icon">📚</div>
-            <a>Donate Book</a>
-        </div>
-        <div class="option" onclick="openModal('money')">
-            <div class="option-icon">💰</div>
-            <a>Donate Money</a>
-        </div>
-        <div class="option" onclick="openModal('clothes')">
-            <div class="option-icon">👕</div>
-            <a>Donate Clothes</a>
-        </div>
-        <button id="view_notifications" onclick="viewNotifications()">View Notifications</button>
+    <div class="option" onclick="openModal('book')">
+        <div class="option-icon">📚</div>
+        <a>Donate Book</a>
+    </div>
+    <div class="option" onclick="openModal('money')">
+        <div class="option-icon">💰</div>
+        <a>Donate Money</a>
+    </div>
+    <div class="option" onclick="openModal('clothes')">
+        <div class="option-icon">👕</div>
+        <a>Donate Clothes</a>
+    </div>
+    <div class="option" onclick="viewNotifications()">
+        <div class="option-icon">🔔</div>
+        <a>View Notifications</a>
+    </div>
+</div>
+
+        <form action="/controllers/OrganizationController.php?action=logout" method="POST">
+        <button type="submit">Logout</button>
+    </form>
 
 <!-- Modal for Notifications -->
 <div id="notificationsModal" style="display: none; position: fixed; top: 20%; left: 30%; width: 40%; background: #fff; border: 1px solid #ccc; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); padding: 20px; z-index: 1000;">

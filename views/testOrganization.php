@@ -7,7 +7,10 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
+            margin: 0;
+            color: #333;
             margin: 0;
             color: #333;
             display: flex;
@@ -15,7 +18,9 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            min-height: 100vh;
         }
+        
         h1 {
             margin-bottom: 30px;
             font-size: 2.5rem;
@@ -25,10 +30,41 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 20px;
+            margin-bottom: 30px;
             margin-bottom: 30px;
         }
         .option {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px 25px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            min-width: 150px;
+        }
+        .option:hover {
+            background-color: #eaf2f8;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        button[type="submit"] {
+            background-color: #d9534f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #c9302c;
             background-color: #ffffff;
             border: 1px solid #ddd;
             border-radius: 10px;
@@ -122,8 +158,6 @@
 </head>
 <body>
     <h1>Organization Management</h1>
-
- 
     <div class="action-options">
         <div class="option" onclick="openModal('organization')">Get Organization</div>
         <div class="option" onclick="openModal('donors')">Get Donors</div>
@@ -135,52 +169,20 @@
         <div class="option" onclick="openModal('createTask')">Create Task</div>
         <div class="option" onclick="openModal('createEvent')">Create Event</div>
         <div class="option" onclick="openModal('ExecuteTravelPlan')"> Execute Plan</div>
-    
-       
-        
-    </div>
     </div>
     <form action="/controllers/OrganizationController.php?action=logout" method="POST">
-    <button type="submit">Logout</button>
-</form>
-
-  
-
-    <!---style--->
-    <style>
-    .action-options {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .option {
-        background-color: #f1f1f1;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 10px 20px;
-        text-align: center;
-        cursor: pointer;
-        min-width: 120px;
-    }
-
-  
-</style>
-
-    <!-- Modal -->
+        <button type="submit">Logout</button>
+    </form>
     <div id="actionModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle"></h2>
             <form id="actionForm">
-                <!-- Dynamic fields -->
                 <div id="dynamicFields"></div>
                 <button type="button" onclick="submitForm()">Submit</button>
             </form>
         </div>
     </div>
-
 
   
     <script>
