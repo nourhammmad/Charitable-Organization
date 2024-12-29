@@ -20,7 +20,22 @@ class TravelPlanController {
             echo "An unexpected error occurred: " . $e->getMessage();
         }
     }
+    public function getAllPlans() {
+        try {
+            // Call the model to fetch all travel plans
+            $travelPlans = TravelPlanModel::getAllTravelPlans();
 
+            if (!empty($travelPlans)) {
+                return $travelPlans;
+            } else {
+                echo "No travel plans found.\n";
+                return [];
+            }
+        } catch (Exception $e) {
+            echo "An unexpected error occurred while fetching travel plans: " . $e->getMessage();
+            return [];
+        }
+    }
     // Fetch a travel plan by ID
     public function getTravelPlanById($id) {
         try {
