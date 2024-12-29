@@ -169,10 +169,14 @@
         <div class="option" onclick="openModal('createTask')">Create Task</div>
         <div class="option" onclick="openModal('createEvent')">Create Event</div>
         <div class="option" onclick="openModal('ExecuteTravelPlan')"> Execute Plan</div>
+        <div class="option" onclick="openModal('addBeneficiary')"> Add Beneficiary</div>
+        <div class="option" onclick="openModal('getBeneficiary')"> Get all beneficiaries</div>
     </div>
     <form action="/controllers/OrganizationController.php?action=logout" method="POST">
         <button type="submit">Logout</button>
     </form>
+   
+
     <div id="actionModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -190,9 +194,47 @@
             const modal = document.getElementById("actionModal");
             const title = document.getElementById("modalTitle");
             const fields = document.getElementById("dynamicFields");
+            //const submitButton = document.querySelector("#actionForm button[type='button']");
+
+// Reset fields and show the submit button by default
+
+            //submitButton.style.display = "inline-block";
 
             // Reset fields
             fields.innerHTML = "";
+            if(type=="getBeneficiary"){
+                title.textContent = "getBeneficiary";
+                fields.innerHTML = `
+                    <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody id="beneficiaryTableBody">
+                            <!-- Rows will be populated dynamically -->
+                        </tbody>
+                    </table>
+                `;
+            
+            }
+            if(type=="addBeneficiary"){
+                title.textContent = "addBeneficiary";
+                fields.innerHTML=`<label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>                 
+                    <label for="address">Address:</label>
+                    <textarea id="address" name="address"></textarea>
+                    
+                    <label for="beneficiaryType">Type:</label>
+                    <select id="beneficiaryType" name="beneficiaryType">
+                    <option value="Individual">Individual</option>
+                    <option value="Group">Group</option>
+                    </select>
+                    `;
+            }
             if (type === "addPlan") {
                 title.textContent = "Add Plan";
                 fields.innerHTML = `
@@ -361,13 +403,39 @@
             //     planDetails.innerHTML = "";
             // }
         }
+        
+        function getBeneficiaries() {
+        
+            const endpoint = "../controllers/OrganizationController.php?action=getBeneficiary";
 
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(beneficiaries => {
+                    const beneficiaryTable = document.getElementById("beneficiaryTableBody");
+                    beneficiaryTable.innerHTML = ""; // Clear previous data
+                    
+                    beneficiaries.forEach((beneficiary, index) => {
+                        const row = document.createElement("tr");
+
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${beneficiary.name}</td>
+                            <td>${beneficiary.address}</td>
+                            <td>${beneficiary.beneficiaryType}</td>
+                        `;
+
+                        beneficiaryTable.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error fetching beneficiaries:", error));
+        }
 
 
 
         function closeModal() {
             document.getElementById("actionModal").style.display = "none";
         }
+
 
         function submitForm() {
             const form = new URLSearchParams(new FormData(document.getElementById("actionForm")));
@@ -422,12 +490,28 @@
                 closeModal();
                 return; // Prevent further execution for "Add Plan"
             }
-            else if (type == "ExecuteTravelPlan") {
-                title.textContent = "Execute the plan";
-                fields.innerHTML = `
-                    <label for="planId">Plan ID:</label>
-                    <input type="number" name="planId" id="planId" required>
-                `;
+            // else if (type == "ExecuteTravelPlan") {
+            //     title.textContent = "Execute the plan";
+            //     fields.innerHTML = `
+            //         <label for="planId">Plan ID:</label>
+            //         <input type="number" name="planId" id="planId" required>
+            //     `;
+            // }
+            else if(modalTitle.includes("addBeneficiary")){
+                endpoint = "../controllers/OrganizationController.php?action=addBeneficiary";
+                fetch(endpoint, {
+                    method: "POST",
+                    body: new URLSearchParams(form),
+                })
+                .then(response => response.text())
+                .then(data => alert("Beneficiary added successfully!"))
+                .catch(error => console.error("Error:", error));
+                closeModal();
+                return; 
+            }
+            else if(modalTitle.includes("getBeneficiary")){
+                getBeneficiaries();
+                 return; 
             }
 
 
@@ -443,6 +527,8 @@
 
             closeModal();
         }
+
+        
 
     </script>
 </body>

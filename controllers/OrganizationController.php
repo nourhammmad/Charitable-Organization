@@ -3,6 +3,7 @@ $server=$_SERVER['DOCUMENT_ROOT'];
 require_once $server."\models\OrganizationModel.php";
 require_once $server."\models\EventModel.php";
 require_once $server."\models\TaskModel.php";
+require_once $server."\models\BeneficiaryModel.php";
 require_once $server."\controllers\DonationManagement.php";
 require_once $server."\controllers\FamilyShelterController.php";
 require_once $server."\controllers\EducationalCenterController.php";
@@ -12,14 +13,13 @@ require_once $server."\Services\CommunicationFacade.php";
 require_once $server."\Services\Resources.php";
 require_once $server."\Services\TravelManagement.php";
 
+
+
 class OrganizationController{
  
     function handleRequest(){
-//print ("2222211!!HELLO");
   if (isset($_GET['action'])) {
-   // print ("11!!HELLO");
         $action = $_GET['action'];
-       // echo $action;
         switch ($action) {
             case 'getOrganizations':
                $this->handleGetOrganizations();
@@ -92,9 +92,25 @@ class OrganizationController{
             case 'Executeplan':
                 $this->Executeplan();
  
-                break;  
+                break; 
+            case 'addBeneficiary':
+                $name = $_POST['name'];
+                $address = $_POST['address'];
+                $beneficiaryType = $_POST['beneficiaryType'];
+                print($name."  ".$address."  ".$beneficiaryType);
+                $res=Beneficiary::createBeneficiary($name,$address,$beneficiaryType);
+                if ($res) {
+                    echo "Beneficiary created successfully!";
+                } else {
+                    echo "Error creating beneficiary.";
+                }
 
-
+            case 'getBeneficiary':
+            
+                header('Content-Type: application/json');
+                echo json_encode(Beneficiary::getBeneficiaries());
+                break;
+                 
     
             default:
                 echo "Invalid action.";

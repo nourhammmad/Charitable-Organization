@@ -12,7 +12,7 @@ class Populate {
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
                 "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, DonationLog,eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
-                , organization, ipayment, cash, visa, stripe,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs, travel_plans,resources;",
+                , organization, ipayment, cash, visa, stripe,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs, travel_plans,resources,Beneficiary;",
                 "SET FOREIGN_KEY_CHECKS = 1;",
  
                 // Create Users Table
@@ -373,54 +373,63 @@ class Populate {
 
 
 
-                    "CREATE TABLE EventVolunteer (
-                        eventId INT,
-                        volunteerId INT,
-                        PRIMARY KEY (eventId, volunteerId),
-                        FOREIGN KEY (eventId) REFERENCES Event(eventId) ON DELETE CASCADE,
-                        FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-                    "CREATE TABLE DonationLog (
-                        log_id INT AUTO_INCREMENT PRIMARY KEY,
-                        donorId INT NOT NULL,
-                        organization_id INT,
-                        donation_item_id INT,
-                        donation_type_id INT,
-                        previous_state ENUM('CREATE','DELETE'),
-                        current_state ENUM('CREATE', 'DELETE'), 
-                        donationId INT NOT NULL,
-                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id) ON DELETE CASCADE,
-                        FOREIGN KEY (donorId) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
-                        FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE,
-                        FOREIGN KEY (donation_item_id) REFERENCES DonationItem(donation_item_id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-                   
-                    // Insert a Volunteer association with the Event
-                    // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
-                    //     (1, 1);",
+                "CREATE TABLE EventVolunteer (
+                    eventId INT,
+                    volunteerId INT,
+                    PRIMARY KEY (eventId, volunteerId),
+                    FOREIGN KEY (eventId) REFERENCES Event(eventId) ON DELETE CASCADE,
+                    FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                "CREATE TABLE DonationLog (
+                    log_id INT AUTO_INCREMENT PRIMARY KEY,
+                    donorId INT NOT NULL,
+                    organization_id INT,
+                    donation_item_id INT,
+                    donation_type_id INT,
+                    previous_state ENUM('CREATE','DELETE'),
+                    current_state ENUM('CREATE', 'DELETE'), 
+                    donationId INT NOT NULL,
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id) ON DELETE CASCADE,
+                    FOREIGN KEY (donorId) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
+                    FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE,
+                    FOREIGN KEY (donation_item_id) REFERENCES DonationItem(donation_item_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                
+                // Insert a Volunteer association with the Event
+                // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
+                //     (1, 1);",
 
-// "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
-// (1, 1);",
-  "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets,event_type_id ) VALUES
-  ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75,1 ),
-  ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100, 3),
-  ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125, 2),
-  ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40, 1);",
+                // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
+                // (1, 1);",
+                "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets,event_type_id ) VALUES
+                ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75,1 ),
+                ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100, 3),
+                ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125, 2),
+                ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40, 1);",
 
 
-"INSERT INTO Tasks (name, description, requiredSkill, timeSlot, location)
-VALUES 
-('Donation Sorting', 'Organizing and categorizing donated items such as clothes, toys, and food', 'Organization Skills', '9:00 AM - 12:00 PM', 'Charity Warehouse'),
-('Volunteer Coordination', 'Supervising and guiding volunteers during a food drive', 'Leadership', '10:00 AM - 2:00 PM', 'Community Center'),
-('Event Promotion', 'Distributing flyers and promoting the charity event on social media', 'Marketing Skills', '10:00 AM - 1:00 PM', 'Office'),
-('Food Packing', 'Packing food items for distribution to families in need', 'Attention to Detail', '1:00 PM - 4:00 PM', 'Charity Kitchen'),
-('Cleanup Crew', 'Cleaning up after the charity gala event', 'Teamwork', '8:00 PM - 9:30 PM', 'Banquet Hall');",
-//table resources 
-"CREATE TABLE resources (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
-);",
+                "INSERT INTO Tasks (name, description, requiredSkill, timeSlot, location)
+                VALUES 
+                ('Donation Sorting', 'Organizing and categorizing donated items such as clothes, toys, and food', 'Organization Skills', '9:00 AM - 12:00 PM', 'Charity Warehouse'),
+                ('Volunteer Coordination', 'Supervising and guiding volunteers during a food drive', 'Leadership', '10:00 AM - 2:00 PM', 'Community Center'),
+                ('Event Promotion', 'Distributing flyers and promoting the charity event on social media', 'Marketing Skills', '10:00 AM - 1:00 PM', 'Office'),
+                ('Food Packing', 'Packing food items for distribution to families in need', 'Attention to Detail', '1:00 PM - 4:00 PM', 'Charity Kitchen'),
+                ('Cleanup Crew', 'Cleaning up after the charity gala event', 'Teamwork', '8:00 PM - 9:30 PM', 'Banquet Hall');",
+
+                //table resources 
+                "CREATE TABLE resources (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL
+                );",
+
+                //table beneficiaries 
+                "CREATE TABLE Beneficiary (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    address TEXT,
+                    beneficiaryType ENUM('Individual', 'Group') NOT NULL
+                );",
 
 
 
