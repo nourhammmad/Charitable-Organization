@@ -168,9 +168,8 @@
         <div class="option" onclick="openModal('addPlan')">Add Plan</div>
         <div class="option" onclick="openModal('createTask')">Create Task</div>
         <div class="option" onclick="openModal('createEvent')">Create Event</div>
-         <!-- <div class="option" onclick="openModal('ExecuteTravelPlan')"> Execute Plan</div>  -->
+        <!-- <div class="option" onclick="openModal('ExecuteTravelPlan')"> Execute Plan</div>  -->
         <div class="option" onclick="openModal('viewtravelplans')">View Travel Plans</div>
-
         <div class="option" onclick="openModal('addBeneficiary')"> Add Beneficiary</div>
         <div class="option" onclick="openModal('getBeneficiary')"> Get all beneficiaries</div>
     </div>
@@ -259,54 +258,18 @@
                 title.textContent = "Retrieve Organization";
             } 
 
-            // else if (type=="ExecuteTravelPlan")
-            // {
-            //     title.textContent = "Execute the plan";
+            else if (type=="ExecuteTravelPlan")
+            {
+                title.textContent = "Execute the plan";
 
-            // }
+            }
             else if (type === "viewtravelplans") {
                 title.textContent = "View All Plans";
-                // fields.innerHTML = ""; // Clear any previous content
-
-                // if (Array.isArray(fetchedData) && fetchedData.length > 0) { 
-                //     // Create a scrollable container
-                //     const scrollableContainer = document.createElement("div");
-                //     scrollableContainer.style.maxHeight = "300px";
-                //     scrollableContainer.style.overflowY = "auto";
-                //     scrollableContainer.style.border = "1px solid #ddd";
-                //     scrollableContainer.style.padding = "10px";
-                //     scrollableContainer.style.borderRadius = "5px";
-
-                //     // Iterate over the fetched travel plans and create cards
-                //     fetchedData.forEach(plan => {
-                //         const planCard = document.createElement("div");
-                //         planCard.style.border = "1px solid #ddd";
-                //         planCard.style.marginBottom = "10px";
-                //         planCard.style.padding = "10px";
-                //         planCard.style.borderRadius = "5px";
-
-                //         // Fill the card with plan details
-                //         planCard.innerHTML = `
-                //             <strong>Plan ID:</strong> ${plan.id} <br>
-                //             <strong>Type:</strong> ${plan.type} <br>
-                //             <strong>Destination:</strong> ${plan.destination} <br>
-                //             <strong>Attributes:</strong> ${JSON.stringify(plan.attributes, null, 2)} <br>
-                //         `;
-                //         scrollableContainer.appendChild(planCard);
-                //     });
-
-                //     // Append the scrollable container to the modal's fields
-                //     fields.appendChild(scrollableContainer);
-                // } else {
-                //     fields.innerHTML = "<p>No travel plans found.</p>";
-                // }
-             }
-
-
-            
+            }
             else if (type === "donors") {
                 title.textContent = "Retrieve Donors";
-            } else if(type === 'books'){
+            } 
+            else if(type === 'books'){
                 title.textContent = "Track Book Donations";
             }
             else if(type === 'clothes'){
@@ -366,6 +329,24 @@
 
             modal.style.display = "flex";
         }
+
+
+        function executePlan(planId) {
+                const endpoint = `../controllers/OrganizationController.php?action=Executeplan`;
+
+                fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({ planId: planId }),
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        alert(data); // Display success or error message
+                    })
+                    .catch(error => {
+                        console.error("Error executing travel plan:", error);
+                    });
+            }
 
         function updatePlanFields() {
             const planType = document.getElementById("planType").value;
@@ -445,7 +426,8 @@
             // }
         }
         
-        function getBeneficiaries() {
+        function getBeneficiaries() 
+        {
         
             const endpoint = "../controllers/OrganizationController.php?action=getBeneficiary";
 
@@ -511,65 +493,69 @@
                 endpoint = "../controllers/OrganizationController.php?action=sendAll";
             }
             else if (modalTitle.includes("View All Plans")) {
-                endpoint = "../controllers/OrganizationController.php?action=viewtravelplans";
+                    endpoint = "../controllers/OrganizationController.php?action=viewtravelplans";
+
+                    // Fetch travel plans and render them
+                    fetch(endpoint, {
+                        method: "GET", // Assuming GET for fetching travel plans
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Failed to fetch travel plans.");
+                            }
+                            return response.json(); // Parse JSON response
+                        })
+                        .then(data => {
+                            const fields = document.getElementById("dynamicFields");
+                            fields.innerHTML = ""; // Clear previous content
+
+                            if (data.length === 0) {
+                                fields.innerHTML = "<p>No travel plans found.</p>";
+                            } else {
+                                // Create a scrollable container for the plans
+                                const scrollableContainer = document.createElement("div");
+                                scrollableContainer.style.maxHeight = "300px";
+                                scrollableContainer.style.overflowY = "auto";
+                                scrollableContainer.style.border = "1px solid #ddd";
+                                scrollableContainer.style.padding = "10px";
+                                scrollableContainer.style.borderRadius = "5px";
+
+                                // Populate the plans
+                                data.forEach(plan => {
+                                    const planCard = document.createElement("div");
+                                    planCard.style.border = "1px solid #ddd";
+                                    planCard.style.marginBottom = "10px";
+                                    planCard.style.padding = "10px";
+                                    planCard.style.borderRadius = "5px";
+
+                                    planCard.innerHTML = `
+                                        <strong>Plan ID:</strong> ${plan.id} <br>
+                                        <strong>Type:</strong> ${plan.type} <br>
+                                        <strong>Destination:</strong> ${plan.destination} <br>
+                                        <strong>Attributes:</strong> ${JSON.stringify(plan.attributes, null, 2)} <br>
+                                        <button onclick="executePlan(${plan.id})">Execute Plan</button>
+                                    `;
+                                    scrollableContainer.appendChild(planCard);
+                                });
+
+                                fields.appendChild(scrollableContainer);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error fetching travel plans:", error);
+                            const fields = document.getElementById("dynamicFields");
+                            fields.innerHTML = "<p>Error loading travel plans.</p>";
+                        });
+
+                    return; // Exit the function to avoid closing the modal prematurely
                
+                }
 
-          // Fetch travel plans and render them
-                fetch(endpoint, {
-                    method: "GET", // Assuming GET for fetching travel plans
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Failed to fetch travel plans.");
-                        }
-                        return response.json(); // Parse JSON response
-                    })
-                    .then(data => {
-                        const fields = document.getElementById("dynamicFields");
-                        fields.innerHTML = ""; // Clear previous content
 
-                        if (data.length === 0) {
-                            fields.innerHTML = "<p>No travel plans found.</p>";
-                        } else {
-                            // Create a scrollable container for the plans
-                            const scrollableContainer = document.createElement("div");
-                            scrollableContainer.style.maxHeight = "300px";
-                            scrollableContainer.style.overflowY = "auto";
-                            scrollableContainer.style.border = "1px solid #ddd";
-                            scrollableContainer.style.padding = "10px";
-                            scrollableContainer.style.borderRadius = "5px";
+           
 
-                            // Populate the plans
-                            data.forEach(plan => {
-                                const planCard = document.createElement("div");
-                                planCard.style.border = "1px solid #ddd";
-                                planCard.style.marginBottom = "10px";
-                                planCard.style.padding = "10px";
-                                planCard.style.borderRadius = "5px";
 
-                                planCard.innerHTML = `
-                                    <strong>Plan ID:</strong> ${plan.id} <br>
-                                    <strong>Type:</strong> ${plan.type} <br>
-                                    <strong>Destination:</strong> ${plan.destination} <br>
-                                    <strong>Attributes:</strong> ${JSON.stringify(plan.attributes, null, 2)} <br>
-                                `;
-                                scrollableContainer.appendChild(planCard);
-                            });
-
-                            fields.appendChild(scrollableContainer);
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error fetching travel plans:", error);
-                        const fields = document.getElementById("dynamicFields");
-                        fields.innerHTML = "<p>Error loading travel plans.</p>";
-                    });
-
-                return; // Exit the function to avoid closing the modal prematurely
-            }
-
-            
             else if (modalTitle.includes("Add Plan")) {
                 endpoint = "../controllers/OrganizationController.php?action=addPlan";
                 // Handle custom logic for "Add Plan"

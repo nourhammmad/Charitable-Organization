@@ -93,6 +93,8 @@ class OrganizationController{
             case 'Executeplan':
                 $this->Executeplan();
                 break; 
+
+                
             case 'addBeneficiary':
                 $name = $_POST['name'];
                 $address = $_POST['address'];
