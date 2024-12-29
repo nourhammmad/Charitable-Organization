@@ -78,6 +78,7 @@
         <div class="option" onclick="openModal('money')">Track Money</div>
         <div class="option" onclick="openModal('sendAll')">Send Notification</div>
         <div class="option" onclick="openModal('addResource')">Add Resource</div>
+        <div class="option" onclick="openModal('addPlan')">Add Plan</div>
         <div class="option" onclick="openModal('createTask')">Create Task</div>
         <div class="option" onclick="openModal('createEvent')">Create Event</div>
     
@@ -136,7 +137,18 @@
 
             // Reset fields
             fields.innerHTML = "";
-
+            if (type === "addPlan") {
+                title.textContent = "Add Plan";
+                fields.innerHTML = `
+                    <label for="planType">Select Plan Type:</label>
+                    <select id="planType" name="planType" onchange="updatePlanFields()" required>
+                        <option value="">Choose...</option>
+                        <option value="resource_delivery">Resource Delivery</option>
+                        <option value="volunteer_travel">Volunteer Travel</option>
+                    </select>
+                    <div id="planDetails"></div>
+                `;
+            }
             if (type === "addResource") {
                 title.textContent = "Add Resource";
                 fields.innerHTML = `
@@ -208,7 +220,85 @@
             modal.style.display = "flex";
         }
 
-        
+        function updatePlanFields() {
+            const planType = document.getElementById("planType").value;
+            const planDetails = document.getElementById("planDetails");
+
+            if (planType === "resource_delivery") {
+            planDetails.innerHTML = `
+            <style>
+                .form-group {
+                    margin-bottom: 15px;
+                }
+                label {
+                    display: block;
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                }
+                input, select {
+                    width: 100%;
+                    padding: 8px;
+                    box-sizing: border-box;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                }
+                select {
+                    height: 100px;
+                }
+            </style>
+            <div class="form-group">
+                <label for="destination">Destination:</label>
+                <input type="text" id="destination" name="destination" required>
+            </div>
+            <div class="form-group">
+                <label for="numOfVechile">Number of Vehicles:</label>
+                <input type="number" id="numOfVechile" name="numOfVechile" required>
+            </div>
+            <div class="form-group">
+                <label for="typeOfTruck">Type of Vechile:</label>
+                <input type="text" id="typeOfTruck" name="typeOfTruck" required>
+            </div>
+            <div class="form-group">
+                <label for="resources">Select Resources:</label>
+                <select id="resources" name="resources" multiple required>
+                    <!-- Dynamically populated options -->
+                </select>
+            </div>
+        `;
+
+        // Fetch resources from the database
+        fetch("../controllers/OrganizationController.php?action=getResources")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                const resourcesDropdown = document.getElementById("resources");
+                resourcesDropdown.innerHTML = ""; // Clear previous options
+
+                data.forEach(resource => {
+                    const option = document.createElement("option");
+                    option.value = resource.id;
+                    option.textContent = resource.name;
+                    resourcesDropdown.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error fetching resources:", error));
+
+        }
+            // } else if (planType === "volunteer_travel") {
+            //     planDetails.innerHTML = `
+            //         <label for="travelDetails">Travel Details:</label>
+            //         <textarea id="travelDetails" name="travelDetails" rows="3" required></textarea>
+            //     `;
+            // } else {
+            //     planDetails.innerHTML = "";
+            // }
+        }
+
+
 
 
         function closeModal() {
@@ -218,20 +308,58 @@
         function submitForm() {
             const form = new URLSearchParams(new FormData(document.getElementById("actionForm")));
             const modalTitle = document.getElementById("modalTitle").textContent;
-           
+
             let endpoint = "";
+
             if (modalTitle.includes("Add Resource")) {
                 endpoint = "../controllers/OrganizationController.php?action=createResource";
+            } else if (modalTitle.includes("Retrieve Organization")) {
+                endpoint = "../controllers/OrganizationController.php?action=getOrganizations";
+            } else if (modalTitle.includes("Donors")) {
+                endpoint = "../controllers/OrganizationController.php?action=getDonors";
+            } else if (modalTitle.includes("Track Clothes Donations")) {
+                endpoint = "../controllers/OrganizationController.php?action=trackClothes";
+            } else if (modalTitle.includes("Track Money Donations")) {
+                endpoint = "../controllers/OrganizationController.php?action=trackMoney";
+            } else if (modalTitle.includes("Create New Task")) {
+                endpoint = "../controllers/OrganizationController.php?action=createTask";
+            } else if (modalTitle.includes("Create New Event")) {
+                endpoint = "../controllers/OrganizationController.php?action=createEvent";
+            } else if (modalTitle.includes("Track Book Donations")) {
+                endpoint = "../controllers/OrganizationController.php?action=trackBooks";
+            } else if (modalTitle.includes("Send Notification")) {
+                endpoint = "../controllers/OrganizationController.php?action=sendAll";
+            } else if (modalTitle.includes("Add Plan")) {
+                endpoint = "../controllers/OrganizationController.php?action=addPlan";
+
+                // Handle custom logic for "Add Plan"
+                const planType = document.getElementById("planType").value;
+                const attributes = {
+                    numOfVechile: form.get("numOfVechile"),
+                    typeOfTruck: form.get("typeOfTruck"),
+                    resources: Array.from(form.getAll("resources")), // Handles multiple selected options
+                };
+
+                const body = new URLSearchParams({
+                    type: planType,
+                    destination: form.get("destination"),
+                    attributes: JSON.stringify(attributes),
+                });
+
+                fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: body.toString(),
+                })
+                    .then(response => response.text())
+                    .then(data => alert(data))
+                    .catch(error => console.error("Error:", error));
+
+                closeModal();
+                return; // Prevent further execution for "Add Plan"
             }
-         
-            if (modalTitle.includes("Retrieve Organization")) endpoint = "../controllers/OrganizationController.php?action=getOrganizations";
-            if (modalTitle.includes("Donors")) endpoint = "../controllers/OrganizationController.php?action=getDonors";
-            if (modalTitle.includes("Track Clothes Donations")) endpoint = "../controllers/OrganizationController.php?action=trackClothes";
-            if (modalTitle.includes("Track Money Donations")) endpoint = "../controllers/OrganizationController.php?action=trackMoney";
-            if (modalTitle.includes("Create New Task")) endpoint = "../controllers/OrganizationController.php?action=createTask";
-            if (modalTitle.includes("Create New Event")) endpoint = "../controllers/OrganizationController.php?action=createEvent";
-            if (modalTitle.includes("Track Book Donations")) endpoint = "../controllers/OrganizationController.php?action=trackBooks";
-            if (modalTitle.includes("Send Notification")) endpoint = "../controllers/OrganizationController.php?action=sendAll";
+
+            // General fetch logic for other modal actions
             fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -243,6 +371,7 @@
 
             closeModal();
         }
+
     </script>
 </body>
 </html>

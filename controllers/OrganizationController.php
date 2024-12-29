@@ -10,6 +10,8 @@ require_once $server."\controllers\FoodBankController.php";
 require_once $server."\controllers\TaskManagementController.php";
 require_once $server."\Services\CommunicationFacade.php";
 require_once $server."\Services\Resources.php";
+require_once $server."\Services\TravelManagement.php";
+
 
  
 //print ("2222211!!HELLO");
@@ -50,6 +52,7 @@ require_once $server."\Services\Resources.php";
                 break; 
 
             case 'getResources':
+                    header('Content-Type: application/json');
                     echo json_encode(resource::getAllResources());
                     break;
         
@@ -65,10 +68,22 @@ require_once $server."\Services\Resources.php";
                         echo "Resource name is required.";
                     }
                     break;      
-       
+            case 'addPlan':
+                $travel =new TravelManagement();
+                $type=$_POST['type']??null;
+                $dest=$_POST['destination']??null;
+                $atrr=$_POST['attributes']??null;
+
+                if( $type && $dest && $atrr){
+                    $travel->createTravelPlan($type,$dest,$atrr);
+                      
+                }
+                else{
+                    print("Some fields are missing");
+                }
+                break; 
 
             case 'logout':
-               // print("kk");
                 logout();
                 break;    
 

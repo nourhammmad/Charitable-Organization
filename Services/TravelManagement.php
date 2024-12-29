@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . "\controllers\TravelPlanController.php";
-require_once 'ResourceDeliveryTravel.php';
+require_once $_SERVER['DOCUMENT_ROOT'] ."\Services\ResourcesDeliveryTravel.php";
 
 class TravelManagement {
     private $travelController;
@@ -11,8 +11,9 @@ class TravelManagement {
     }
 
     // Create a travel plan via the TravelPlanController and instantiate the specific travel plan class
-    public function createTravelPlan($type, $destination, $attributes) {
+    public  function createTravelPlan($type, $destination, $attributes) {
         try {
+
             // Delegate plan creation to the controller
             $this->travelController->createPlan($type, $destination, $attributes);
 

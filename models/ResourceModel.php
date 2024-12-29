@@ -8,24 +8,24 @@ require_once $server."/Database.php";
 class ResourceModel {
     
     public static function getAllResources() {
-    
         $query = "SELECT * FROM resources";
         $result = Database::run_select_query($query);
-
+    
         if ($result === false) {
-            return null;
+            return [];
         }
-
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            return new resource(
-                $row['id'],
-                $row['name'],
-            );
+    
+        $resources = [];
+        while ($row = $result->fetch_assoc()) {
+            $resources[] = [
+                'id' => $row['id'],
+                'name' => $row['name']
+            ];
         }
-
-        return null;
+    
+        return $resources;
     }
+    
 
     public static function createResource($name) {
         $query = "INSERT INTO resources (name) VALUES ('$name')";
