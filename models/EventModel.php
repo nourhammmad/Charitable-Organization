@@ -3,14 +3,7 @@
 $server=$_SERVER['DOCUMENT_ROOT'];
 require_once $server."\Database.php";
 require_once $server.'\Services/IService.php';
-// Database::getInstance();
-// try {
-//     $db =  Database::getInstance();
-//     //Populate::populate();
-// } catch (Exception $e) {
-//     echo "Error initializing Database: " . $e->getMessage();
-//     exit;
-// }
+
 
 
 class EventModel {
@@ -39,13 +32,11 @@ class EventModel {
 
     static function GetAddresses() {
         $query = "SELECT addressId, CONCAT(city, ', ', street) AS fullAddress FROM address";
-        $result = Database::run_Select_query($query); // Assuming `run_query` returns a MySQLi result object
+        $result = Database::run_Select_query($query); 
     
-        // Check if the query returned a valid result
         if ($result) {
             $addresses = [];
     
-            // Fetch all rows as associative arrays
             while ($row = mysqli_fetch_assoc($result)) {
                 $addresses[] = $row;
             }
