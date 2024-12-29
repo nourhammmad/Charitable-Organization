@@ -54,8 +54,9 @@ class TravelManagement {
 
             // Decode attributes and determine the travel type
             $details = [
-                'destination' => $plan['destination'],
-                'attributes' => $plan['attributes']
+                'destination' => $plan['destination'],                // Directly use destination
+                'means' => $plan['attributes']['resources'] ?? [],   // Extract resources
+                'vehicles' => $plan['attributes']['vehicles'] ?? []  // Extract vehicles
             ];
 
             $travelPlanInstance = $this->instantiateTravelPlan($plan['type']);
