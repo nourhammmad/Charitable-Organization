@@ -6,28 +6,57 @@
     <title>Organization Management</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
+            margin: 0;
+            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-
-            margin: 0;
-            color: #333;
+            min-height: 100vh;
         }
-        h1, h2 {
-            margin-bottom: 20px;
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            color: #2c3e50;
         }
         .action-options {
             display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 20px;
+            margin-bottom: 30px;
         }
         .option {
-
-            transform: translateY(-10px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px 25px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            min-width: 150px;
+        }
+        .option:hover {
+            background-color: #eaf2f8;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        button[type="submit"] {
+            background-color: #d9534f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #c9302c;
         }
         .modal {
             display: none;
@@ -41,39 +70,61 @@
             align-items: center;
         }
         .modal-content {
-            background-color: #fff;
+            background-color: #ffffff;
             padding: 20px;
             border-radius: 10px;
-            width: 300px;
-            text-align: center;
+            width: 350px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             position: relative;
+            text-align: center;
+        }
+        .modal-content h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .modal-content input,
+        .modal-content select,
+        .modal-content textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
         }
         .modal-content button {
-            margin-top: 10px;
-            padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
+            padding: 10px 20px;
             cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        .modal-content button:hover {
+            background-color: #45a049;
         }
         .close-btn {
             position: absolute;
             top: 10px;
             right: 15px;
             font-size: 1.5rem;
+            color: #aaa;
             cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .close-btn:hover {
+            color: #000;
         }
     </style>
 </head>
 <body>
     <h1>Organization Management</h1>
-
- 
     <div class="action-options">
         <div class="option" onclick="openModal('organization')">Get Organization</div>
         <div class="option" onclick="openModal('donors')">Get Donors</div>
-
         <div class="option" onclick="openModal('clothes')">Track Clothes</div>
         <div class="option" onclick="openModal('money')">Track Money</div>
         <div class="option" onclick="openModal('sendAll')">Send Notification</div>
@@ -81,52 +132,20 @@
         <div class="option" onclick="openModal('addPlan')">Add Plan</div>
         <div class="option" onclick="openModal('createTask')">Create Task</div>
         <div class="option" onclick="openModal('createEvent')">Create Event</div>
-    
-       
-        
-    </div>
     </div>
     <form action="/controllers/OrganizationController.php?action=logout" method="POST">
-    <button type="submit">Logout</button>
-</form>
-
-  
-
-    <!---style--->
-    <style>
-    .action-options {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .option {
-        background-color: #f1f1f1;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 10px 20px;
-        text-align: center;
-        cursor: pointer;
-        min-width: 120px;
-    }
-
-  
-</style>
-
-    <!-- Modal -->
+        <button type="submit">Logout</button>
+    </form>
     <div id="actionModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle"></h2>
             <form id="actionForm">
-                <!-- Dynamic fields -->
                 <div id="dynamicFields"></div>
                 <button type="button" onclick="submitForm()">Submit</button>
             </form>
         </div>
     </div>
-
 
   
     <script>

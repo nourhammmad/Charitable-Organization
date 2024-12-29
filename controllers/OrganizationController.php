@@ -12,8 +12,9 @@ require_once $server."\Services\CommunicationFacade.php";
 require_once $server."\Services\Resources.php";
 require_once $server."\Services\TravelManagement.php";
 
-
+class OrganizationController{
  
+    function handleRequest(){
 //print ("2222211!!HELLO");
   if (isset($_GET['action'])) {
    // print ("11!!HELLO");
@@ -21,34 +22,34 @@ require_once $server."\Services\TravelManagement.php";
        // echo $action;
         switch ($action) {
             case 'getOrganizations':
-                handleGetOrganizations();
+               $this->handleGetOrganizations();
                 break;
     
             case 'getDonors':
-                handleGetDonors();
+                $this->handleGetDonors();
                 break;
     
             case 'createEvent':
-                handleCreateEvent();
+                $this->handleCreateEvent();
                 break;
             case 'createTask':
-                handleCreateTask();
+                $this->handleCreateTask();
                 break;    
 
             case 'trackBooks':
-                handleBooks();
+                $this->handleBooks();
                 break;
     
             case 'trackClothes':
-                handleClothes();
+                $this->handleClothes();
                 break;
     
             case 'trackMoney':
-                handleMoney();
+                $this->handleMoney();
                 break;
                
             case 'sendAll':
-                SendNotification();
+                $this->SendNotification();
                 break; 
 
             case 'getResources':
@@ -84,7 +85,7 @@ require_once $server."\Services\TravelManagement.php";
                 break; 
 
             case 'logout':
-                logout();
+                $this->logout();
                 break;    
 
 
@@ -94,6 +95,7 @@ require_once $server."\Services\TravelManagement.php";
                 break;
         }
     }
+}
 
 
 
@@ -249,5 +251,9 @@ require_once $server."\Services\TravelManagement.php";
         DonationManagement::handelTrack(1);
         echo "Money tracked successfully.";
     }
+}
+
+$controller = new OrganizationController();
+$controller->handleRequest();
 
     ?>
