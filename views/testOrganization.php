@@ -175,11 +175,16 @@ $addresses = EventModel::GetAddresses();
         <div class="option" onclick="openModal('addPlan')">Add Plan</div>
         <div class="option" onclick="openModal('createTask')">Create Task</div>
         <div class="option" onclick="openModal('createEvent')">Create Event</div>
-        <div class="option" onclick="openModal('ExecuteTravelPlan')"> Execute Plan</div>
+        <!-- <div class="option" onclick="openModal('ExecuteTravelPlan')"> Execute Plan</div>  -->
+        <div class="option" onclick="openModal('viewtravelplans')">View Travel Plans</div>
+        <div class="option" onclick="openModal('addBeneficiary')"> Add Beneficiary</div>
+        <div class="option" onclick="openModal('getBeneficiary')"> Get all beneficiaries</div>
     </div>
     <form action="/controllers/OrganizationController.php?action=logout" method="POST">
         <button type="submit">Logout</button>
     </form>
+   
+
     <div id="actionModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -197,9 +202,47 @@ $addresses = EventModel::GetAddresses();
             const modal = document.getElementById("actionModal");
             const title = document.getElementById("modalTitle");
             const fields = document.getElementById("dynamicFields");
+            //const submitButton = document.querySelector("#actionForm button[type='button']");
+
+// Reset fields and show the submit button by default
+
+            //submitButton.style.display = "inline-block";
 
             // Reset fields
             fields.innerHTML = "";
+            if(type=="getBeneficiary"){
+                title.textContent = "getBeneficiary";
+                fields.innerHTML = `
+                    <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody id="beneficiaryTableBody">
+                            <!-- Rows will be populated dynamically -->
+                        </tbody>
+                    </table>
+                `;
+            
+            }
+            if(type=="addBeneficiary"){
+                title.textContent = "addBeneficiary";
+                fields.innerHTML=`<label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>                 
+                    <label for="address">Address:</label>
+                    <textarea id="address" name="address"></textarea>
+                    
+                    <label for="beneficiaryType">Type:</label>
+                    <select id="beneficiaryType" name="beneficiaryType">
+                    <option value="Individual">Individual</option>
+                    <option value="Group">Group</option>
+                    </select>
+                    `;
+            }
             if (type === "addPlan") {
                 title.textContent = "Add Plan";
                 fields.innerHTML = `
@@ -227,10 +270,13 @@ $addresses = EventModel::GetAddresses();
                 title.textContent = "Execute the plan";
 
             }
-            
+            else if (type === "viewtravelplans") {
+                title.textContent = "View All Plans";
+            }
             else if (type === "donors") {
                 title.textContent = "Retrieve Donors";
-            } else if(type === 'books'){
+            } 
+            else if(type === 'books'){
                 title.textContent = "Track Book Donations";
             }
             else if(type === 'clothes'){
@@ -302,6 +348,24 @@ $addresses = EventModel::GetAddresses();
 
             modal.style.display = "flex";
         }
+
+
+        function executePlan(planId) {
+                const endpoint = `../controllers/OrganizationController.php?action=Executeplan`;
+
+                fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({ planId: planId }),
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        alert(data); // Display success or error message
+                    })
+                    .catch(error => {
+                        console.error("Error executing travel plan:", error);
+                    });
+            }
 
         function updatePlanFields() {
             const planType = document.getElementById("planType").value;
@@ -380,13 +444,40 @@ $addresses = EventModel::GetAddresses();
             //     planDetails.innerHTML = "";
             // }
         }
+        
+        function getBeneficiaries() 
+        {
+        
+            const endpoint = "../controllers/OrganizationController.php?action=getBeneficiary";
 
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(beneficiaries => {
+                    const beneficiaryTable = document.getElementById("beneficiaryTableBody");
+                    beneficiaryTable.innerHTML = ""; // Clear previous data
+                    
+                    beneficiaries.forEach((beneficiary, index) => {
+                        const row = document.createElement("tr");
+
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${beneficiary.name}</td>
+                            <td>${beneficiary.address}</td>
+                            <td>${beneficiary.beneficiaryType}</td>
+                        `;
+
+                        beneficiaryTable.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error fetching beneficiaries:", error));
+        }
 
 
 
         function closeModal() {
             document.getElementById("actionModal").style.display = "none";
         }
+
 
         function submitForm() {
             const form = new URLSearchParams(new FormData(document.getElementById("actionForm")));
@@ -398,23 +489,94 @@ $addresses = EventModel::GetAddresses();
                 endpoint = "../controllers/OrganizationController.php?action=createResource";
             } else if (modalTitle.includes("Retrieve Organization")) {
                 endpoint = "../controllers/OrganizationController.php?action=getOrganizations";
-            } else if (modalTitle.includes("Donors")) {
+            } 
+            else if (modalTitle.includes("Donors")) {
                 endpoint = "../controllers/OrganizationController.php?action=getDonors";
-            } else if (modalTitle.includes("Track Clothes Donations")) {
+            } 
+            else if (modalTitle.includes("Track Clothes Donations")) {
                 endpoint = "../controllers/OrganizationController.php?action=trackClothes";
-            } else if (modalTitle.includes("Track Money Donations")) {
+            }
+             else if (modalTitle.includes("Track Money Donations")) {
                 endpoint = "../controllers/OrganizationController.php?action=trackMoney";
-            } else if (modalTitle.includes("Create New Task")) {
+            } 
+            else if (modalTitle.includes("Create New Task")) {
                 endpoint = "../controllers/OrganizationController.php?action=createTask";
-            } else if (modalTitle.includes("Create New Event")) {
+            } 
+            else if (modalTitle.includes("Create New Event")) {
                 endpoint = "../controllers/OrganizationController.php?action=createEvent";
-            } else if (modalTitle.includes("Track Book Donations")) {
+            } 
+            else if (modalTitle.includes("Track Book Donations")) {
                 endpoint = "../controllers/OrganizationController.php?action=trackBooks";
-            } else if (modalTitle.includes("Send Notification")) {
+            } 
+            else if (modalTitle.includes("Send Notification")) {
                 endpoint = "../controllers/OrganizationController.php?action=sendAll";
-            } else if (modalTitle.includes("Add Plan")) {
-                endpoint = "../controllers/OrganizationController.php?action=addPlan";
+            }
+            else if (modalTitle.includes("View All Plans")) {
+                    endpoint = "../controllers/OrganizationController.php?action=viewtravelplans";
 
+                    // Fetch travel plans and render them
+                    fetch(endpoint, {
+                        method: "GET", // Assuming GET for fetching travel plans
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Failed to fetch travel plans.");
+                            }
+                            return response.json(); // Parse JSON response
+                        })
+                        .then(data => {
+                            const fields = document.getElementById("dynamicFields");
+                            fields.innerHTML = ""; // Clear previous content
+
+                            if (data.length === 0) {
+                                fields.innerHTML = "<p>No travel plans found.</p>";
+                            } else {
+                                // Create a scrollable container for the plans
+                                const scrollableContainer = document.createElement("div");
+                                scrollableContainer.style.maxHeight = "300px";
+                                scrollableContainer.style.overflowY = "auto";
+                                scrollableContainer.style.border = "1px solid #ddd";
+                                scrollableContainer.style.padding = "10px";
+                                scrollableContainer.style.borderRadius = "5px";
+
+                                // Populate the plans
+                                data.forEach(plan => {
+                                    const planCard = document.createElement("div");
+                                    planCard.style.border = "1px solid #ddd";
+                                    planCard.style.marginBottom = "10px";
+                                    planCard.style.padding = "10px";
+                                    planCard.style.borderRadius = "5px";
+
+                                    planCard.innerHTML = `
+                                        <strong>Plan ID:</strong> ${plan.id} <br>
+                                        <strong>Type:</strong> ${plan.type} <br>
+                                        <strong>Destination:</strong> ${plan.destination} <br>
+                                        <strong>Attributes:</strong> ${JSON.stringify(plan.attributes, null, 2)} <br>
+                                        <button onclick="executePlan(${plan.id})">Execute Plan</button>
+                                    `;
+                                    scrollableContainer.appendChild(planCard);
+                                });
+
+                                fields.appendChild(scrollableContainer);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error fetching travel plans:", error);
+                            const fields = document.getElementById("dynamicFields");
+                            fields.innerHTML = "<p>Error loading travel plans.</p>";
+                        });
+
+                    return; // Exit the function to avoid closing the modal prematurely
+               
+                }
+
+
+           
+
+
+            else if (modalTitle.includes("Add Plan")) {
+                endpoint = "../controllers/OrganizationController.php?action=addPlan";
                 // Handle custom logic for "Add Plan"
                 const planType = document.getElementById("planType").value;
                 const attributes = {
@@ -441,12 +603,28 @@ $addresses = EventModel::GetAddresses();
                 closeModal();
                 return; // Prevent further execution for "Add Plan"
             }
-            else if (type == "ExecuteTravelPlan") {
-                title.textContent = "Execute the plan";
-                fields.innerHTML = `
-                    <label for="planId">Plan ID:</label>
-                    <input type="number" name="planId" id="planId" required>
-                `;
+            // else if (type == "ExecuteTravelPlan") {
+            //     title.textContent = "Execute the plan";
+            //     fields.innerHTML = `
+            //         <label for="planId">Plan ID:</label>
+            //         <input type="number" name="planId" id="planId" required>
+            //     `;
+            // }
+            else if(modalTitle.includes("addBeneficiary")){
+                endpoint = "../controllers/OrganizationController.php?action=addBeneficiary";
+                fetch(endpoint, {
+                    method: "POST",
+                    body: new URLSearchParams(form),
+                })
+                .then(response => response.text())
+                .then(data => alert("Beneficiary added successfully!"))
+                .catch(error => console.error("Error:", error));
+                closeModal();
+                return; 
+            }
+            else if(modalTitle.includes("getBeneficiary")){
+                getBeneficiaries();
+                 return; 
             }
 
 
@@ -462,6 +640,8 @@ $addresses = EventModel::GetAddresses();
 
             closeModal();
         }
+
+        
 
     </script>
 </body>
