@@ -11,6 +11,7 @@ require_once $server."\controllers\TaskManagementController.php";
 require_once $server."\Services\CommunicationFacade.php";
 require_once $server."\Services\Resources.php";
 require_once $server."\Services\TravelManagement.php";
+require_once $server."\controllers\TravelplanController.php";
 
 class OrganizationController{
  
@@ -91,10 +92,14 @@ class OrganizationController{
 
             case 'Executeplan':
                 $this->Executeplan();
- 
                 break;  
 
 
+            case 'viewtravelplans':
+                    $this-> handleGetTravelPlans();
+     
+                    break;
+     
     
             default:
                 echo "Invalid action.";
@@ -118,6 +123,23 @@ class OrganizationController{
 
         
     }
+
+    function handleGetTravelPlans() {
+        try {
+            // Instantiate the TravelPlanController
+            $travelController = new TravelPlanController();
+
+            // Fetch all travel plans
+            $travelPlans = $travelController->getAllPlans();
+
+            // Return as JSON response
+            header('Content-Type: application/json');
+            echo json_encode($travelPlans);
+        } catch (Exception $e) {
+            echo json_encode(["error" => $e->getMessage()]);
+        }
+    }
+    
     function Executeplan() {
         try {
             $planId = intval($_POST['planId'] ?? 0); 
