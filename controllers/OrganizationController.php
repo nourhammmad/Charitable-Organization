@@ -12,11 +12,11 @@ require_once $server."\Services\CommunicationFacade.php";
 require_once $server."\Services\Resources.php";
 
  
-
+//print ("2222211!!HELLO");
   if (isset($_GET['action'])) {
-    
+   // print ("11!!HELLO");
         $action = $_GET['action'];
-        echo $action;
+       // echo $action;
         switch ($action) {
             case 'getOrganizations':
                 handleGetOrganizations();
@@ -68,6 +68,7 @@ require_once $server."\Services\Resources.php";
        
 
             case 'logout':
+               // print("kk");
                 logout();
                 break;    
 
@@ -79,16 +80,20 @@ require_once $server."\Services\Resources.php";
         }
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST"){
-        if (isset($_POST['logout'])) {
-            logout();
-           
-         }
-    }
+
 
     function logout(){
-        require_once $_SERVER['DOCUMENT_ROOT']."/views/loginView.php";
-         exit(); 
+     
+        session_start();
+        session_unset(); 
+        session_destroy(); // Destroy the session
+
+    // Redirect to loginView.php
+    header("Location: ../index.php");
+    require_once "../index.php";
+    exit(); // 
+
+        
     }
 
     function SendNotification() {

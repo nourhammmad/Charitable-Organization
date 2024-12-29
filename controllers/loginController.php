@@ -2,13 +2,13 @@
 
 session_start();
 
-require_once "./models/UserModel.php";
-require_once "./models/RegisteredUserModel.php";
-require_once "./Services/Guest.php";
-require_once "./Services/RegisterUser.php";
-require_once "./Database.php";
-require_once "./Services/ContextAuthenticator.php";
-require_once "./controllers/OrganizationController.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/models/UserModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/models/RegisteredUserModel.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/Services/Guest.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/Services/RegisterUser.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/Database.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/Services/ContextAuthenticator.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/controllers/OrganizationController.php";
 
 class LoginController {
 
@@ -34,8 +34,8 @@ class LoginController {
         }
 
         
-
-        require_once "./views/loginView.php";
+       require_once $_SERVER['DOCUMENT_ROOT']."/views/loginView.php";
+       
     }
 
     private function loginorg() {
@@ -79,11 +79,7 @@ class LoginController {
         }
 
         private function loginGuestUser() {
-            // $guest = new Guest();
-            // UserModel::createDefaultUser('Guest');
-            // $guestId = UserModel::getLastinsertId();
-            // $guest->setId($guestId);
-            // $guest->login();
+        
             require_once "./views/guestView.php";
             exit(); 
         }

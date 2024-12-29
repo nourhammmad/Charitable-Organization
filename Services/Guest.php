@@ -1,7 +1,7 @@
 <?php
 // require_once "../Services/DonationType.php";
 // require_once "../Services/ContextAuthenticator.php";
-require_once "./Services/User.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/Services/User.php";
 
 
 

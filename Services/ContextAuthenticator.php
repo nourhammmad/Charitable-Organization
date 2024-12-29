@@ -1,8 +1,8 @@
 <?php
 
-require_once ('./models/RegisteredUserModel.php');
-require_once ('./Services/IAuthenticationProvider.php');
-require_once('./models/DonorModel.php');
+require_once $_SERVER['DOCUMENT_ROOT'].'/models/RegisteredUserModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/Services/IAuthenticationProvider.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/models/DonorModel.php';
 
 class FacebookAuth implements IAuthenticationProvider
 {
