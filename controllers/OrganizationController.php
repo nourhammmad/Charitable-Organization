@@ -85,7 +85,7 @@ class OrganizationController{
                 break; 
 
             case 'logout':
-                $this->$this->logout();
+                $this->logout();
                 break;  
 
 
