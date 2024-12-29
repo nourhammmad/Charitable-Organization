@@ -13,7 +13,10 @@ require_once $server."\Services\Resources.php";
 require_once $server."\Services\TravelManagement.php";
 
 
+//case fehom teb2a nafs eesm el 7aga el gaya men view 
+class OrganizationController{
  
+    function handleRequest(){
 //print ("2222211!!HELLO");
   if (isset($_GET['action'])) {
    // print ("11!!HELLO");
@@ -21,34 +24,34 @@ require_once $server."\Services\TravelManagement.php";
        // echo $action;
         switch ($action) {
             case 'getOrganizations':
-                handleGetOrganizations();
+                $this->handleGetOrganizations();
                 break;
     
             case 'getDonors':
-                handleGetDonors();
+                $this->handleGetDonors();
                 break;
     
             case 'createEvent':
-                handleCreateEvent();
+                $this->handleCreateEvent();
                 break;
             case 'createTask':
-                handleCreateTask();
+                $this-> handleCreateTask();
                 break;    
 
             case 'trackBooks':
-                handleBooks();
+                $this->handleBooks();
                 break;
     
             case 'trackClothes':
-                handleClothes();
+                $this->handleClothes();
                 break;
     
             case 'trackMoney':
-                handleMoney();
+                $this->handleMoney();
                 break;
                
             case 'sendAll':
-                SendNotification();
+                $this->SendNotification();
                 break; 
 
             case 'getResources':
@@ -84,8 +87,14 @@ require_once $server."\Services\TravelManagement.php";
                 break; 
 
             case 'logout':
-                logout();
-                break;    
+                $this->logout();
+                break;  
+
+
+            case 'Executeplan':
+                $this->Executeplan();
+ 
+                break;  
 
 
     
@@ -94,6 +103,7 @@ require_once $server."\Services\TravelManagement.php";
                 break;
         }
     }
+}
 
 
 
@@ -110,8 +120,25 @@ require_once $server."\Services\TravelManagement.php";
 
         
     }
+    function Executeplan() {
+        try {
+            $planId = intval($_POST['planId'] ?? 0); 
+    
+            if ($planId > 0) {
+                // Instantiate TravelManagement
+                $travelManagement = new TravelManagement();
+    
+                // Call the executeTravelPlan method
+                $travelManagement->executeTravelPlan($planId);
+            } else {
+                echo "Plan ID is required to execute a travel plan.";
+            }
+        } catch (Exception $e) {
+            echo "Error executing travel plan: " . $e->getMessage();
+        }
+    }
 
-    function SendNotification() {
+        function SendNotification() {
         $result = CommunicationFacade::Sendall( $_POST['mail'], 
            $_POST['subject'] ,
            $_POST['body'],
@@ -249,5 +276,7 @@ require_once $server."\Services\TravelManagement.php";
         DonationManagement::handelTrack(1);
         echo "Money tracked successfully.";
     }
-
+    }
+    $controller = new OrganizationController();
+    $controller->handleRequest();
     ?>
