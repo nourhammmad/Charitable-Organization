@@ -7,12 +7,13 @@ require_once $_SERVER['DOCUMENT_ROOT']."\models\EventModel.php";
 
 class EducationalCenterController {
 
-    public static function createEducationalCenterEvent($eventName ,$date,$capacity ,$EventAttendanceCapacity, $tickets, $signLangInterpret, $wheelchair) {
+    public static function createEducationalCenterEvent($eventName ,$date,$capacity ,$EventAttendanceCapacity, $tickets, $shelterLocation ,$signLangInterpret, $wheelchair) {
        // $eventName="Educational Center";
        // $capacity=10;
 
-    //Decorator
-        $EducationalCentersService = new EducationalCenters($EventAttendanceCapacity, $capacity, 'Shelter Location'); // Example values for family shelter
+ echo"dcbhjgdcjhdbckjdbc";
+ echo $shelterLocation;
+        $EducationalCentersService = new EducationalCenters($EventAttendanceCapacity, $capacity, $shelterLocation); 
 
         if ($signLangInterpret) {
             $EducationalCentersService = new SignLangInterpret($EducationalCentersService);
@@ -23,7 +24,6 @@ class EducationalCenterController {
 
         $finalAccessLvl = $EducationalCentersService->showAccessLevel();
         $numberOfShelters=12;
-        $shelterLocation="cairo";
 
         $isEventCreated = EventModel::CreateEducationalCenters($eventName, $date,$EventAttendanceCapacity , $tickets, $numberOfShelters,$shelterLocation,$finalAccessLvl);
         

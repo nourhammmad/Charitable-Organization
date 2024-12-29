@@ -164,21 +164,35 @@ class OrganizationController{
     function handleCreateEvent() {
         $name = $_POST['name'] ?? null; 
         $date = $_POST['date'] ?? null;
-        $address = $_POST['address'] ?? null;
+       // $address = $_POST['address'] ?? null;
         $capacity = $_POST['capacity'] ?? null;
         $tickets = $_POST['tickets'] ?? null;
-      //  $typeid = $_POST['typeid'] ?? null;
+        $shelterLocation = $_POST['address'] ?? null;
         $service = $_POST['service'] ?? null;
         $signLangInterpret = isset($_POST['signLang']) ? true : false;
         $wheelchair = isset($_POST['wheelchair']) ? true : false;
     
         // Validate required fields
-        if (!$date || !$address || !$capacity || !$tickets ||  !$service) {
+        if (!$date || !$shelterLocation || !$capacity || !$tickets ||  !$service) {
             echo "Missing required fields: date, address, capacity, tickets, and service are mandatory.";
             return;
         }
     
-        // Determine the service type
+        echo"======================";
+        echo"$shelterLocation";
+        echo"======================";
+          // Fetch all addresses (optional use case)
+            $allAddresses = EventModel::GetAddresses();
+
+            // Check if the provided address is valid
+            $addressExists = array_filter($allAddresses, function($addr) use ($shelterLocation) {
+                return $addr['addressId'] == $shelterLocation;
+            });
+
+            if (empty($addressExists)) {
+                echo "Invalid address selected.";
+                return;
+            }
        
         $familyShelter = ($service === 'familyShelter');
         $educationalCenter = ($service === 'educationalCenter');
@@ -194,6 +208,7 @@ class OrganizationController{
              $capacity,
              $capacity,
              $tickets,
+             $shelterLocation,
              $signLangInterpret,
              $wheelchair
             );
@@ -203,12 +218,14 @@ class OrganizationController{
               echo "Failed to create event. Please try again.";
               }
         }elseif($service === 'educationalCenter'){
+            print($shelterLocation);
              $isEventCreated = EducationalCenterController::createEducationalCenterEvent(
              $name,
              $date,
              $capacity,
              $capacity,
              $tickets,
+             $shelterLocation,
              $signLangInterpret,
              $wheelchair
              );
@@ -225,6 +242,7 @@ class OrganizationController{
                 $capacity,
                 $capacity,
                 $tickets,
+                $shelterLocation,
                 $signLangInterpret,
                 $wheelchair
                 );

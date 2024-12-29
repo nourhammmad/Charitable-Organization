@@ -1,3 +1,10 @@
+<?php
+// Include necessary files and classes
+require_once $_SERVER['DOCUMENT_ROOT'] .'/controllers/OrganizationController.php';
+
+// Fetch addresses from the database
+$addresses = EventModel::GetAddresses();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -247,7 +254,19 @@
                 fields.innerHTML = `
                     <input type="text" name="name" placeholder="Event Name" required>
                     <input type="text" name="date" placeholder="Event Date" required>
-                    <input type="text" name="address" placeholder="Event Address" required>
+
+                   <label for="address">Event Address:</label>
+                   <select name="address" id="address" required>
+                    <option value="" disabled selected>Select an address</option>
+                    <?php foreach ($addresses as $address): ?>
+                    <option value="<?php echo htmlspecialchars($address['addressId']); ?>">
+                    <?php echo htmlspecialchars($address['fullAddress']); ?>
+                    </option>
+                    <?php endforeach; ?>
+                    </select>
+
+                    
+                    
                     <input type="number" name="capacity" placeholder="Capacity" required>
                     <input type="number" name="tickets" placeholder="Tickets" required>
 

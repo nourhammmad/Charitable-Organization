@@ -7,14 +7,12 @@ require_once $_SERVER['DOCUMENT_ROOT']."\models\EventModel.php";
 
 class FoodBankController {
 
-    public static function createFoodBankEvent($eventName ,$date ,$capacity, $tickets, $signLangInterpret, $wheelchair) {
-        //$eventName="Food Bank";
-        // $capacity=10;
+    public static function createFoodBankEvent($eventName ,$date ,$capacity, $tickets,$shelterLocation ,$signLangInterpret, $wheelchair) {
+       
         $foodQuantity=12;
         $foodType="VeggiesProtein";
-        $foodBankLocation='cairo';
-    //Decorator
-        $foodbankService = new FoodBank($foodQuantity,$foodType, $foodBankLocation); // Example values for family shelter
+  
+        $foodbankService = new FoodBank($foodQuantity,$foodType, $shelterLocation); // Example values for family shelter
 
         if ($signLangInterpret) {
             $foodbankService = new SignLangInterpret($foodbankService);
@@ -27,7 +25,7 @@ class FoodBankController {
    
 
     
-        $isEventCreated = EventModel::CreateFoodBankEvent($eventName, $date,$capacity,$tickets, $foodQuantity,$foodType ,$finalAccessLvl);
+        $isEventCreated = EventModel::CreateFoodBankEvent($eventName, $date,$capacity,$tickets, $foodQuantity,$foodType, $shelterLocation ,$finalAccessLvl);
         
         return $isEventCreated;
     }

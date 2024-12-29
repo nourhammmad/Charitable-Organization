@@ -282,7 +282,10 @@ class Populate {
  
                     // Insert sample address
                     "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
-                        ('hkhk', '123 Main St', 5, 101, 'New York');",
+                        ('1', '123 Main St', 5, 101, 'NewYork');",
+
+                    "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
+                        ('2', 'main st', 1, 12, 'Cairo');",   
 
                      "CREATE TABLE EventTypes (
                         event_type_id INT AUTO_INCREMENT PRIMARY KEY,

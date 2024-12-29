@@ -36,23 +36,42 @@ class EventModel {
         $this->$event_type_id=$event_type_id;
     }
 
+
+    static function GetAddresses() {
+        $query = "SELECT addressId, CONCAT(city, ', ', street) AS fullAddress FROM address";
+        $result = Database::run_Select_query($query); // Assuming `run_query` returns a MySQLi result object
+    
+        // Check if the query returned a valid result
+        if ($result) {
+            $addresses = [];
+    
+            // Fetch all rows as associative arrays
+            while ($row = mysqli_fetch_assoc($result)) {
+                $addresses[] = $row;
+            }
+    
+            // Return the array of addresses
+            return $addresses;
+        } else {
+            // Log or handle the error as needed
+            error_log("Error fetching addresses: ");
+            return [];
+        }
+    }
+    
+      
+    
+
     // Create a new event
-    public static function createEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $event_type_id) {
+    public static function createEvent($eventName, $date, $EventAttendanceCapacity,$address ,$tickets, $event_type_id) {
         // Ensure the database connection is established
         if (Database::get_connection() === null) {
             echo "No database connection established.";
             return false;
         }
-    
-        // Debugging: Output the parameters being used for insertion
-       // echo "Date: $date, Capacity: $EventAttendanceCapacity, Tickets: $tickets<br>";
-    
-        // Example static addressId (change to dynamic if needed)
-        $addressId = 'hkhk';  // Static addressId or dynamically fetched
-    
-        // Prepare the query to insert the event into the database
+
         $query = "INSERT INTO Event (`eventName`, `date`, `addressId`, `EventAttendanceCapacity`, `tickets`, `event_type_id`) 
-                  VALUES ('$eventName', '$date', (SELECT addressId FROM Address LIMIT 1), '$EventAttendanceCapacity', '$tickets', '$event_type_id')";
+                  VALUES ('$eventName', '$date', '$address' , '$EventAttendanceCapacity', '$tickets', '$event_type_id')";
         // Execute the query
         $result = Database::run_query($query);
     
@@ -75,14 +94,13 @@ class EventModel {
     
     public static function CreateFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters, $shelterLocation, $capacity, $AccessLvl=0) {
         $event_type_id=2;
-        // Step 1: Create the event using the existing createEvent method
-        $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $event_type_id);
-    
-        // If event creation was successful (i.e., $eventId is returned)
+
+        $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity,$shelterLocation ,$tickets, $event_type_id);
+        
+
         if ($eventId) {
-            // Step 2: Insert into the FamilyShelterEvent table, including AccessLvl
             $insertFamilyShelterEventQuery = "INSERT INTO FamilyShelterEvent (`eventId`, `numberOfShelters`, `shelterLocation`, `capacity`, `AccessLevel`, `event_type_id`)
-                VALUES ($eventId, $numberOfShelters,(SELECT addressId FROM Address LIMIT 1) , $capacity, $AccessLvl, $event_type_id);
+                VALUES ($eventId, $numberOfShelters,'$shelterLocation', $capacity, $AccessLvl, $event_type_id);
             ";
             
             // Run the query to insert into the FamilyShelterEvent table
@@ -95,16 +113,17 @@ class EventModel {
         return false;
     }
     
-    public static function CreateEducationalCenters($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters, $capacity, $AccessLvl=0) {
+    public static function CreateEducationalCenters($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters, $shelterLocation , $AccessLvl=0) {
         $event_type_id=3;
         // Step 1: Create the event using the existing createEvent method
-        $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $event_type_id);
-        echo "$eventId";
+        $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity,$shelterLocation , $tickets,$event_type_id);
+        echo"bbbbbbbbbbbbbbbbbbbbbb";
+        echo "$shelterLocation";
         // If event creation was successful (i.e., $eventId is returned)
         if ($eventId) {
             // Step 2: Insert into the FamilyShelterEvent table, including AccessLvl
             $insertEducationalCenterEventQuery = "INSERT INTO educationalcenterevent (`eventId`, `numberOfCenters`, `centerLocation`, `AccessLevel`, `event_type_id`)
-                VALUES ('$eventId', '$numberOfShelters',(SELECT addressId FROM Address LIMIT 1), '$AccessLvl', '$event_type_id');
+                VALUES ('$eventId', '$numberOfShelters','$shelterLocation', '$AccessLvl', '$event_type_id');
             ";
   // Run the query to insert into the FamilyShelterEvent table
   if (Database::run_query($insertEducationalCenterEventQuery)) {
@@ -115,15 +134,15 @@ class EventModel {
 return false;
 }
 
-    public static function CreateFoodBankEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $foodQuantity, $foodType, $AccessLvl=0) {
+    public static function CreateFoodBankEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $foodQuantity, $foodType, $shelterLocation ,$AccessLvl=0) {
         $event_type_id=1;
  
-        $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $event_type_id);
+        $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity, $shelterLocation ,$tickets, $event_type_id);
         echo "$eventId";
         if ($eventId) {
  
             $insertFoodBankEventQuery = "INSERT INTO FoodBankEvent (`eventId`, `foodQuantity`, `foodType`, `foodBankLocation`, `AccessLevel`, `event_type_id`)
-                VALUES ('$eventId', '$foodQuantity','$foodType',(SELECT addressId FROM Address LIMIT 1), '$AccessLvl', '$event_type_id');
+                VALUES ('$eventId', '$foodQuantity','$foodType',(SELECT addressId FROM Address WHERE city LIKE '$$shelterLocation'), '$AccessLvl', '$event_type_id');
             ";
            
             // Run the query to insert into the FamilyShelterEvent table
@@ -136,17 +155,17 @@ return false;
         return false;
     }
 
-    public static function CreateFoodBank($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters, $capacity, $AccessLvl=0) {
+    public static function CreateFoodBank($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters,$shelterLocation ,$capacity, $AccessLvl=0) {
         $event_type_id=1;
 
         // Step 1: Create the event using the existing createEvent method
-        $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $event_type_id);
+        $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity, $shelterLocation, $tickets, $event_type_id);
     echo "$eventId";
         // If event creation was successful (i.e., $eventId is returned)
         if ($eventId) {
             // Step 2: Insert into the FamilyShelterEvent table, including AccessLvl
             $insertFamilyShelterEventQuery = "INSERT INTO foodbankevent (`eventId`, `numberOfShelters`, `shelterLocation`, `capacity`, `AccessLvl`, `event_type_id`)
-                VALUES ('$eventId', '$numberOfShelters',(SELECT addressId FROM Address LIMIT 1), '$capacity', '$AccessLvl', '$event_type_id');
+                VALUES ('$eventId', '$numberOfShelters',(SELECT addressId FROM Address WHERE city LIKE '$shelterLocation'), '$capacity', '$AccessLvl', '$event_type_id');
             ";
             
             // Run the query to insert into the FamilyShelterEvent table
