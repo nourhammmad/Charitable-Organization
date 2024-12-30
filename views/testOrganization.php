@@ -671,7 +671,7 @@ $addresses = EventModel::GetAddresses();
                 body = new URLSearchParams({
                     type: planType,
                     destination: form.get("destination"),
-                    attributes: JSON.stringify(attributes),
+                    attributes:JSON.stringify(attributes),
                 });
             }
             else if (planType === 'beneficiary_travel') {

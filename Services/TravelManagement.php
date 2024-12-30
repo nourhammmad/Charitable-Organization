@@ -16,7 +16,10 @@ class TravelManagement {
     public  function createTravelPlan($type, $destination, $attributes) {
         try {
 
-
+            if($type == 'beneficiary_travel'){
+                $destination = Beneficiary::getBeneficiaryAddressID($destination);
+              //  $this->travelController->createPlan($type, $destination, $attributes);
+            }
             $this->travelController->createPlan($type, $destination, $attributes);
 
             // Instantiate the appropriate travel plan type based on $type
@@ -77,7 +80,7 @@ class TravelManagement {
         try {
             // Fetch the plan details from the database
             $plan = $this->travelController->getTravelPlanById($planId);
-    
+            print($plan['destination']);
             if (!$plan) {
                 throw new Exception("Travel plan with ID $planId not found.");
             }
@@ -96,6 +99,7 @@ class TravelManagement {
 
             switch ($plan['type']) {
             case 'resource_delivery':
+                print($details['resources']);
                 $details['resources'] = $attributes['resources'] ?? [];
                 $details['vehicles'] = $attributes['vehicles'] ?? [];
                 break;

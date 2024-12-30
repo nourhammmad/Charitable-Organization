@@ -27,7 +27,7 @@ class TravelPlanModel {
             $row = $result->fetch_assoc();
             // Decode the attributes JSON into an array
             $address = Beneficiary::getBeneficiaryAddress($row['destination']);
-            $beneficiaries[] = [
+            $beneficiaries = [
                 'destination' => $address,
                 'type' => $row['type'],
                 'attributes'=> $row['attributes']
