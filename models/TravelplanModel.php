@@ -4,7 +4,7 @@ $server = $_SERVER['DOCUMENT_ROOT'];
 require_once $server . "\Database.php";
 
 class TravelPlanModel {
-    private const ALLOWED_TYPES = ['resource_delivery', 'volunteer_travel'];
+    private const ALLOWED_TYPES = ['resource_delivery', 'beneficiary_travel'];
 
     // Create a new travel plan with dynamic attributes
     public static function createTravelPlan($type, $destination, $attributes) {

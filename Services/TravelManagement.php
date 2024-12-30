@@ -18,14 +18,14 @@ class TravelManagement {
             $this->travelController->createPlan($type, $destination, $attributes);
 
             // Instantiate the appropriate travel plan type based on $type
-            $travelPlanInstance = $this->instantiateTravelPlan($type);
+           // $travelPlanInstance = $this->instantiateTravelPlan($type);
 
-            if ($travelPlanInstance) {
+            //if ($travelPlanInstance) {
                 echo "Successfully created a travel plan of type: $type.\n";
-                return $travelPlanInstance;
-            } else {
-                throw new Exception("Failed to instantiate the travel plan type: $type.");
-            }
+               // return $travelPlanInstance;
+            //} else {
+               // throw new Exception("Failed to instantiate the travel plan type: $type.");
+           // }
         } catch (Exception $e) {
             echo "Error while creating travel plan: " . $e->getMessage();
         }
@@ -37,6 +37,8 @@ class TravelManagement {
             case 'resource_delivery':
                 return new ResourceDeliveryTravel();
             // Add more cases as new types are introduced
+            case 'beneficiary_travel':
+                
             default:
                 throw new Exception("Unknown travel plan type: $type.");
         }

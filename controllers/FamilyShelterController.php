@@ -8,12 +8,9 @@ require_once $_SERVER['DOCUMENT_ROOT']."\models\EventModel.php"; // Include the 
 
 class FamilyShelterController {
 
-    public static function createFamilyShelterEvent($eventName ,$date,$capacity ,$EventAttendanceCapacity, $tickets, $signLangInterpret, $wheelchair) {
-       // $eventName="Family Shelter";
-       // $capacity=10;
-
-    //Decorator
-        $familyShelterService = new FamilyShelter($EventAttendanceCapacity, $capacity, 'Shelter Location'); // Example values for family shelter
+    public static function createFamilyShelterEvent($eventName ,$date,$capacity ,$EventAttendanceCapacity, $tickets,$shelterLocation ,$signLangInterpret, $wheelchair) {
+       
+        $familyShelterService = new FamilyShelter($EventAttendanceCapacity, $capacity, $shelterLocation); // Example values for family shelter
 
         if ($signLangInterpret) {
             $familyShelterService = new SignLangInterpret($familyShelterService);
@@ -24,7 +21,6 @@ class FamilyShelterController {
 
         $finalAccessLvl = $familyShelterService->showAccessLevel();
         $numberOfShelters=12;
-        $shelterLocation="cairo";
 
         $isEventCreated = EventModel::CreateFamilyShelterEvent($eventName, $date,$capacity, $tickets, $numberOfShelters,$shelterLocation,$EventAttendanceCapacity ,$finalAccessLvl);
         
