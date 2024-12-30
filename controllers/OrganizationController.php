@@ -77,6 +77,7 @@ class OrganizationController{
                 $atrr=$_POST['attributes']??null;
 
                 if( $type && $dest && $atrr){
+                 
                     $travel->createTravelPlan($type,$dest,$atrr);
                       
                 }
@@ -114,6 +115,7 @@ class OrganizationController{
                 break;
                  
             case 'viewtravelplans':
+              
                     $this-> handleGetTravelPlans();
      
                     break;

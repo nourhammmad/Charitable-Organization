@@ -2,6 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . "\controllers\TravelPlanController.php";
 require_once $_SERVER['DOCUMENT_ROOT'] ."\Services\ResourcesDeliveryTravel.php";
+require_once $_SERVER['DOCUMENT_ROOT'] ."\models\BeneficiaryModel.php";
 
 class TravelManagement {
     private $travelController;
@@ -14,7 +15,7 @@ class TravelManagement {
     public  function createTravelPlan($type, $destination, $attributes) {
         try {
 
-            // Delegate plan creation to the controller
+
             $this->travelController->createPlan($type, $destination, $attributes);
 
             // Instantiate the appropriate travel plan type based on $type

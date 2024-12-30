@@ -267,7 +267,7 @@ class Populate {
                     (1, 3, '20 winter jackets', '2024-11-01 12:00:00');",
                     
                 "CREATE TABLE Address (
-                    addressId CHAR(36) PRIMARY KEY,
+                    addressId INT AUTO_INCREMENT PRIMARY KEY,
                     street VARCHAR(255),
                     floor INT,
                     apartment INT,
@@ -279,10 +279,10 @@ class Populate {
 
                 // Insert sample address
                 "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
-                    ('1', '123 Main St', 5, 101, 'NewYork');",
+                    (1, '123 Main St', 5, 101, 'NewYork');",
 
                 "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
-                    ('2', 'main st', 1, 12, 'Cairo');",   
+                    (2, 'main st', 1, 12, 'Cairo');",   
 
                     "CREATE TABLE EventTypes (
                     event_type_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -300,7 +300,7 @@ class Populate {
                         eventId INT AUTO_INCREMENT PRIMARY KEY,
                         eventName VARCHAR(255) NOT NULL,
                         date DATE NOT NULL,
-                        addressId CHAR(36),
+                        addressId INT NOT NULL,
                         EventAttendanceCapacity INT NOT NULL,
                         tickets INT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -355,19 +355,22 @@ class Populate {
 
 
 
-                // Create Travel Plans Table
+                "DROP TABLE IF EXISTS travel_plans;",
+
                 "CREATE TABLE travel_plans (
                     id INT AUTO_INCREMENT PRIMARY KEY,          
                     type ENUM('resource_delivery', 'beneficiary_travel') NOT NULL, 
-                    destination VARCHAR(255) NOT NULL,          
-                    attributes TEXT NOT NULL                
+                    destination INT NOT NULL,          
+                    attributes TEXT NOT NULL,
+                    FOREIGN KEY (destination) REFERENCES Address(addressId) ON DELETE CASCADE
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                "SHOW CREATE TABLE travel_plans;",
 
                 // Insert Sample Travel Plans
                 "INSERT INTO travel_plans (type, destination, attributes) 
                 VALUES 
-                    ('resource_delivery', 'Village A', '{\"resources\": [\"Food\", \"Clothing\"], \"vehicles\": [\"Truck 1\", \"Truck 2\"]}'),
-                    ('beneficiary_travel', 'Community Center', '{\"volunteers\": [\"John Doe\", \"Jane Smith\"], \"event\": \"Community Outreach\"}');",
+                    ('resource_delivery', 1, '{\"resources\": [\"Food\", \"Clothing\"], \"vehicles\": [\"Truck 1\", \"Truck 2\"]}'),
+                    ('beneficiary_travel', 2, '{\"volunteers\": [\"John Doe\", \"Jane Smith\"], \"event\": \"Community Outreach\"}');",
 
 
 
@@ -428,14 +431,16 @@ class Populate {
                 "CREATE TABLE Beneficiary (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     name VARCHAR(255) NOT NULL,
-                    address TEXT,
-                    beneficiaryType ENUM('Individual', 'Group') NOT NULL
-                );",
+                    address INT NOT NULL,
+                    beneficiaryType ENUM('Individual', 'Group') NOT NULL,
+                    FOREIGN KEY (address) REFERENCES Address(addressId) ON DELETE CASCADE
+
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
                 "INSERT INTO Beneficiary (name, address, beneficiaryType) 
                 VALUES 
-                ('Jane Smith', '456 Oak Avenue, Springfield', 'Individual'),
-                ('Helping Hands Group', '789 Pine Road, Springfield', 'Group');",
+                ('Jane Smith', 1, 'Individual'),
+                ('Helping Hands Group', 2, 'Group');",
 
 
 
