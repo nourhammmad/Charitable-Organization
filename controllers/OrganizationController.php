@@ -75,10 +75,9 @@ class OrganizationController{
                 $type=$_POST['type']??null;
                 $dest=$_POST['destination']??null;
                 $atrr=$_POST['attributes']??null;
-                $destId = Beneficiary::getBeneficiaryAddressID($dest);
                 if( $type && $dest && $atrr){
                  
-                    $travel->createTravelPlan($type,$destId,$atrr);
+                    $travel->createTravelPlan($type,$dest,$atrr);
                       
                 }
                 else{

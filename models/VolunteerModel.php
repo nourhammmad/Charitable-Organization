@@ -65,6 +65,18 @@ class VolunteerModel{
         }
         return null;  
     }
+
+    public static function getVolunteerId($VolId) {
+        $query = "SELECT id FROM Volunteer WHERE registered_user_id = $VolId";
+        $result = Database::run_select_query($query);
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['id'];  
+        }
+        return null;  
+    }
+
+
     public static function getVolunteerById($volunteerId) {
         $query = "SELECT * FROM Volunteer WHERE `id` = $volunteerId";
         $result = Database::run_select_query($query);

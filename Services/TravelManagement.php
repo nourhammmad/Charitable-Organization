@@ -15,6 +15,10 @@ class TravelManagement {
     public  function createTravelPlan($type, $destination, $attributes) {
         try {
 
+            if($type == 'beneficiary_travel'){
+                $destination = Beneficiary::getBeneficiaryAddressID($destination);
+              //  $this->travelController->createPlan($type, $destination, $attributes);
+            }
 
             $this->travelController->createPlan($type, $destination, $attributes);
 
