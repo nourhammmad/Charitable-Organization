@@ -46,6 +46,19 @@ class RegisterUser extends user {
                 $donorId = $res->getId();
                 header("Location: ./views/HomeView.php?donor_id=$donorId&user_id=$this->id");
             }
+        } else if ($this->category=='volunteer'){
+            echo"hoa ana hena?";
+            $Volid = VolunteerModel::getVolunteerId($this->id);
+           // $Volunteer = VolunteerModel::getVolunteerById($Volid);
+            $taskId=TaskModel::getLastInsertTasksId();
+            $handler = new VolunteerCotroller($Volid);
+            $events = $handler->displayAvailableEvents();
+            $tasks = $handler->displayAllTasks();
+            // Store events and tasks in session (for use in the dashboard)
+            $_SESSION['volunteer_events'] = $events;
+            $_SESSION['volunteer_tasks'] = $tasks;
+            header("Location: ./views/VolunteerDashboard.php?volunteer_id=$Volid&task_id=$taskId&user_id=$this->id"); 
+            exit();
         }
         exit();
     }
@@ -65,9 +78,9 @@ class RegisterUser extends user {
         exit();
         }}
         elseif ($this->category === 'Volunteer') {
-            if (VolunteerModel::createVolunteer($this->id,1)) { // Assuming createVolunteer is a method to initialize volunteer data
+            if (VolunteerModel::createVolunteer($this->id,1)) { 
                 echo "dakhalt";
-                $volunteerId = VolunteerModel::getLastInsertVolunteerId(); // Get the last inserted Volunteer ID
+                $volunteerId = VolunteerModel::getLastInsertVolunteerId();
                 $taskId=TaskModel::getLastInsertTasksId();
                 $handler = new VolunteerCotroller($volunteerId);
                 $events = $handler->displayAvailableEvents();
@@ -75,7 +88,7 @@ class RegisterUser extends user {
                 // Store events and tasks in session (for use in the dashboard)
                 $_SESSION['volunteer_events'] = $events;
                 $_SESSION['volunteer_tasks'] = $tasks;
-                header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId&task_id=$taskId"); // Redirect to volunteer dashboard
+                header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId&task_id=$taskId&user_id=$this->id"); // Redirect to volunteer dashboard
                 exit();
             }
         }
