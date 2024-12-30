@@ -596,6 +596,8 @@ $addresses = EventModel::GetAddresses();
                         .then(data => {
                             const fields = document.getElementById("dynamicFields");
                             fields.innerHTML = ""; // Clear previous content
+                           // console.log ()
+
 
                             if (data.length === 0) {
                                 fields.innerHTML = "<p>No travel plans found.</p>";
@@ -615,6 +617,10 @@ $addresses = EventModel::GetAddresses();
                                     planCard.style.marginBottom = "10px";
                                     planCard.style.padding = "10px";
                                     planCard.style.borderRadius = "5px";
+                                    console.log("this is no json");
+                                    console.log(plan.attributes);
+                                    console.log("this is json");
+                                    console.log(JSON.stringify(plan.attributes, null, 2));
 
                                     planCard.innerHTML = `
                                         <strong>Plan ID:</strong> ${plan.id} <br>

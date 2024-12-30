@@ -2,6 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . "\controllers\TravelPlanController.php";
 require_once $_SERVER['DOCUMENT_ROOT'] ."\Services\ResourcesDeliveryTravel.php";
+require_once $_SERVER['DOCUMENT_ROOT'] ."\Services\BeneficiaryTravel.php";
 
 class TravelManagement {
     private $travelController;
@@ -38,6 +39,7 @@ class TravelManagement {
                 return new ResourceDeliveryTravel();
             // Add more cases as new types are introduced
             case 'beneficiary_travel':
+                return new BeneficiaryTravel();
                 
             default:
                 throw new Exception("Unknown travel plan type: $type.");
@@ -45,24 +47,69 @@ class TravelManagement {
     }
 
     // Execute a travel plan by fetching it from the database
+    // public function executeTravelPlan($planId) {
+    //     try {
+    //         // Fetch the plan details from the database
+    //         $plan = $this->travelController->getTravelPlanById($planId);
+
+    //         if (!$plan) {
+    //             throw new Exception("Travel plan with ID $planId not found.");
+    //         }
+
+    //         // Decode attributes and determine the travel type
+    //         $details = [
+    //             'destination' => $plan['destination'],                // Directly use destination
+    //             'means' => $plan['attributes']['resources'] ?? [],   // Extract resources
+    //             'vehicles' => $plan['attributes']['vehicles'] ?? []  // Extract vehicles
+    //         ];
+
+    //         $travelPlanInstance = $this->instantiateTravelPlan($plan['type']);
+
+    //         // Execute the travel plan
+    //         echo "Executing travel plan (ID: $planId)...\n";
+    //         $travelPlanInstance->executeTravelPlan($details);
+    //     } catch (Exception $e) {
+    //         echo "Error while executing travel plan: " . $e->getMessage();
+    //     }
+    // }
     public function executeTravelPlan($planId) {
         try {
             // Fetch the plan details from the database
             $plan = $this->travelController->getTravelPlanById($planId);
-
+    
             if (!$plan) {
                 throw new Exception("Travel plan with ID $planId not found.");
             }
+    
+            // Decode attributes
+            $attributes = is_array($plan['attributes']) ? $plan['attributes'] : json_decode($plan['attributes'], true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception("Failed to parse attributes JSON for plan ID: $planId");
+            }
 
-            // Decode attributes and determine the travel type
+            // Build the details array
             $details = [
-                'destination' => $plan['destination'],                // Directly use destination
-                'means' => $plan['attributes']['resources'] ?? [],   // Extract resources
-                'vehicles' => $plan['attributes']['vehicles'] ?? []  // Extract vehicles
+                'destination' => $plan['destination'],
+                'attributes' => $attributes // Pass raw attributes to the template
             ];
 
-            $travelPlanInstance = $this->instantiateTravelPlan($plan['type']);
+            switch ($plan['type']) {
+            case 'resource_delivery':
+                $details['resources'] = $attributes['resources'] ?? [];
+                $details['vehicles'] = $attributes['vehicles'] ?? [];
+                break;
 
+            case 'beneficiary_travel':
+                $details['resources'] = $attributes['resources'] ?? [];
+                $details['beneficiaries'] = $attributes['beneficiaries'] ?? [];
+                break;
+
+            default:
+                throw new Exception("Unknown travel plan type: {$plan['type']}");
+        }
+            // Instantiate the correct travel plan
+            $travelPlanInstance = $this->instantiateTravelPlan($plan['type']);
+    
             // Execute the travel plan
             echo "Executing travel plan (ID: $planId)...\n";
             $travelPlanInstance->executeTravelPlan($details);
@@ -70,5 +117,6 @@ class TravelManagement {
             echo "Error while executing travel plan: " . $e->getMessage();
         }
     }
+    
 }
 ?>
