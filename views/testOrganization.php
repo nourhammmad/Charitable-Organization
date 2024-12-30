@@ -233,8 +233,16 @@ $addresses = EventModel::GetAddresses();
                 title.textContent = "addBeneficiary";
                 fields.innerHTML=`<label for="name">Name:</label>
                     <input type="text" id="name" name="name" required>                 
-                    <label for="address">Address:</label>
-                    <textarea id="address" name="address"></textarea>
+                    <label for="address">Event Address:</label>
+                   <select name="address" id="address" required>
+                    <option value="" disabled selected>Select an address</option>
+                    <?php foreach ($addresses as $address): ?>
+                    <option value="<?php echo htmlspecialchars($address['addressId']); ?>">
+                    <?php echo htmlspecialchars($address['fullAddress']); ?>
+                    </option>
+                    <?php endforeach; ?>
+                    </select>
+
                     
                     <label for="beneficiaryType">Type:</label>
                     <select id="beneficiaryType" name="beneficiaryType">
