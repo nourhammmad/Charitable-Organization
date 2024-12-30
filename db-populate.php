@@ -355,13 +355,16 @@ class Populate {
 
 
 
-                // Create Travel Plans Table
+                "DROP TABLE IF EXISTS travel_plans;",
+
                 "CREATE TABLE travel_plans (
                     id INT AUTO_INCREMENT PRIMARY KEY,          
                     type ENUM('resource_delivery', 'beneficiary_travel') NOT NULL, 
-                    destination VARCHAR(255) NOT NULL,          
-                    attributes TEXT NOT NULL                
+                    destination INT NOT NULL,          
+                    attributes TEXT NOT NULL,
+                    FOREIGN KEY (destination) REFERENCES Address(addressId) ON DELETE CASCADE
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                "SHOW CREATE TABLE travel_plans;",
 
                 // Insert Sample Travel Plans
                 "INSERT INTO travel_plans (type, destination, attributes) 
