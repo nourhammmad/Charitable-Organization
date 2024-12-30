@@ -599,11 +599,16 @@ $addresses = EventModel::GetAddresses();
                             if (!response.ok) {
                                 throw new Error("Failed to fetch travel plans.");
                             }
-                            return response.json(); // Parse JSON response
+                            return response.json(); 
                         })
                         .then(data => {
                             const fields = document.getElementById("dynamicFields");
+                           
+
+                            
                             fields.innerHTML = ""; // Clear previous content
+                           // console.log ()
+
 
                             if (data.length === 0) {
                                 fields.innerHTML = "<p>No travel plans found.</p>";
@@ -623,6 +628,10 @@ $addresses = EventModel::GetAddresses();
                                     planCard.style.marginBottom = "10px";
                                     planCard.style.padding = "10px";
                                     planCard.style.borderRadius = "5px";
+                                    console.log("this is no json");
+                                    console.log(plan.attributes);
+                                    console.log("this is json");
+                                    console.log(JSON.stringify(plan.attributes, null, 2));
 
                                     planCard.innerHTML = `
                                         <strong>Plan ID:</strong> ${plan.id} <br>
@@ -652,7 +661,7 @@ $addresses = EventModel::GetAddresses();
       
                 const planType = document.getElementById("planType").value;
                 if(planType=='resource_delivery'){
-                    console.log("IN RESOURCE SUBMITT");
+                
                 const attributes = {
                     numOfVechile: form.get("numOfVechile"),
                     typeOfTruck: form.get("typeOfTruck"),
@@ -662,7 +671,7 @@ $addresses = EventModel::GetAddresses();
                 body = new URLSearchParams({
                     type: planType,
                     destination: form.get("destination"),
-                    attributes: JSON.stringify(attributes),
+                    attributes:JSON.stringify(attributes),
                 });
             }
             else if (planType === 'beneficiary_travel') {
@@ -670,7 +679,10 @@ $addresses = EventModel::GetAddresses();
                     numOfVechile: form.get("numOfVechile"),
                     typeOfTruck: form.get("typeOfTruck"),
                 };
-                console.log(document.getElementById("address").value.toString());
+                console.log(attributes.toString());
+                console.log(attributes);
+                console.log( JSON.stringify(attributes));
+
                 body = new URLSearchParams({
                     type: planType,
                     destination: document.getElementById("address").value.toString(),

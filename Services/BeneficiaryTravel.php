@@ -1,34 +1,42 @@
-
 <?php 
 
 require_once 'TravelPlanTemplate.php';
-require_once 'Beneficiary.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . "/models/BeneficiaryModel.php";
 
-class BeneficiaryDeliveryTravel extends TravelPlanTemplate {
+class BeneficiaryTravel extends TravelPlanTemplate {
+
     // Validate the plan details
     protected function validatePlan($details) {
+        // $resources = $details['resources'] ?? [];
+        // $beneficiaries = $details['beneficiaries'] ?? [];
+
         if (empty($details['beneficiaries'])) {
             throw new Exception("Validation failed: No beneficiaries specified.");
         }
         if (empty($details['resources'])) {
             throw new Exception("Validation failed: No resources specified.");
         }
-        echo "Validated beneficiary delivery plan for " . count($details['beneficiaries']) . " beneficiaries.\n";
+
+        echo "Validation successful: " . count($details['beneficiaries']) . " beneficiaries and " . count($details['resources']) . " resources.\n";
     }
 
     // Allocate resources to beneficiaries
     protected function allocateMeans($details) {
-        echo "Allocating " . count($details['resources']) . " resources to " . count($details['beneficiaries']) . " beneficiaries.\n";
+        $resources = $details['resources'] ?? [];
+        $beneficiaries = $details['beneficiaries'] ?? [];
 
-        foreach ($details['beneficiaries'] as $beneficiary) {
+        echo "Allocating resources...\n";
+        foreach ($beneficiaries as $beneficiary) {
             echo "Allocated resources to beneficiary: " . $beneficiary['name'] . " at " . $beneficiary['address'] . ".\n";
         }
     }
 
-    // Execute the delivery of resources
+    // Execute the delivery
     protected function executeTravel($details) {
-        echo "Dispatching resources to beneficiaries...\n";
-        foreach ($details['beneficiaries'] as $beneficiary) {
+        $beneficiaries = $details['beneficiaries'] ?? [];
+
+        echo "Executing delivery to beneficiaries...\n";
+        foreach ($beneficiaries as $beneficiary) {
             echo "Delivering resources to " . $beneficiary['name'] . " at " . $beneficiary['address'] . ".\n";
         }
     }

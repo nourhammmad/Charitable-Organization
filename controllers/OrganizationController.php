@@ -75,6 +75,7 @@ class OrganizationController{
                 $type=$_POST['type']??null;
                 $dest=$_POST['destination']??null;
                 $atrr=$_POST['attributes']??null;
+
                 if( $type && $dest && $atrr){
                  
                     $travel->createTravelPlan($type,$dest,$atrr);
@@ -116,7 +117,7 @@ class OrganizationController{
             case 'viewtravelplans':
               
                     $this-> handleGetTravelPlans();
-     
+
                     break;
      
     
@@ -150,7 +151,7 @@ class OrganizationController{
 
             // Fetch all travel plans
             $travelPlans = $travelController->getAllPlans();
-
+           
             // Return as JSON response
             header('Content-Type: application/json');
             echo json_encode($travelPlans);
@@ -280,6 +281,7 @@ class OrganizationController{
             $isEventCreated = FoodBankController::createFoodBankEvent(
                 $name,
                 $date,
+                $capacity,
                 $capacity,
                 $tickets,
                 $shelterLocation,

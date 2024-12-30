@@ -21,6 +21,7 @@ class Beneficiary {
         return $stmt;
     }
 
+
     public static function getBeneficiaries() {
         $query = "SELECT * FROM Beneficiary";
         $result = Database::run_select_query($query);
@@ -44,19 +45,6 @@ class Beneficiary {
         return $beneficiaries;
     }
 
-    public static function getBeneficiaryAddress($addressID) {
-        $query = "SELECT CONCAT(street, ', ', city) AS full_address FROM Address WHERE addressId = $addressID";
-        $result = Database::run_select_query($query);
-    
-        // Check if there is a result
-        if ($result && $row = $result->fetch_assoc()) {
-            // Return the concatenated address
-            return $row['full_address'];
-        }
-    
-        // If no result is found, return an empty string or handle as needed
-        return '';
-    }
 
 
     public static function getBeneficiaryAddressID($fullAddress) {
@@ -77,6 +65,19 @@ class Beneficiary {
         if ($result && $row = $result->fetch_assoc()) {
             // Return the concatenated address
             return $row['addressId'];
+        }
+    
+        // If no result is found, return an empty string or handle as needed
+        return '';
+    }
+    public static function getBeneficiaryAddress($addressID) {
+        $query = "SELECT CONCAT(street, ', ', city) AS full_address FROM Address WHERE addressId = $addressID";
+        $result = Database::run_select_query($query);
+    
+        // Check if there is a result
+        if ($result && $row = $result->fetch_assoc()) {
+            // Return the concatenated address
+            return $row['full_address'];
         }
     
         // If no result is found, return an empty string or handle as needed
