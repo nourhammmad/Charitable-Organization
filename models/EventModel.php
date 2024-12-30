@@ -133,7 +133,7 @@ return false;
         if ($eventId) {
  
             $insertFoodBankEventQuery = "INSERT INTO FoodBankEvent (`eventId`, `foodQuantity`, `foodType`, `foodBankLocation`, `AccessLevel`, `event_type_id`)
-                VALUES ('$eventId', '$foodQuantity','$foodType',(SELECT addressId FROM Address WHERE city LIKE '$$shelterLocation'), '$AccessLvl', '$event_type_id');
+                VALUES ('$eventId', '$foodQuantity','$foodType','$shelterLocation', '$AccessLvl', '$event_type_id');
             ";
            
             // Run the query to insert into the FamilyShelterEvent table

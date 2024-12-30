@@ -75,10 +75,10 @@ class OrganizationController{
                 $type=$_POST['type']??null;
                 $dest=$_POST['destination']??null;
                 $atrr=$_POST['attributes']??null;
-
+                $destId = Beneficiary::getBeneficiaryAddressID($dest);
                 if( $type && $dest && $atrr){
                  
-                    $travel->createTravelPlan($type,$dest,$atrr);
+                    $travel->createTravelPlan($type,$destId,$atrr);
                       
                 }
                 else{
@@ -281,7 +281,6 @@ class OrganizationController{
             $isEventCreated = FoodBankController::createFoodBankEvent(
                 $name,
                 $date,
-                $capacity,
                 $capacity,
                 $tickets,
                 $shelterLocation,

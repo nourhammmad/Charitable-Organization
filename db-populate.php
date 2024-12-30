@@ -319,9 +319,10 @@ class Populate {
                 eventId INT,
                 foodQuantity INT,
                 foodType VARCHAR(255),
-                foodBankLocation VARCHAR(255),
+                foodBankLocation INT,
                 AccessLevel INT DEFAULT 0,
                 event_type_id INT,
+                FOREIGN KEY (foodBankLocation) REFERENCES Address(addressId),
                 FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
                 FOREIGN KEY (eventId) REFERENCES Event(eventId));",                   
 
@@ -329,10 +330,11 @@ class Populate {
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     eventId INT,
                     numberOfShelters INT,
-                    shelterLocation VARCHAR(255),
+                    shelterLocation INT,
                     capacity INT,
                     AccessLevel INT DEFAULT 0,
                     event_type_id INT,
+                    FOREIGN KEY (shelterLocation) REFERENCES Address(addressId),
                     FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
                     FOREIGN KEY (eventId) REFERENCES Event(eventId));",
 
@@ -340,10 +342,11 @@ class Populate {
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         eventId INT,
                         numberOfCenters INT,
-                        centerLocation VARCHAR(255),
+                        centerLocation INT,
                         AccessLevel INT DEFAULT 0,
                         event_type_id INT,
                         FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
+                        FOREIGN KEY (centerLocation) REFERENCES Address(addressId),
                         FOREIGN KEY (eventId) REFERENCES Event(eventId));",                        
 
                 // "INSERT INTO FoodBankEvent (eventId, foodQuantity, foodType, foodBankLocation, event_type_id) VALUES
@@ -355,16 +358,16 @@ class Populate {
 
 
 
-                "DROP TABLE IF EXISTS travel_plans;",
+               
 
                 "CREATE TABLE travel_plans (
                     id INT AUTO_INCREMENT PRIMARY KEY,          
                     type ENUM('resource_delivery', 'beneficiary_travel') NOT NULL, 
-                    destination INT NOT NULL,          
+                    destination INT ,          
                     attributes TEXT NOT NULL,
                     FOREIGN KEY (destination) REFERENCES Address(addressId) ON DELETE CASCADE
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-                "SHOW CREATE TABLE travel_plans;",
+       
 
                 // Insert Sample Travel Plans
                 "INSERT INTO travel_plans (type, destination, attributes) 

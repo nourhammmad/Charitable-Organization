@@ -7,7 +7,7 @@ require_once "controllers/OrganizationController.php";
 require_once "models/UserModel.php";
 
 $db = Database::getInstance();
-Populate::populate();
+//Populate::populate();
 
 
 if (Database::get_connection()) {
