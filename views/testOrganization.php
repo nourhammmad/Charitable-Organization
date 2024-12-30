@@ -211,7 +211,7 @@ $addresses = EventModel::GetAddresses();
             // Reset fields
             fields.innerHTML = "";
             if(type=="getBeneficiary"){
-                title.textContent = "getBeneficiary";
+                title.textContent = "Get Beneficiary";
                 fields.innerHTML = `
                     <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
                         <thead>
@@ -622,7 +622,7 @@ $addresses = EventModel::GetAddresses();
                 closeModal();
                 return; 
             }
-            else if(modalTitle.includes("getBeneficiary")){
+            else if(modalTitle.includes("Get Beneficiary")){
                 getBeneficiaries();
                  return; 
             }

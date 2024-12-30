@@ -12,7 +12,7 @@ class Populate {
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
                 "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, DonationLog,eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
-                , organization, ipayment, cash, visa, stripe,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs, travel_plans,resources;",
+                , organization, ipayment, cash, visa, stripe,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs, travel_plans,resources,Beneficiary;",
                 "SET FOREIGN_KEY_CHECKS = 1;",
  
                 // Create Users Table
@@ -403,27 +403,48 @@ class Populate {
                     // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
                     //     (1, 1);",
 
-// "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
-// (1, 1);",
-  "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets,event_type_id ) VALUES
-  ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75,1 ),
-  ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100, 3),
-  ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125, 2),
-  ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40, 1);",
+                    // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
+                    // (1, 1);",
+                    "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets,event_type_id ) VALUES
+                    ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75,1 ),
+                    ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100, 3),
+                    ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125, 2),
+                    ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40, 1);",
 
 
-"INSERT INTO Tasks (name, description, requiredSkill, timeSlot, location)
-VALUES 
-('Donation Sorting', 'Organizing and categorizing donated items such as clothes, toys, and food', 'Organization Skills', '9:00 AM - 12:00 PM', 'Charity Warehouse'),
-('Volunteer Coordination', 'Supervising and guiding volunteers during a food drive', 'Leadership', '10:00 AM - 2:00 PM', 'Community Center'),
-('Event Promotion', 'Distributing flyers and promoting the charity event on social media', 'Marketing Skills', '10:00 AM - 1:00 PM', 'Office'),
-('Food Packing', 'Packing food items for distribution to families in need', 'Attention to Detail', '1:00 PM - 4:00 PM', 'Charity Kitchen'),
-('Cleanup Crew', 'Cleaning up after the charity gala event', 'Teamwork', '8:00 PM - 9:30 PM', 'Banquet Hall');",
-//table resources 
-"CREATE TABLE resources (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
-);",
+                    "INSERT INTO Tasks (name, description, requiredSkill, timeSlot, location)
+                    VALUES 
+                    ('Donation Sorting', 'Organizing and categorizing donated items such as clothes, toys, and food', 'Organization Skills', '9:00 AM - 12:00 PM', 'Charity Warehouse'),
+                    ('Volunteer Coordination', 'Supervising and guiding volunteers during a food drive', 'Leadership', '10:00 AM - 2:00 PM', 'Community Center'),
+                    ('Event Promotion', 'Distributing flyers and promoting the charity event on social media', 'Marketing Skills', '10:00 AM - 1:00 PM', 'Office'),
+                    ('Food Packing', 'Packing food items for distribution to families in need', 'Attention to Detail', '1:00 PM - 4:00 PM', 'Charity Kitchen'),
+                    ('Cleanup Crew', 'Cleaning up after the charity gala event', 'Teamwork', '8:00 PM - 9:30 PM', 'Banquet Hall');",
+
+                    //table resources 
+                    "CREATE TABLE resources (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(255) NOT NULL
+                    );",
+                    "INSERT INTO resources (name) VALUES 
+                    ('Food'),
+                    ('Medicine'),
+                    ('Clothing');",
+
+
+                    //table beneficiaries 
+                    "CREATE TABLE Beneficiary (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(255) NOT NULL,
+                        address TEXT,
+                        beneficiaryType ENUM('Individual', 'Group') NOT NULL
+                    );",
+
+                    "INSERT INTO Beneficiary (name, address, beneficiaryType) 
+                    VALUES 
+                    ('Jane Smith', '456 Oak Avenue, Springfield', 'Individual'),
+                    ('Helping Hands Group', '789 Pine Road, Springfield', 'Group');",
+
+
 
 
 
