@@ -202,16 +202,11 @@ $addresses = EventModel::GetAddresses();
             const modal = document.getElementById("actionModal");
             const title = document.getElementById("modalTitle");
             const fields = document.getElementById("dynamicFields");
-            //const submitButton = document.querySelector("#actionForm button[type='button']");
-
-// Reset fields and show the submit button by default
-
-            //submitButton.style.display = "inline-block";
 
             // Reset fields
             fields.innerHTML = "";
             if(type=="getBeneficiary"){
-                title.textContent = "getBeneficiary";
+                title.textContent = "Get Beneficiary";
                 fields.innerHTML = `
                     <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
                         <thead>
@@ -258,7 +253,7 @@ $addresses = EventModel::GetAddresses();
                     <select id="planType" name="planType" onchange="updatePlanFields()" required>
                         <option value="">Choose...</option>
                         <option value="resource_delivery">Resource Delivery</option>
-                        <option value="volunteer_travel">Volunteer Travel</option>
+                        <option value="beneficiary_travel">Beneficiary Travel</option>
                     </select>
                     <div id="planDetails"></div>
                 `;
@@ -380,6 +375,7 @@ $addresses = EventModel::GetAddresses();
             const planDetails = document.getElementById("planDetails");
 
             if (planType === "resource_delivery") {
+                console.log("IN THE RESOURCE");
             planDetails.innerHTML = `
             <style>
                 .form-group {
@@ -443,14 +439,78 @@ $addresses = EventModel::GetAddresses();
             .catch(error => console.error("Error fetching resources:", error));
 
         }
-            // } else if (planType === "volunteer_travel") {
-            //     planDetails.innerHTML = `
-            //         <label for="travelDetails">Travel Details:</label>
-            //         <textarea id="travelDetails" name="travelDetails" rows="3" required></textarea>
-            //     `;
-            // } else {
-            //     planDetails.innerHTML = "";
-            // }
+        else if (planType === "beneficiary_travel") {
+        planDetails.innerHTML = `
+            <style>
+                .form-group {
+                    margin-bottom: 15px;
+                }
+                label {
+                    display: block;
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                }
+                input, select {
+                    width: 100%;
+                    padding: 8px;
+                    box-sizing: border-box;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                }
+            </style>
+            <div class="form-group">
+                <label for="beneficiaries">Select Beneficiary:</label>
+                <select id="beneficiaries" name="beneficiaries" required>
+                    <!-- Dynamically populated options -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" readonly>
+            </div>
+            <div class="form-group">
+                <label for="numOfVechile">Number of Vehicles:</label>
+                <input type="number" id="numOfVechile" name="numOfVechile" required>
+            </div>
+            <div class="form-group">
+                <label for="typeOfTruck">Type of Vehicle:</label>
+                <input type="text" id="typeOfTruck" name="typeOfTruck" required>
+            </div>
+        `;
+
+        // Fetch beneficiaries from the database
+        fetch("../controllers/OrganizationController.php?action=getBeneficiary")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                const beneficiariesDropdown = document.getElementById("beneficiaries");
+                beneficiariesDropdown.innerHTML = ""; 
+
+                data.forEach(beneficiary => {
+                    console.log(beneficiary.name);
+                    const option = document.createElement("option");
+                    option.value = beneficiary.id;
+                    option.textContent = beneficiary.name;
+                    option.dataset.address = beneficiary.address; 
+                    beneficiariesDropdown.appendChild(option);
+                });
+
+                beneficiariesDropdown.addEventListener("change", function () {
+                    const selectedOption = beneficiariesDropdown.options[beneficiariesDropdown.selectedIndex];
+                    const addressField = document.getElementById("address");
+                    addressField.value = selectedOption.dataset.address || "";
+                });
+            })
+            .catch(error => console.error("Error fetching beneficiaries:", error));
+        }
+        else {
+            planDetails.innerHTML = "";
+        }
+
         }
         
         function getBeneficiaries() 
@@ -524,7 +584,7 @@ $addresses = EventModel::GetAddresses();
 
                     // Fetch travel plans and render them
                     fetch(endpoint, {
-                        method: "GET", // Assuming GET for fetching travel plans
+                        method: "GET", 
                         headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     })
                         .then(response => {
@@ -575,49 +635,55 @@ $addresses = EventModel::GetAddresses();
                             fields.innerHTML = "<p>Error loading travel plans.</p>";
                         });
 
-                    return; // Exit the function to avoid closing the modal prematurely
+                    return;
                
-                }
-
-
-           
-
+            }
 
             else if (modalTitle.includes("Add Plan")) {
                 endpoint = "../controllers/OrganizationController.php?action=addPlan";
-                // Handle custom logic for "Add Plan"
+      
                 const planType = document.getElementById("planType").value;
+                if(planType=='resource_delivery'){
+                    console.log("IN RESOURCE SUBMITT");
                 const attributes = {
                     numOfVechile: form.get("numOfVechile"),
                     typeOfTruck: form.get("typeOfTruck"),
-                    resources: Array.from(form.getAll("resources")), // Handles multiple selected options
+                    resources: Array.from(form.getAll("resources")), 
                 };
 
-                const body = new URLSearchParams({
+                body = new URLSearchParams({
                     type: planType,
                     destination: form.get("destination"),
                     attributes: JSON.stringify(attributes),
                 });
-
-                fetch(endpoint, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: body.toString(),
-                })
-                    .then(response => response.text())
-                    .then(data => alert(data))
-                    .catch(error => console.error("Error:", error));
-
-                closeModal();
-                return; // Prevent further execution for "Add Plan"
             }
-            // else if (type == "ExecuteTravelPlan") {
-            //     title.textContent = "Execute the plan";
-            //     fields.innerHTML = `
-            //         <label for="planId">Plan ID:</label>
-            //         <input type="number" name="planId" id="planId" required>
-            //     `;
-            // }
+            else if (planType === 'beneficiary_travel') {
+                const attributes = {
+                    numOfVechile: form.get("numOfVechile"),
+                    typeOfTruck: form.get("typeOfTruck"),
+                };
+                console.log(document.getElementById("address").value.toString());
+                body = new URLSearchParams({
+                    type: planType,
+                    destination: document.getElementById("address").value.toString(),
+                    attributes: JSON.stringify(attributes),
+                });
+            }
+
+            fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: body.toString(),
+            })
+                .then(response => response.text())
+                .then(data => alert(data))
+                .catch(error => console.error("Error:", error));
+
+            closeModal();
+            return; 
+            }
+
+
             else if(modalTitle.includes("addBeneficiary")){
                 endpoint = "../controllers/OrganizationController.php?action=addBeneficiary";
                 fetch(endpoint, {
@@ -630,13 +696,12 @@ $addresses = EventModel::GetAddresses();
                 closeModal();
                 return; 
             }
-            else if(modalTitle.includes("getBeneficiary")){
+            else if(modalTitle.includes("Get Beneficiary")){
                 getBeneficiaries();
                  return; 
             }
 
 
-            // General fetch logic for other modal actions
             fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },

@@ -12,7 +12,7 @@ class Populate {
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
                 "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, DonationLog,eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
-                , organization, ipayment, cash, visa, stripe,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs, travel_plans,resources;",
+                , organization, ipayment, cash, visa, stripe,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs, travel_plans,resources,Beneficiary;",
                 "SET FOREIGN_KEY_CHECKS = 1;",
  
                 // Create Users Table
@@ -45,20 +45,20 @@ class Populate {
                     (2, 'jane.smith@example.com', 'jane_smith', 'hashedpassword2', 0102, 'Volunteer');",
                     
  
-                   " CREATE TABLE sms_logs (
-                        id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                        sender_id INT NOT NULL,              -- References Users table
-                        recipient_id INT NOT NULL,           -- References Users table
-                        message TEXT NOT NULL,               -- The SMS message content
-                        status TEXT DEFAULT 'pending',       -- Options: 'pending', 'sent', 'failed'
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp for the SMS
-                        FOREIGN KEY (sender_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
-                        FOREIGN KEY (recipient_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-                    
-                    "INSERT INTO sms_logs (id, sender_id, recipient_id, message, status) VALUES
-                    (1, 1, 1, 'yarab','sent'),
-                    (2, 1, 1, 'cry','sent');",
+                " CREATE TABLE sms_logs (
+                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    sender_id INT NOT NULL,              
+                    recipient_id INT NOT NULL,          
+                    message TEXT NOT NULL,              
+                    status TEXT DEFAULT 'pending',       
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+                    FOREIGN KEY (sender_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
+                    FOREIGN KEY (recipient_id) REFERENCES RegisteredUserType(id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                
+                "INSERT INTO sms_logs (id, sender_id, recipient_id, message, status) VALUES
+                (1, 1, 1, 'yarab','sent'),
+                (2, 1, 1, 'cry','sent');",
                     
 
                 // Create Organization Table
@@ -73,9 +73,6 @@ class Populate {
                     (1, 'My Charitable Organization');",
  
 
-
-
-                // Continue with other tables...
                 // Create Volunteer Table
                 "CREATE TABLE Volunteer (
                     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -269,36 +266,36 @@ class Populate {
                     (1, 2, '10 books including The Great Gatsby', '2024-11-01 12:00:00'),
                     (1, 3, '20 winter jackets', '2024-11-01 12:00:00');",
                     
-                    "CREATE TABLE Address (
-                        addressId CHAR(36) PRIMARY KEY,
-                        street VARCHAR(255),
-                        floor INT,
-                        apartment INT,
-                        city VARCHAR(100)
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                "CREATE TABLE Address (
+                    addressId CHAR(36) PRIMARY KEY,
+                    street VARCHAR(255),
+                    floor INT,
+                    apartment INT,
+                    city VARCHAR(100)
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-                    //create table logs for the history of donations 
-                   
- 
-                    // Insert sample address
-                    "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
-                        ('1', '123 Main St', 5, 101, 'NewYork');",
+                //create table logs for the history of donations 
+                
 
-                    "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
-                        ('2', 'main st', 1, 12, 'Cairo');",   
+                // Insert sample address
+                "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
+                    ('1', '123 Main St', 5, 101, 'NewYork');",
 
-                     "CREATE TABLE EventTypes (
-                        event_type_id INT AUTO_INCREMENT PRIMARY KEY,
-                        type_name ENUM('FoodBank', 'FamilyShelters', 'EducationalCenters') NOT NULL
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                "INSERT INTO Address (addressId, street, floor, apartment, city) VALUES
+                    ('2', 'main st', 1, 12, 'Cairo');",   
+
+                    "CREATE TABLE EventTypes (
+                    event_type_id INT AUTO_INCREMENT PRIMARY KEY,
+                    type_name ENUM('FoodBank', 'FamilyShelters', 'EducationalCenters') NOT NULL
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
 
-                    "INSERT INTO EventTypes (type_name) VALUES
-                            ('FoodBank'),
-                            ('FamilyShelters'),
-                            ('EducationalCenters');",     
+                "INSERT INTO EventTypes (type_name) VALUES
+                        ('FoodBank'),
+                        ('FamilyShelters'),
+                        ('EducationalCenters');",     
                     
-
+                //table event 
                 "CREATE TABLE Event (
                         eventId INT AUTO_INCREMENT PRIMARY KEY,
                         eventName VARCHAR(255) NOT NULL,
@@ -312,118 +309,135 @@ class Populate {
                         FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id)
                     ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT = 1;",
 
-// "INSERT INTO Event (date, addressId, EventAttendanceCapacity, tickets, event_type_id) VALUES
-//                     ('2024-12-01', 'hkhk', 200, 150, 1), 
-//                     ('2024-12-15', 'hkhk', 300, 250, 2); 
-// ", 
+                // "INSERT INTO Event (date, addressId, EventAttendanceCapacity, tickets, event_type_id) VALUES
+                //                     ('2024-12-01', 'hkhk', 200, 150, 1), 
+                //                     ('2024-12-15', 'hkhk', 300, 250, 2); 
+                // ", 
                    
-                   "CREATE TABLE FoodBankEvent (
+                "CREATE TABLE FoodBankEvent (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                eventId INT,
+                foodQuantity INT,
+                foodType VARCHAR(255),
+                foodBankLocation VARCHAR(255),
+                AccessLevel INT DEFAULT 0,
+                event_type_id INT,
+                FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
+                FOREIGN KEY (eventId) REFERENCES Event(eventId));",                   
+
+                "CREATE TABLE FamilyShelterEvent (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     eventId INT,
-                    foodQuantity INT,
-                    foodType VARCHAR(255),
-                    foodBankLocation VARCHAR(255),
+                    numberOfShelters INT,
+                    shelterLocation VARCHAR(255),
+                    capacity INT,
                     AccessLevel INT DEFAULT 0,
                     event_type_id INT,
                     FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
-                    FOREIGN KEY (eventId) REFERENCES Event(eventId));",                   
+                    FOREIGN KEY (eventId) REFERENCES Event(eventId));",
 
-                    "CREATE TABLE FamilyShelterEvent (
+                "CREATE TABLE EducationalCenterEvent (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         eventId INT,
-                        numberOfShelters INT,
-                        shelterLocation VARCHAR(255),
-                        capacity INT,
+                        numberOfCenters INT,
+                        centerLocation VARCHAR(255),
                         AccessLevel INT DEFAULT 0,
                         event_type_id INT,
                         FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
-                        FOREIGN KEY (eventId) REFERENCES Event(eventId));",
+                        FOREIGN KEY (eventId) REFERENCES Event(eventId));",                        
 
-                    "CREATE TABLE EducationalCenterEvent (
-                            id INT AUTO_INCREMENT PRIMARY KEY,
-                            eventId INT,
-                            numberOfCenters INT,
-                            centerLocation VARCHAR(255),
-                            AccessLevel INT DEFAULT 0,
-                            event_type_id INT,
-                            FOREIGN KEY (event_type_id) REFERENCES EventTypes(event_type_id),
-                            FOREIGN KEY (eventId) REFERENCES Event(eventId));",                        
+                // "INSERT INTO FoodBankEvent (eventId, foodQuantity, foodType, foodBankLocation, event_type_id) VALUES
+                // (1, 500, 'Canned Goods', 'Downtown Food Bank', 1);",
 
-            // "INSERT INTO FoodBankEvent (eventId, foodQuantity, foodType, foodBankLocation, event_type_id) VALUES
-            // (1, 500, 'Canned Goods', 'Downtown Food Bank', 1);",
+                // "INSERT INTO FamilyShelterEvent (eventId, numberOfShelters, shelterLocation, capacity, facilities, event_type_id) VALUES
+                // (2, 10, 'Northside Family Shelter', 50, 'Restrooms, Showers, Sleeping Areas', 2);",
 
-            // "INSERT INTO FamilyShelterEvent (eventId, numberOfShelters, shelterLocation, capacity, facilities, event_type_id) VALUES
-            // (2, 10, 'Northside Family Shelter', 50, 'Restrooms, Showers, Sleeping Areas', 2);",
- 
-                    // Create EventVolunteer Table to link Events and Volunteers
 
 
 
                 // Create Travel Plans Table
                 "CREATE TABLE travel_plans (
-                    id INT AUTO_INCREMENT PRIMARY KEY,          -- Unique identifier for each travel plan
-                    type ENUM('resource_delivery', 'volunteer_travel') NOT NULL, -- Type of travel plan
-                    destination VARCHAR(255) NOT NULL,          -- Destination of the travel plan
-                    attributes TEXT NOT NULL                  -- Dynamic attributes stored as JSON
+                    id INT AUTO_INCREMENT PRIMARY KEY,          
+                    type ENUM('resource_delivery', 'beneficiary_travel') NOT NULL, 
+                    destination VARCHAR(255) NOT NULL,          
+                    attributes TEXT NOT NULL                
                 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
                 // Insert Sample Travel Plans
                 "INSERT INTO travel_plans (type, destination, attributes) 
                 VALUES 
                     ('resource_delivery', 'Village A', '{\"resources\": [\"Food\", \"Clothing\"], \"vehicles\": [\"Truck 1\", \"Truck 2\"]}'),
-                    ('volunteer_travel', 'Community Center', '{\"volunteers\": [\"John Doe\", \"Jane Smith\"], \"event\": \"Community Outreach\"}');",
+                    ('beneficiary_travel', 'Community Center', '{\"volunteers\": [\"John Doe\", \"Jane Smith\"], \"event\": \"Community Outreach\"}');",
 
 
 
-
-                    "CREATE TABLE EventVolunteer (
-                        eventId INT,
-                        volunteerId INT,
-                        PRIMARY KEY (eventId, volunteerId),
-                        FOREIGN KEY (eventId) REFERENCES Event(eventId) ON DELETE CASCADE,
-                        FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-                    "CREATE TABLE DonationLog (
-                        log_id INT AUTO_INCREMENT PRIMARY KEY,
-                        donorId INT NOT NULL,
-                        organization_id INT,
-                        donation_item_id INT,
-                        donation_type_id INT,
-                        previous_state ENUM('CREATE','DELETE'),
-                        current_state ENUM('CREATE', 'DELETE'), 
-                        donationId INT NOT NULL,
-                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id) ON DELETE CASCADE,
-                        FOREIGN KEY (donorId) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
-                        FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE,
-                        FOREIGN KEY (donation_item_id) REFERENCES DonationItem(donation_item_id) ON DELETE CASCADE
-                    ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-                   
-                    // Insert a Volunteer association with the Event
-                    // "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
-                    //     (1, 1);",
-
-// "INSERT INTO EventVolunteer (eventId, volunteerId) VALUES
-// (1, 1);",
-  "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets,event_type_id ) VALUES
-  ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75,1 ),
-  ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100, 3),
-  ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125, 2),
-  ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40, 1);",
+                // table event volunteer 
+                "CREATE TABLE EventVolunteer (
+                    eventId INT,
+                    volunteerId INT,
+                    PRIMARY KEY (eventId, volunteerId),
+                    FOREIGN KEY (eventId) REFERENCES Event(eventId) ON DELETE CASCADE,
+                    FOREIGN KEY (volunteerId) REFERENCES Volunteer(id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                
+                //table donation log 
+                "CREATE TABLE DonationLog (
+                    log_id INT AUTO_INCREMENT PRIMARY KEY,
+                    donorId INT NOT NULL,
+                    organization_id INT,
+                    donation_item_id INT,
+                    donation_type_id INT,
+                    previous_state ENUM('CREATE','DELETE'),
+                    current_state ENUM('CREATE', 'DELETE'), 
+                    donationId INT NOT NULL,
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (donation_type_id) REFERENCES DonationTypes(donation_type_id) ON DELETE CASCADE,
+                    FOREIGN KEY (donorId) REFERENCES RegisteredUserType(id) ON DELETE CASCADE,
+                    FOREIGN KEY (organization_id) REFERENCES Organization(id) ON DELETE CASCADE,
+                    FOREIGN KEY (donation_item_id) REFERENCES DonationItem(donation_item_id) ON DELETE CASCADE
+                ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                
+                
+                "INSERT INTO Event (eventName, date, addressId, EventAttendanceCapacity, tickets,event_type_id ) VALUES
+                ('Winter Coat Drive', '2024-12-05', (SELECT addressId FROM Address LIMIT 1), 150, 75,1 ),
+                ('Book Donation Fair', '2024-12-10', (SELECT addressId FROM Address LIMIT 1), 200, 100, 3),
+                ('Toy Giveaway', '2024-12-15', (SELECT addressId FROM Address LIMIT 1), 250, 125, 2),
+                ('Soup Kitchen Volunteer Day', '2024-12-20', (SELECT addressId FROM Address LIMIT 1), 80, 40, 1);",
 
 
-"INSERT INTO Tasks (name, description, requiredSkill, timeSlot, location)
-VALUES 
-('Donation Sorting', 'Organizing and categorizing donated items such as clothes, toys, and food', 'Organization Skills', '9:00 AM - 12:00 PM', 'Charity Warehouse'),
-('Volunteer Coordination', 'Supervising and guiding volunteers during a food drive', 'Leadership', '10:00 AM - 2:00 PM', 'Community Center'),
-('Event Promotion', 'Distributing flyers and promoting the charity event on social media', 'Marketing Skills', '10:00 AM - 1:00 PM', 'Office'),
-('Food Packing', 'Packing food items for distribution to families in need', 'Attention to Detail', '1:00 PM - 4:00 PM', 'Charity Kitchen'),
-('Cleanup Crew', 'Cleaning up after the charity gala event', 'Teamwork', '8:00 PM - 9:30 PM', 'Banquet Hall');",
-//table resources 
-"CREATE TABLE resources (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
-);",
+                "INSERT INTO Tasks (name, description, requiredSkill, timeSlot, location)
+                VALUES 
+                ('Donation Sorting', 'Organizing and categorizing donated items such as clothes, toys, and food', 'Organization Skills', '9:00 AM - 12:00 PM', 'Charity Warehouse'),
+                ('Volunteer Coordination', 'Supervising and guiding volunteers during a food drive', 'Leadership', '10:00 AM - 2:00 PM', 'Community Center'),
+                ('Event Promotion', 'Distributing flyers and promoting the charity event on social media', 'Marketing Skills', '10:00 AM - 1:00 PM', 'Office'),
+                ('Food Packing', 'Packing food items for distribution to families in need', 'Attention to Detail', '1:00 PM - 4:00 PM', 'Charity Kitchen'),
+                ('Cleanup Crew', 'Cleaning up after the charity gala event', 'Teamwork', '8:00 PM - 9:30 PM', 'Banquet Hall');",
+
+                //table resources 
+                "CREATE TABLE resources (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL
+                );",
+                "INSERT INTO resources (name) VALUES 
+                ('Food'),
+                ('Medicine'),
+                ('Clothing');",
+
+
+                //table beneficiaries 
+                "CREATE TABLE Beneficiary (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    address TEXT,
+                    beneficiaryType ENUM('Individual', 'Group') NOT NULL
+                );",
+
+                "INSERT INTO Beneficiary (name, address, beneficiaryType) 
+                VALUES 
+                ('Jane Smith', '456 Oak Avenue, Springfield', 'Individual'),
+                ('Helping Hands Group', '789 Pine Road, Springfield', 'Group');",
+
+
 
 
 
