@@ -12,7 +12,51 @@ abstract class TravelPlanTemplate {
     // Abstract methods to be implemented by subclasses
     protected abstract function validatePlan($details);
     protected abstract function allocateMeans($details);
-    protected abstract function executeTravel($details);
+    protected function executeTravel($details) {
+        $numOfVechile = intval($details['numOfVechile']); // Number of vehicles
+        $typeOfTruck = $details['typeOfTruck']; // Type of truck (user-defined string)
+        $destination = $details['destination']; // Destination
+    
+        // Check if there are vehicles available
+        if ($numOfVechile <= 0) {
+            echo "No vehicles available for travel.\n";
+            return;
+        }
+    
+        echo "Starting travel to $destination using $numOfVechile $typeOfTruck(s).\n";
+    
+        // Simulate the travel process
+        $this->simulateTravelProcess($numOfVechile, $typeOfTruck, $destination);
+    
+        echo "All $typeOfTruck(s) have successfully reached $destination.\n";
+    }
+    
+    /**
+     * Simulates the travel process for the vehicles.
+     *
+     * @param int $numOfVechile The number of vehicles.
+     * @param string $typeOfTruck The type of truck.
+     * @param string $destination The destination.
+     */
+    private function simulateTravelProcess($numOfVechile, $typeOfTruck, $destination) {
+        for ($i = 1; $i <= $numOfVechile; $i++) {
+            echo "$typeOfTruck $i is on the way to $destination.\n";
+    
+            // Simulate travel delay
+            $this->simulateTravelDelay();
+    
+            echo "$typeOfTruck $i has arrived at $destination.\n";
+        }
+    }
+    
+    /**
+     * Simulates a travel delay.
+     */
+    private function simulateTravelDelay() {
+        sleep(1); // Simulate a 1-second delay
+    }
+
+  
 
     // Common step: Log the completion of the travel plan
     protected function logCompletion($details) {

@@ -99,14 +99,16 @@ class TravelManagement {
 
             switch ($plan['type']) {
             case 'resource_delivery':
-                print($details['resources']);
+                // ($details['resources']);
                 $details['resources'] = $attributes['resources'] ?? [];
-                $details['vehicles'] = $attributes['vehicles'] ?? [];
+                $details['numOfVechile'] = $attributes['numOfVechile'] ?? [];
+                $details['typeOfTruck'] = $attributes['typeOfTruck'] ?? [];
                 break;
 
             case 'beneficiary_travel':
-                $details['resources'] = $attributes['resources'] ?? [];
-                $details['beneficiaries'] = $attributes['beneficiaries'] ?? [];
+                
+                $details['numOfVechile'] = $attributes['numOfVechile'] ?? [];
+                $details['typeOfTruck'] = $attributes['typeOfTruck'] ?? [];
                 break;
 
             default:
