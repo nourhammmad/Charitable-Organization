@@ -115,7 +115,7 @@ class OrganizationController{
                  
             case 'viewtravelplans':
                     $this-> handleGetTravelPlans();
-     
+
                     break;
      
     
@@ -149,7 +149,7 @@ class OrganizationController{
 
             // Fetch all travel plans
             $travelPlans = $travelController->getAllPlans();
-
+           
             // Return as JSON response
             header('Content-Type: application/json');
             echo json_encode($travelPlans);

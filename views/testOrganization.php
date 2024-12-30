@@ -591,10 +591,13 @@ $addresses = EventModel::GetAddresses();
                             if (!response.ok) {
                                 throw new Error("Failed to fetch travel plans.");
                             }
-                            return response.json(); // Parse JSON response
+                            return response.json(); 
                         })
                         .then(data => {
                             const fields = document.getElementById("dynamicFields");
+                           
+
+                            
                             fields.innerHTML = ""; // Clear previous content
 
                             if (data.length === 0) {
@@ -615,7 +618,8 @@ $addresses = EventModel::GetAddresses();
                                     planCard.style.marginBottom = "10px";
                                     planCard.style.padding = "10px";
                                     planCard.style.borderRadius = "5px";
-
+                                    console.log(plan);
+                                    console.log(plan.attributes);
                                     planCard.innerHTML = `
                                         <strong>Plan ID:</strong> ${plan.id} <br>
                                         <strong>Type:</strong> ${plan.type} <br>
@@ -644,7 +648,7 @@ $addresses = EventModel::GetAddresses();
       
                 const planType = document.getElementById("planType").value;
                 if(planType=='resource_delivery'){
-                    console.log("IN RESOURCE SUBMITT");
+                
                 const attributes = {
                     numOfVechile: form.get("numOfVechile"),
                     typeOfTruck: form.get("typeOfTruck"),
@@ -662,7 +666,10 @@ $addresses = EventModel::GetAddresses();
                     numOfVechile: form.get("numOfVechile"),
                     typeOfTruck: form.get("typeOfTruck"),
                 };
-                console.log(document.getElementById("address").value.toString());
+                console.log(attributes.toString());
+                console.log(attributes);
+                console.log( JSON.stringify(attributes));
+
                 body = new URLSearchParams({
                     type: planType,
                     destination: document.getElementById("address").value.toString(),

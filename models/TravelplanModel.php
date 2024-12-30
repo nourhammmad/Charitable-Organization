@@ -11,11 +11,9 @@ class TravelPlanModel {
         if (!in_array($type, self::ALLOWED_TYPES, true)) {
             throw new InvalidArgumentException("Invalid travel plan type. Allowed values are: " . implode(", ", self::ALLOWED_TYPES));
         }
-
-        $attributesJson = json_encode($attributes);
-
+        $attr= (String) $attributes;
         $query = "INSERT INTO travel_plans (type, destination, attributes) 
-                  VALUES ('$type', '$destination', '$attributesJson')";
+                  VALUES ('$type', '$destination', '$attr')";
 
         return Database::run_query($query); 
     }
@@ -44,6 +42,7 @@ class TravelPlanModel {
             while ($row = $result->fetch_assoc()) {
                 // Decode the attributes JSON into an array
                 $row['attributes'] = json_decode($row['attributes'], true);
+                //print($row);
                 $travelPlans[] = $row;
             }
             return $travelPlans;
