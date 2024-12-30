@@ -399,7 +399,14 @@ $addresses = EventModel::GetAddresses();
             </style>
             <div class="form-group">
                 <label for="destination">Destination:</label>
-                <input type="text" id="destination" name="destination" required>
+                <select name="destination" id="destination" required>
+                    <option value="" disabled selected>Select a destination</option>
+                    <?php foreach ($addresses as $address): ?>
+                    <option value="<?php echo htmlspecialchars($address['addressId']); ?>">
+                    <?php echo htmlspecialchars($address['fullAddress']); ?>
+                    </option>
+                    <?php endforeach; ?>
+                    </select>
             </div>
             <div class="form-group">
                 <label for="numOfVechile">Number of Vehicles:</label>
@@ -461,7 +468,7 @@ $addresses = EventModel::GetAddresses();
             <div class="form-group">
                 <label for="beneficiaries">Select Beneficiary:</label>
                 <select id="beneficiaries" name="beneficiaries" required>
-                    <!-- Dynamically populated options -->
+                  
                 </select>
             </div>
             <div class="form-group">
@@ -521,6 +528,7 @@ $addresses = EventModel::GetAddresses();
             fetch(endpoint)
                 .then(response => response.json())
                 .then(beneficiaries => {
+                    console.log(beneficiaries);
                     const beneficiaryTable = document.getElementById("beneficiaryTableBody");
                     beneficiaryTable.innerHTML = ""; // Clear previous data
                     
@@ -599,6 +607,8 @@ $addresses = EventModel::GetAddresses();
 
                             
                             fields.innerHTML = ""; // Clear previous content
+                           // console.log ()
+
 
                             if (data.length === 0) {
                                 fields.innerHTML = "<p>No travel plans found.</p>";
@@ -618,8 +628,11 @@ $addresses = EventModel::GetAddresses();
                                     planCard.style.marginBottom = "10px";
                                     planCard.style.padding = "10px";
                                     planCard.style.borderRadius = "5px";
-                                    console.log(plan);
+                                    console.log("this is no json");
                                     console.log(plan.attributes);
+                                    console.log("this is json");
+                                    console.log(JSON.stringify(plan.attributes, null, 2));
+
                                     planCard.innerHTML = `
                                         <strong>Plan ID:</strong> ${plan.id} <br>
                                         <strong>Type:</strong> ${plan.type} <br>

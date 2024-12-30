@@ -2,6 +2,7 @@
 
 $server = $_SERVER['DOCUMENT_ROOT'];
 require_once $server . "\Database.php";
+require_once $server . "\models\BeneficiaryModel.php";
 
 class TravelPlanModel {
     private const ALLOWED_TYPES = ['resource_delivery', 'beneficiary_travel'];
@@ -25,14 +26,50 @@ class TravelPlanModel {
         if ($result && $result->num_rows > 0) {
             $row = $result->fetch_assoc();
             // Decode the attributes JSON into an array
-            $row['attributes'] = json_decode($row['attributes'], true);
-            return $row;
+            $address = Beneficiary::getBeneficiaryAddress($row['destination']);
+            $beneficiaries[] = [
+                'destination' => $address,
+                'type' => $row['type'],
+                'attributes'=> $row['attributes']
+            ];
+            //$row['attributes'] = json_decode($row['attributes'], true);
+            return $beneficiaries;
         }
         return null;
     }
 
+    // public static function getAllTravelPlans() {
+    //     $query = "SELECT * FROM travel_plans";
+    //     $result = Database::run_select_query($query);
+    
+    //     if ($result && $result->num_rows > 0) {
+    //         $travelPlans = [];
+    //         while ($row = $result->fetch_assoc()) {
+    //             // Check if the attributes column contains valid JSON
+    //             if (isset($row['attributes']) && is_string($row['attributes'])) {
+    //                 $decodedAttributes = json_decode($row['attributes'], true);
+                    
+    //                 // Handle JSON decoding errors
+    //                 if (json_last_error() === JSON_ERROR_NONE) {
+    //                     $row['attributes'] = $decodedAttributes; // Valid JSON, assign decoded array
+    //                 } else {
+    //                     $row['attributes'] = []; // Default to an empty array if JSON is invalid
+    //                     error_log("Invalid JSON in travel plan attributes (ID: {$row['id']}): " . $row['attributes']);
+    //                 }
+    //             } else {
+    //                 $row['attributes'] = []; // Default to empty array if attributes is not set or not a string
+    //             }
+    
+    //             $travelPlans[] = $row;
+    //         }
+    //         return $travelPlans;
+    //     }
+    
+    //     return [];
+    // }
+    
 
-    // Fetch all travel plans
+   // Fetch all travel plans
     public static function getAllTravelPlans() {
         $query = "SELECT * FROM travel_plans";
         $result = Database::run_select_query($query);
@@ -41,14 +78,49 @@ class TravelPlanModel {
             $travelPlans = [];
             while ($row = $result->fetch_assoc()) {
                 // Decode the attributes JSON into an array
-                $row['attributes'] = json_decode($row['attributes'], true);
-                //print($row);
-                $travelPlans[] = $row;
-            }
-            return $travelPlans;
+                $address = Beneficiary::getBeneficiaryAddress($row['destination']);
+            $beneficiaries[] = [
+                'id' => $row['id'],
+                'destination' => $address,
+                'type' => $row['type'],
+                'attributes'=> $row['attributes']
+            ];
+        }
+            //$row['attributes'] = json_decode($row['attributes'], true);
+            return $beneficiaries;
         }
         return [];
     }
+    // public static function getAllTravelPlans() {
+    //     $query = "SELECT * FROM travel_plans";
+    //     $result = Database::run_select_query($query);
+    
+    //     if ($result && $result->num_rows > 0) {
+    //         $travelPlans = [];
+    //         while ($row = $result->fetch_assoc()) {
+    //             // Debugging: Inspect the raw attributes JSON
+    //             error_log("Debugging - Raw Attributes JSON: " . $row['attributes']);
+    
+    //             // Decode the attributes JSON into an array
+    //             $attributes = json_decode($row['attributes'], true);
+    
+    //             // Check for JSON decoding errors
+    //             if (json_last_error() !== JSON_ERROR_NONE) {
+    //                 error_log("Warning: Failed to decode JSON for travel plan ID {$row['id']}. Error: " . json_last_error_msg());
+    //                 $attributes = []; // Use an empty array as a fallback
+    //             }
+    
+    //             // Debugging: Inspect the decoded attributes
+    //             error_log("Debugging - Decoded Attributes: " . print_r($attributes, true));
+    
+    //             // Add the decoded attributes to the row
+    //             $row['attributes'] = $attributes;
+    //             $travelPlans[] = $row;
+    //         }
+    //         return $travelPlans;
+    //     }
+    //     return [];
+    // }
 
     // Fetch a specific travel plan by ID
     // public static function getTravelPlanById($id) {
