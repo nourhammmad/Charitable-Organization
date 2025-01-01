@@ -1,5 +1,5 @@
 <?php 
 
 interface DonationLogIterableInterface {
-    public function getIterator(): Iterator;
+    public function getIterator(): DonationLogIterator;
 }

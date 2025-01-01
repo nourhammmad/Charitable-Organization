@@ -7,37 +7,29 @@ class BeneficiaryTravel extends TravelPlanTemplate {
 
     // Validate the plan details
     protected function validatePlan($details) {
-        // $resources = $details['resources'] ?? [];
-        // $beneficiaries = $details['beneficiaries'] ?? [];
-
-        if (empty($details['beneficiaries'])) {
-            throw new Exception("Validation failed: No beneficiaries specified.");
+        // Check if "numOfVechile" and "typeOfTruck" are present
+        if (empty($details['numOfVechile']) || empty($details['typeOfTruck'])) {
+            throw new Exception("Validation failed: numOfVechile or typeOfTruck are missing.");
         }
-        if (empty($details['resources'])) {
-            throw new Exception("Validation failed: No resources specified.");
-        }
-
-        echo "Validation successful: " . count($details['beneficiaries']) . " beneficiaries and " . count($details['resources']) . " resources.\n";
+        
+        echo "Validated resource delivery plan for " . $details['destination'] . ".\n";
     }
 
-    // Allocate resources to beneficiaries
+    // Allocate numOfVechile to typeOfTruck
     protected function allocateMeans($details) {
-        $resources = $details['resources'] ?? [];
-        $beneficiaries = $details['beneficiaries'] ?? [];
-
-        echo "Allocating resources...\n";
-        foreach ($beneficiaries as $beneficiary) {
-            echo "Allocated resources to beneficiary: " . $beneficiary['name'] . " at " . $beneficiary['address'] . ".\n";
+        $numOfVechileCount = $details['numOfVechile'];
+        $typeOfTruckCount = $details['typeOfTruck'];
+    
+        // Convert numOfVechile to an integer for comparison
+        $numOfVechile = intval($numOfVechileCount);
+    
+        // Check if numOfVechile is greater than 0
+        if ($numOfVechile > 0) {
+            echo "Allocating $numOfVechileCount vehicles to $typeOfTruckCount trucks.\n";
+        } else {
+            echo "No vehicles to allocate. numOfVechile must be greater than 0.\n";
         }
     }
-
     // Execute the delivery
-    protected function executeTravel($details) {
-        $beneficiaries = $details['beneficiaries'] ?? [];
-
-        echo "Executing delivery to beneficiaries...\n";
-        foreach ($beneficiaries as $beneficiary) {
-            echo "Delivering resources to " . $beneficiary['name'] . " at " . $beneficiary['address'] . ".\n";
-        }
-    }
+   
 }

@@ -3,10 +3,10 @@ require_once $_SERVER['DOCUMENT_ROOT']."\Services\DonationLog.php";
 require_once $_SERVER['DOCUMENT_ROOT']."\models\donarLogFile.php";
 
 class UndoDonationCommand implements ICommand {
-    private $donarLog;
+    private $donorLog;
     
-    public function __construct($donarLog) {
-        $this->donarLog = $donarLog;
+    public function __construct($donorLog) {
+        $this->donorLog = $donorLog;
     }
 
     public function execute() {
@@ -15,9 +15,9 @@ class UndoDonationCommand implements ICommand {
 
     public function undo() {
         
-        donarLogFile::undoDonation($this->donarLog->getLogId());
+        donarLogFile::undoDonation($this->donorLog->getLogId());
         
-        $this->donarLog->setDonationState(new DeleteState());
+        $this->donorLog->setDonationState(new DeleteState());
 
 
     }

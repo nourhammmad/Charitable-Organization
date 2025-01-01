@@ -369,10 +369,10 @@ class Populate {
        
 
                 // Insert Sample Travel Plans
-                "INSERT INTO travel_plans (type, destination, attributes) 
-                VALUES 
-                    ('resource_delivery', 1, '{\"resources\": [\"Food\", \"Clothing\"], \"vehicles\": [\"Truck 1\", \"Truck 2\"]}'),
-                    ('beneficiary_travel', 2, '{\"volunteers\": [\"John Doe\", \"Jane Smith\"], \"event\": \"Community Outreach\"}');",
+                // "INSERT INTO travel_plans (type, destination, attributes) 
+                // VALUES 
+                //     ('resource_delivery', 1, '{\"resources\": [\"Food\", \"Clothing\"], \"vehicles\": [\"Truck 1\", \"Truck 2\"]}'),
+                //     ('beneficiary_travel', 2, '{\"volunteers\": [\"John Doe\", \"Jane Smith\"], \"event\": \"Community Outreach\"}');",
 
 
 
