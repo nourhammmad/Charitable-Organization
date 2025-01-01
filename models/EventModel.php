@@ -133,7 +133,7 @@ return false;
         if ($eventId) {
  
             $insertFoodBankEventQuery = "INSERT INTO FoodBankEvent (`eventId`, `foodQuantity`, `foodType`, `foodBankLocation`, `AccessLevel`, `event_type_id`)
-                VALUES ('$eventId', '$foodQuantity','$foodType',(SELECT addressId FROM Address WHERE city LIKE '$$shelterLocation'), '$AccessLvl', '$event_type_id');
+                VALUES ('$eventId', '$foodQuantity','$foodType','$shelterLocation', '$AccessLvl', '$event_type_id');
             ";
            
             // Run the query to insert into the FamilyShelterEvent table
@@ -146,28 +146,29 @@ return false;
         return false;
     }
 
-    public static function CreateFoodBank($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters,$shelterLocation ,$capacity, $AccessLvl=0) {
-        $event_type_id=1;
+    // public static function CreateFoodBank($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters,$shelterLocation ,$capacity, $AccessLvl=0) 
+    // {
+    //     $event_type_id=1;
 
-        // Step 1: Create the event using the existing createEvent method
-        $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity, $shelterLocation, $tickets, $event_type_id);
-    echo "$eventId";
-        // If event creation was successful (i.e., $eventId is returned)
-        if ($eventId) {
-            // Step 2: Insert into the FamilyShelterEvent table, including AccessLvl
-            $insertFamilyShelterEventQuery = "INSERT INTO foodbankevent (`eventId`, `numberOfShelters`, `shelterLocation`, `capacity`, `AccessLvl`, `event_type_id`)
-                VALUES ('$eventId', '$numberOfShelters',(SELECT addressId FROM Address WHERE city LIKE '$shelterLocation'), '$capacity', '$AccessLvl', '$event_type_id');
-            ";
+    //     // Step 1: Create the event using the existing createEvent method
+    //     $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity, $shelterLocation, $tickets, $event_type_id);
+    // echo "$eventId";
+    //     // If event creation was successful (i.e., $eventId is returned)
+    //     if ($eventId) {
+    //         // Step 2: Insert into the FamilyShelterEvent table, including AccessLvl
+    //         $insertFamilyShelterEventQuery = "INSERT INTO foodbankevent (`eventId`, `numberOfShelters`, `shelterLocation`, `capacity`, `AccessLvl`, `event_type_id`)
+    //             VALUES ('$eventId', '$numberOfShelters',(SELECT addressId FROM Address WHERE city LIKE '$shelterLocation'), '$capacity', '$AccessLvl', '$event_type_id');
+    //         ";
             
-            // Run the query to insert into the FamilyShelterEvent table
-            if (Database::run_query($insertFamilyShelterEventQuery)) {
-                return true;  // Return true if both queries were successful
-            }
-        }
+    //         // Run the query to insert into the FamilyShelterEvent table
+    //         if (Database::run_query($insertFamilyShelterEventQuery)) {
+    //             return true;  // Return true if both queries were successful
+    //         }
+    //     }
     
-        // Return false if either event creation or family shelter event insertion fails
-        return false;
-    }
+    //     // Return false if either event creation or family shelter event insertion fails
+    //     return false;
+    // }
     // Method to retrieve all events
 public static function getAllEvents() {
     // Ensure the database connection is established

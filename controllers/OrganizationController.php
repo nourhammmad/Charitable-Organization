@@ -282,7 +282,6 @@ class OrganizationController{
                 $name,
                 $date,
                 $capacity,
-                $capacity,
                 $tickets,
                 $shelterLocation,
                 $signLangInterpret,
