@@ -1,8 +1,8 @@
 <?php
 $server=$_SERVER['DOCUMENT_ROOT'];
 require_once $server."\models\RegisteredUserModel.php";
-require_once $server."\controllers\VolunteerCotroller.php";
-require_once $server."\controllers\VolunteeEventAssignmentController.php";
+require_once $server."\controllers\VolunteerController.php";
+require_once $server."\controllers\VolunteerEventAssignmentController.php";
 
 
 class VolunteerModel{

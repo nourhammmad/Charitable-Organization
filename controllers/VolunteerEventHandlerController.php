@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] .'./models/VolunteerModel.php';
-require_once $_SERVER['DOCUMENT_ROOT'] .'./controllers/VolunteeEventAssignmentController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'./controllers/VolunteerEventAssignmentController.php';
 
 class VolunteerEventHandlerController {
     private $volunteerModel;
@@ -9,7 +9,7 @@ class VolunteerEventHandlerController {
 
     public function __construct($volunteerId) {
         $this->volunteerModel = VolunteerModel::getVolunteerById($volunteerId);
-        $this->assignEventController = new VolunteeEventAssignmentController();
+        $this->assignEventController = new VolunteerEventAssignmentController();
         $this->assignTaskController=new VolunteerTaskAssignmentController();
     }
 
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $volunteerId = isset($_POST['volunteerId']) ? $_POST['volunteerId'] : null;
     $eventId = isset($_POST['eventId']) ? $_POST['eventId'] : null;
     $taskId = isset($_POST['taskId']) ? $_POST['taskId'] : null;
-
+ 
 
     // Debugging: Log the received data
     error_log("Volunteer ID: " . $volunteerId);
@@ -46,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $handler = new VolunteerEventHandlerController($volunteerId);
         echo $handler->applyForEvent($eventId);
     } else {
-        echo "Missing volunteer or event ID.";}
+        $handler = new VolunteerTaskAssignmentController($volunteerId);
+        
+        echo $handler->assignTaskToUser($taskId,$volunteerId);}
 }
 ?>

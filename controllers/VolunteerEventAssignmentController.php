@@ -2,12 +2,12 @@
 $server=$_SERVER['DOCUMENT_ROOT'];
 require_once $server."\models\VolunteerEventAssignmentModel.php";
 require_once $server."\models\VolunteerModel.php";
-require_once $server."\controllers\VolunteerCotroller.php";
+require_once $server."\controllers\VolunteerController.php";
 require_once $server."\Services\Volunteer.php";
 
 
 
-class VolunteeEventAssignmentController {
+class VolunteerEventAssignmentController {
 
     // Method to fetch and display all available events
     public function getAvailableEvents() {

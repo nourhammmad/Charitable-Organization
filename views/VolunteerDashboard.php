@@ -220,8 +220,8 @@ function displayNotifications(notifications) {
     function applyForTasks(id, button) {
         const volunteerId = <?= $volunteerId; ?>;
         const formData = new FormData();
-        formData.append('volunteerId', volunteerId);
-        formData.append('id', id);
+         formData.append('volunteerId', volunteerId);
+        formData.append('taskId', id);
 
         const documentRoot = '../controllers/VolunteerEventHandlerController.php';  
 

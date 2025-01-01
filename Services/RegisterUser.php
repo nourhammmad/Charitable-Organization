@@ -51,7 +51,7 @@ class RegisterUser extends user {
             $Volid = VolunteerModel::getVolunteerId($this->id);
            // $Volunteer = VolunteerModel::getVolunteerById($Volid);
             $taskId=TaskModel::getLastInsertTasksId();
-            $handler = new VolunteerCotroller($Volid);
+            $handler = new VolunteerController($Volid);
             $events = $handler->displayAvailableEvents();
             $tasks = $handler->displayAllTasks();
             // Store events and tasks in session (for use in the dashboard)
@@ -82,7 +82,7 @@ class RegisterUser extends user {
                 echo "dakhalt";
                 $volunteerId = VolunteerModel::getLastInsertVolunteerId();
                 $taskId=TaskModel::getLastInsertTasksId();
-                $handler = new VolunteerCotroller($volunteerId);
+                $handler = new VolunteerController($volunteerId);
                 $events = $handler->displayAvailableEvents();
                 $tasks = $handler->displayAllTasks();
                 // Store events and tasks in session (for use in the dashboard)

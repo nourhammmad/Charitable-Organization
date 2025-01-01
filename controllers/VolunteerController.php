@@ -1,10 +1,10 @@
 <?php
 $server=$_SERVER['DOCUMENT_ROOT'];
 require_once $server."\models\VolunteerModel.php";
-require_once $server."\controllers\VolunteeEventAssignmentController.php";
+require_once $server."\controllers\VolunteerEventAssignmentController.php";
 require_once $server."\controllers\VolunteerTaskAssignmentController.php";
  
-class VolunteerCotroller {
+class VolunteerController {
     private $volunteerModel;
     private $assignEventController;
     private $assignTaskController;
@@ -12,7 +12,7 @@ class VolunteerCotroller {
     // Initialize with a VolunteerModel instance and create an assignment controller instance
     public function __construct($volunteerId) {
         $this->volunteerModel = VolunteerModel::getVolunteerById($volunteerId);
-        $this->assignEventController = new VolunteeEventAssignmentController();
+        $this->assignEventController = new VolunteerEventAssignmentController();
         $this->assignTaskController = new VolunteerTaskAssignmentController();
     }
     public function getAssignEventController() {
