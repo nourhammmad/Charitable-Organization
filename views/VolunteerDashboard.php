@@ -1,4 +1,7 @@
 <?php
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server."\models\VolunteerEventAssignmentModel.php";
+require_once $server."\models\VolunteerModel.php";
 // Ensure variables are defined
 session_start();
 $volunteerId = $_GET['volunteer_id'];  // Example of a logged-in volunteer
@@ -88,15 +91,27 @@ $tasks = $_SESSION['volunteer_tasks'] ?? [];
 <?php if (is_array($events) && !empty($events)): ?>
     <ul>
         <?php foreach ($events as $event): ?>
+            <?php 
+                // Check if the volunteer is already assigned to the event
+                $isApplied = VolunteerModel::isVolunteerAssignedToEvent($volunteerId, $event['eventId']);
+            ?>
             <li>
-                Event Name: <?= $event['eventName'] ?> | Date: <?= $event['date'] ?>
-                <button id="applyButton<?= $event['eventId'] ?>" onclick="applyForEvent(<?= $event['eventId'] ?>, this)">Apply</button>
+                Event Name: <?= htmlspecialchars($event['eventName']) ?> | Date: <?= htmlspecialchars($event['date']) ?>
+                
+                <!-- Apply button: Disable it if the volunteer has already applied -->
+                <button 
+                    id="applyButton<?= htmlspecialchars($event['eventId']) ?>" 
+                    onclick="applyForEvent(<?= htmlspecialchars($event['eventId']) ?>, this)" 
+                    <?= $isApplied ? 'disabled style="background-color: grey; color: white;"' : ''; ?>>
+                    <?= $isApplied ? 'Applied' : 'Apply' ?>
+                </button>
             </li>
         <?php endforeach; ?>
     </ul>
 <?php else: ?>
     <p>No events available at the moment.</p>
 <?php endif; ?>
+
 <h1>Available Volunteer Tasks</h1>
 <?php if (is_array($tasks) && !empty($tasks)): ?>
     <ul>

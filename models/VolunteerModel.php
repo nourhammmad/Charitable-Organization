@@ -102,5 +102,13 @@ class VolunteerModel{
         return Database::run_query($query);
     }
 
-    // Additional data management methods could go here if needed
+    public static function isVolunteerAssignedToEvent($volunteerId, $eventId) {
+        $query = "SELECT * FROM EventVolunteer WHERE `volunteerId` = $volunteerId AND `eventId` = $eventId";
+        $result = Database::run_select_query($query);
+    
+        if ($result && $result->num_rows > 0) {
+            return true; // Volunteer is already assigned to the event
+        }
+        return false; // Volunteer is not assigned to the event
+    }
 }

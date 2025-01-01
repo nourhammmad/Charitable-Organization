@@ -15,12 +15,20 @@ class VolunteerEventHandlerController {
 
     public function applyForEvent($eventId) {
         if ($this->volunteerModel) {
+            // Check if already assigned to the event
+            $isAlreadyAssigned = VolunteerModel::isVolunteerAssignedToEvent($this->volunteerModel->getId(), $eventId);
+            if ($isAlreadyAssigned) {
+                return "You have already applied to this event.";
+            }
+            
+            // Proceed with assignment
             $result = $this->assignEventController->assignVolunteer((int)$this->volunteerModel->getId(), $eventId);
             return $result ? "Successfully applied to the event." : "Failed to apply to the event.";
         } else {
             return "Volunteer not found.";
         }
     }
+    
     public function applyForTask($taskId) {
         if ($this->volunteerModel) {
             $result = $this->assignTaskController->assignTaskToUser((int)$this->volunteerModel->getId(), $taskId);

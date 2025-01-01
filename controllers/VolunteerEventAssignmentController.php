@@ -23,11 +23,18 @@ class VolunteerEventAssignmentController {
     }
     
 
-    // Method to assign a volunteer to a specific event
-    public function assignVolunteer($volunteerId, $eventId) {
-        // Ensure your database model method returns a success or failure message
-        $result = VolunteerEventAssignementModel::assignVolunteerToEvent($volunteerId, $eventId);
-        
-        // Return a success or failure message
-        return $result ? "You have successfully applied for the event." : "Failed to apply for the event.";}
+// Method to assign a volunteer to a specific event
+public function assignVolunteer($volunteerId, $eventId) {
+    // Check if the volunteer is already assigned to the event
+    if (VolunteerModel::isVolunteerAssignedToEvent($volunteerId, $eventId)) {
+        return "You are already assigned to this event.";
+    }
+
+    // Proceed with assignment if not already assigned
+    $result = VolunteerEventAssignementModel::assignVolunteerToEvent($volunteerId, $eventId);
+
+    // Return a success or failure message
+    return $result ? "You have successfully applied for the event." : "Failed to apply for the event.";
+}
+
 }
