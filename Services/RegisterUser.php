@@ -46,7 +46,7 @@ class RegisterUser extends user {
                 $donorId = $res->getId();
                 header("Location: ./views/HomeView.php?donor_id=$donorId&user_id=$this->id");
             }
-        } else if ($this->category=='volunteer'){
+        } else if ($this->category=='Volunteer'){
             echo"hoa ana hena?";
             $Volid = VolunteerModel::getVolunteerId($this->id);
            // $Volunteer = VolunteerModel::getVolunteerById($Volid);
