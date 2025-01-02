@@ -65,14 +65,30 @@ class EventModel {
     
         // Check if the query executed successfully
         if ($result) {
-            
+    
             // Use the new method to get the last inserted ID
             $lastInsertId = Database::get_last_inserted_id();
     
             if ($lastInsertId) {
                 // Return the last inserted ID for further use
+                $eventData = EventModel::getEventById($lastInsertId);
+                if ($eventData) {
+                    // Create an EventSubject instance with the required 8 arguments
+                    $event = new EventModel(
+                        $eventData['eventId'], 
+                        $eventData['eventName'], 
+                        $eventData['date'], 
+                        $eventData['addressId'], 
+                        $eventData['EventAttendanceCapacity'], 
+                        $eventData['tickets'], 
+                        $eventData['created_at'], 
+                        $eventData['event_type_id']
+                    );
+                $message = "new event added" ;
+                $event->notifyObservers($message);
                 return $lastInsertId;
-            } else {
+            } 
+        }else {
                 return false;  // No valid event ID retrieved
             }
         } else {
@@ -283,10 +299,7 @@ public static function getAllEvents() {
             echo "Failed to update the event.<br>";
             return false;
         }
-    
-        $message = "The following changes were made to the event: " . implode(', ', $changes);
-        $eventInstance = new  self($eventId, $eventName,$date, $addressId, $EventAttendanceCapacity, $tickets, $currentEvent['createdAt'], $currentEvent['event_type_id']);
-        $eventInstance->notifyObservers($message);
+
     
         return true;}
 
@@ -363,6 +376,25 @@ public static function getAllEvents() {
         // Query to retrieve associated volunteers
         $query = "SELECT * FROM EventVolunteer WHERE eventId = $eventId";
         return Database::run_select_query($query);
+    }
+
+    public static function getEventDetails($eventId) {
+        // Ensure the database connection is established
+        if (Database::get_connection() === null) {
+            echo "No database connection established.";
+            return false;
+        }
+    
+        $query = "SELECT * FROM event WHERE eventId = '$eventId'";  // Use $eventId in the query directly
+        $result = Database::run_select_query($query);
+    
+        // Check if the query executed successfully
+        if ($result) {
+            // Fetch and return the event details as an associative array
+            return $result->fetch_assoc();
+        } else {
+            return false;  // Event not found or query failed
+    }
     }
 
 }
