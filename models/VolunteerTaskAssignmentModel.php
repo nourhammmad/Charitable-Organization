@@ -27,4 +27,18 @@ class VolunteerTaskAssignmentModel {
         return [];
 }
 }
+public static function isVolunteerAssignedToTask($volunteerId, $taskId) {
+    // Query to check if volunteer is already assigned to the task
+    $query = "SELECT * FROM VolunteerTaskAssignments WHERE volunteerId = $volunteerId AND taskId = $taskId";
+    
+    // Run the query
+    $result = Database::run_select_query($query);
+
+    // Check if the result contains any rows
+    if ($result && $result->num_rows > 0) {
+        return true; // Volunteer is already assigned to the task
+    }
+    
+    return false; // Volunteer is not assigned to the task
+}
 }

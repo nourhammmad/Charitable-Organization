@@ -1,13 +1,5 @@
 <?php
-$server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."\models\VolunteerEventAssignmentModel.php";
-require_once $server."\models\VolunteerModel.php";
-// Ensure variables are defined
-session_start();
-$volunteerId = $_GET['volunteer_id'];  // Example of a logged-in volunteer
-$events = $_SESSION['volunteer_events'] ?? [];
-$tasks = $_SESSION['volunteer_tasks'] ?? [];
-
+$volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +7,7 @@ $tasks = $_SESSION['volunteer_tasks'] ?? [];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Volunteer Events</title>
+    <title>Volunteer Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,29 +16,23 @@ $tasks = $_SESSION['volunteer_tasks'] ?? [];
             padding: 0;
             text-align: center;
             color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         h1 {
             font-size: 2.5rem;
             color: #4CAF50;
             text-transform: uppercase;
             letter-spacing: 3px;
-            margin-top: 50px;
+            margin-bottom: 50px;
         }
-        p {
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            color: #666;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background-color: #ffffff;
-            padding: 20px;
-            margin: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 50px;
         }
         button {
             padding: 10px 20px;
@@ -65,70 +51,104 @@ $tasks = $_SESSION['volunteer_tasks'] ?? [];
         button:hover:not(:disabled) {
             background-color: #45a049;
         }
+        .fetch-button {
+            padding: 25px 50px;
+            font-size: 2rem;
+            margin: 20px;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .fetch-button:hover {
+            background-color: #45a049;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+        }
+        li {
+            background-color: #ffffff;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .no-content {
+            font-size: 1.5rem;
+            color: #ff6347;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            margin: 15% auto;
+            width: 50%;
+            border-radius: 8px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-<h1>Available Volunteer Events</h1>
-<div class="donation-options">
+<h1>Volunteer Dashboard</h1>
 <div class="option" onclick="viewNotifications()">
         <div class="option-icon">🔔</div>
         <a>View Notifications</a>
     </div>
 </div>
+<div class="button-container">
+    <button class="fetch-button" onclick="fetchEvents()">View Events🎉</button>
+    <button class="fetch-button" onclick="fetchTasks()">View Tasks📝</button>
+</div>
 
-<div id="notificationsModal" style="display: none; position: fixed; top: 20%; left: 30%; width: 40%; background: #fff; border: 1px solid #ccc; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); padding: 20px; z-index: 1000;">
-<span class="close-button" style="position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px;">&times;</span>
+<!-- Modal for event details -->
+<div id="eventModal" class="modal">
     <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2>Notifications</h2>
-        <ul id="notification-list">
-            <!-- Notifications will be dynamically added here -->
-        </ul>
+        <span class="close" onclick="closeModal('eventModal')">&times;</span>
+        <h2 id="eventTitle"></h2>
+        <p id="eventDetails"></p>
     </div>
 </div>
 
-<?php if (is_array($events) && !empty($events)): ?>
-    <ul>
-        <?php foreach ($events as $event): ?>
-            <?php 
-                // Check if the volunteer is already assigned to the event
-                $isApplied = VolunteerModel::isVolunteerAssignedToEvent($volunteerId, $event['eventId']);
-            ?>
-            <li>
-                Event Name: <?= htmlspecialchars($event['eventName']) ?> | Date: <?= htmlspecialchars($event['date']) ?>
-                
-                <!-- Apply button: Disable it if the volunteer has already applied -->
-                <button 
-                    id="applyButton<?= htmlspecialchars($event['eventId']) ?>" 
-                    onclick="applyForEvent(<?= htmlspecialchars($event['eventId']) ?>, this)" 
-                    <?= $isApplied ? 'disabled style="background-color: grey; color: white;"' : ''; ?>>
-                    <?= $isApplied ? 'Applied' : 'Apply' ?>
-                </button>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-<?php else: ?>
-    <p>No events available at the moment.</p>
-<?php endif; ?>
-
-<h1>Available Volunteer Tasks</h1>
-<?php if (is_array($tasks) && !empty($tasks)): ?>
-    <ul>
-        <?php foreach ($tasks as $tasks): ?>
-            <li>
-                Task Name: <?= $tasks['name'] ?> | Description: <?= $tasks['description'] ?>
-                <button id="applyButton<?= $tasks['id'] ?>" onclick="applyForTasks(<?= $tasks['id'] ?>, this)">Apply</button>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-<?php else: ?>
-    <p>No tasks available at the moment.</p>
-<?php endif; ?>
-
+<!-- Modal for task details -->
+<div id="taskModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('taskModal')">&times;</span>
+        <h2 id="taskTitle"></h2>
+        <p id="taskDetails"></p>
+    </div>
+</div>
 
 <script>
-function viewNotifications() {
+    function viewNotifications() {
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('user_id');
     if (!userId) {
@@ -205,54 +225,152 @@ function displayNotifications(notifications) {
     }
 }
 
+function fetchEvents() {
+    // Hide tasks section if it's displayed
+    document.getElementById('tasks-list').style.display = "none";
+    document.getElementById('no-tasks-message').style.display = "none";
 
-</script>
+    // Show events section
+    document.getElementById('events-list').style.display = "block";
+    document.getElementById('no-events-message').style.display = "block";
 
-
-
-<script>
-    // JavaScript function to handle applying for an event
-    function applyForEvent(eventId, button) {
-        const volunteerId = <?= $volunteerId; ?>;
-        const formData = new FormData();
-        formData.append('volunteerId', volunteerId);
-        formData.append('eventId', eventId);
-
-        const documentRoot = '/controllers/VolunteerEventHandlerController.php';  // Use relative URL instead of document root
-
-        fetch(documentRoot, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.text())
+    fetch('../controllers/VolunteerEventHandlerController.php?action=getEvents&volunteer_id=<?= $volunteerId; ?>')
+        .then(response => response.json())
         .then(data => {
-            alert(data);  // Show success or failure message from the server
-            button.innerText = "Applied";  // Change button text
-            button.disabled = true;  // Disable the button to prevent further clicks
-        })
-        .catch(error => console.error('Error:', error));
-    }
-    function applyForTasks(id, button) {
-        const volunteerId = <?= $volunteerId; ?>;
-        const formData = new FormData();
-         formData.append('volunteerId', volunteerId);
-        formData.append('taskId', id);
+            const eventsList = document.getElementById('events-list');
+            const message = document.getElementById('no-events-message');
+            eventsList.innerHTML = '';
+            message.innerHTML = ''; // Clear any previous message
 
-        const documentRoot = '../controllers/VolunteerEventHandlerController.php';  
+            if (data.events.length === 0) {
+                message.innerHTML = 'No events available';
+            } else {
+                data.events.forEach(event => {
+                    const li = document.createElement('li');
+                    const isApplied = event.isApplied; // Assuming the event data contains an 'isApplied' field
+                    li.innerHTML = `🎉 ${event.eventName} | Date: ${event.date}`;
 
-        fetch(documentRoot, {
-            method: 'POST',
-            body: formData
+                    // Apply button
+                    const applyButton = document.createElement('button');
+                    applyButton.id = `applyButton${event.eventId}`;
+                    applyButton.innerText = isApplied ? 'Applied' : 'Apply';
+                    applyButton.disabled = isApplied;
+                    applyButton.style.backgroundColor = isApplied ? 'grey' : '#4CAF50';
+                    applyButton.style.color = isApplied ? 'white' : 'black';
+                    applyButton.onclick = () => applyForEvent(event.eventId, applyButton);
+
+                    // Append apply button to the list item
+                    li.appendChild(applyButton);
+                    eventsList.appendChild(li);
+                });
+            }
         })
-        .then(response => response.text())
+        .catch(error => console.error('Error fetching events:', error));
+}
+
+function fetchTasks() {
+    // Hide events section if it's displayed
+    document.getElementById('events-list').style.display = "none";
+    document.getElementById('no-events-message').style.display = "none";
+
+    // Show tasks section
+    document.getElementById('tasks-list').style.display = "block";
+    document.getElementById('no-tasks-message').style.display = "block";
+
+    fetch('../controllers/VolunteerEventHandlerController.php?action=getTasks&volunteer_id=<?= $volunteerId; ?>')
+        .then(response => response.json())
         .then(data => {
-            alert(data);  // Show success or failure message from the server
-            button.innerText = "Applied";  // Change button text
-            button.disabled = true;  // Disable the button to prevent further clicks
+            const tasksList = document.getElementById('tasks-list');
+            const message = document.getElementById('no-tasks-message');
+            tasksList.innerHTML = '';
+            message.innerHTML = ''; // Clear any previous message
+
+            if (data.tasks.length === 0) {
+                message.innerHTML = 'No tasks available';
+            } else {
+                data.tasks.forEach(task => {
+                    const li = document.createElement('li');
+                    const isApplied = task.isApplied; // Assuming the task data contains an 'isApplied' field
+                    li.innerHTML = `📝 ${task.name} | Description: ${task.description}`;
+
+                    // Apply button
+                    const applyButton = document.createElement('button');
+                    applyButton.id = `applyButton${task.taskId}`;
+                    applyButton.innerText = isApplied ? 'Applied' : 'Apply';
+                    applyButton.disabled = isApplied;
+                    applyButton.style.backgroundColor = isApplied ? 'grey' : '#4CAF50';
+                    applyButton.style.color = isApplied ? 'white' : 'black';
+                    applyButton.onclick = () => applyForTasks(task.id, applyButton);
+
+                    // Append apply button to the list item
+                    li.appendChild(applyButton);
+                    tasksList.appendChild(li);
+                });
+            }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Error fetching tasks:', error));
+}
+
+function applyForEvent(eventId, button) {
+    const volunteerId = <?= $volunteerId; ?>;
+    const formData = new FormData();
+    formData.append('volunteerId', volunteerId);
+    formData.append('eventId', eventId);
+
+    const documentRoot = '/controllers/VolunteerEventHandlerController.php';  // Use relative URL instead of document root
+
+    fetch(documentRoot, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        alert(data);  // Show success or failure message from the server
+        button.innerText = "Applied";  // Change button text
+        button.disabled = true;  // Disable the button to prevent further clicks
+        button.style.backgroundColor = 'grey';  // Change button color
+        button.style.color = 'white';  // Change text color
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function applyForTasks(taskId, button) {
+    const volunteerId   = <?= $volunteerId; ?>;
+    const formData = new FormData();
+    formData.append('volunteerId', volunteerId);
+    formData.append('taskId', taskId);
+
+    const documentRoot = '../controllers/VolunteerEventHandlerController.php';  
+
+    fetch(documentRoot, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        alert(data);  // Show success or failure message from the server
+        button.innerText = "Applied";  // Change button text
+        button.disabled = true;  // Disable the button to prevent further clicks
+        button.style.backgroundColor = 'grey';  // Change button color
+        button.style.color = 'white';  // Change text color
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
 }
 </script>
+
+<!-- Section for Events -->
+<h2>Events</h2>
+<ul id="events-list" style="display: none;"></ul>
+<p id="no-events-message" class="no-content" style="display: none;"></p>
+
+<!-- Section for Tasks -->
+<h2>Tasks</h2>
+<ul id="tasks-list" style="display: none;"></ul>
+<p id="no-tasks-message" class="no-content" style="display: none;"></p>
 
 </body>
 </html>

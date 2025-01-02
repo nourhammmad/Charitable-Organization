@@ -50,9 +50,6 @@ class EventModel {
         }
     }
     
-      
-    
-
     // Create a new event
     public static function createEvent($eventName, $date, $EventAttendanceCapacity,$address ,$tickets, $event_type_id) {
         // Ensure the database connection is established
@@ -146,29 +143,7 @@ return false;
         return false;
     }
 
-    // public static function CreateFoodBank($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters,$shelterLocation ,$capacity, $AccessLvl=0) 
-    // {
-    //     $event_type_id=1;
 
-    //     // Step 1: Create the event using the existing createEvent method
-    //     $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity, $shelterLocation, $tickets, $event_type_id);
-    // echo "$eventId";
-    //     // If event creation was successful (i.e., $eventId is returned)
-    //     if ($eventId) {
-    //         // Step 2: Insert into the FamilyShelterEvent table, including AccessLvl
-    //         $insertFamilyShelterEventQuery = "INSERT INTO foodbankevent (`eventId`, `numberOfShelters`, `shelterLocation`, `capacity`, `AccessLvl`, `event_type_id`)
-    //             VALUES ('$eventId', '$numberOfShelters',(SELECT addressId FROM Address WHERE city LIKE '$shelterLocation'), '$capacity', '$AccessLvl', '$event_type_id');
-    //         ";
-            
-    //         // Run the query to insert into the FamilyShelterEvent table
-    //         if (Database::run_query($insertFamilyShelterEventQuery)) {
-    //             return true;  // Return true if both queries were successful
-    //         }
-    //     }
-    
-    //     // Return false if either event creation or family shelter event insertion fails
-    //     return false;
-    // }
     // Method to retrieve all events
 public static function getAllEvents() {
     // Ensure the database connection is established
@@ -314,10 +289,11 @@ public static function getAllEvents() {
         $eventInstance->notifyObservers($message);
     
         return true;}
+
         public function addObserver($observer) {
             $this->observers[] = $observer;
         }
-    
+
         public function removeObserver($observer) {
             $index = array_search($observer, $this->observers);
             if ($index !== false) {
@@ -325,7 +301,12 @@ public static function getAllEvents() {
                 $this->observers = array_values($this->observers); // Reindex the array
             }
         }
-    
+        //check on observers array 
+        public function listObservers() {
+            foreach ($this->observers as $observer) {
+                echo "Observer ID: " . $observer->getId() . " | Name: "  . "<br>";
+            }
+        }
         public function notifyObservers($message) {
             foreach ($this->observers as $observer) {
                 $observer->update($this, $message); // Notify each observer
@@ -383,6 +364,7 @@ public static function getAllEvents() {
         $query = "SELECT * FROM EventVolunteer WHERE eventId = $eventId";
         return Database::run_select_query($query);
     }
+
 }
 
 $eventName = "Winter Family Shelter Event";
@@ -395,6 +377,31 @@ $shelterLocation = "123 Shelter St.";
 $capacity = 100;
 $facilities = "Heating, food, beds";
 //$AccessLvl = 2;  // Example access level
+
+
+    // public static function CreateFoodBank($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters,$shelterLocation ,$capacity, $AccessLvl=0) 
+    // {
+    //     $event_type_id=1;
+
+    //     // Step 1: Create the event using the existing createEvent method
+    //     $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity, $shelterLocation, $tickets, $event_type_id);
+    // echo "$eventId";
+    //     // If event creation was successful (i.e., $eventId is returned)
+    //     if ($eventId) {
+    //         // Step 2: Insert into the FamilyShelterEvent table, including AccessLvl
+    //         $insertFamilyShelterEventQuery = "INSERT INTO foodbankevent (`eventId`, `numberOfShelters`, `shelterLocation`, `capacity`, `AccessLvl`, `event_type_id`)
+    //             VALUES ('$eventId', '$numberOfShelters',(SELECT addressId FROM Address WHERE city LIKE '$shelterLocation'), '$capacity', '$AccessLvl', '$event_type_id');
+    //         ";
+            
+    //         // Run the query to insert into the FamilyShelterEvent table
+    //         if (Database::run_query($insertFamilyShelterEventQuery)) {
+    //             return true;  // Return true if both queries were successful
+    //         }
+    //     }
+    
+    //     // Return false if either event creation or family shelter event insertion fails
+    //     return false;
+    // }
 
 // Create the FamilyShelterEvent
 // $success = EventModel::CreateFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters, $shelterLocation, $capacity);

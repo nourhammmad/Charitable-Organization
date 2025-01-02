@@ -50,14 +50,7 @@ class RegisterUser extends user {
             echo"hoa ana hena?";
             $Volid = VolunteerModel::getVolunteerId($this->id);
            // $Volunteer = VolunteerModel::getVolunteerById($Volid);
-            $taskId=TaskModel::getLastInsertTasksId();
-            $handler = new VolunteerController($Volid);
-            $events = $handler->displayAvailableEvents();
-            $tasks = $handler->displayAllTasks();
-            // Store events and tasks in session (for use in the dashboard)
-            $_SESSION['volunteer_events'] = $events;
-            $_SESSION['volunteer_tasks'] = $tasks;
-            header("Location: ./views/VolunteerDashboard.php?volunteer_id=$Volid&task_id=$taskId&user_id=$this->id"); 
+            header("Location: ./views/VolunteerDashboard.php?volunteer_id=$Volid&user_id=$this->id"); 
             exit();
         }
         exit();
@@ -81,14 +74,7 @@ class RegisterUser extends user {
             if (VolunteerModel::createVolunteer($this->id,1)) { 
                 echo "dakhalt";
                 $volunteerId = VolunteerModel::getLastInsertVolunteerId();
-                $taskId=TaskModel::getLastInsertTasksId();
-                $handler = new VolunteerController($volunteerId);
-                $events = $handler->displayAvailableEvents();
-                $tasks = $handler->displayAllTasks();
-                // Store events and tasks in session (for use in the dashboard)
-                $_SESSION['volunteer_events'] = $events;
-                $_SESSION['volunteer_tasks'] = $tasks;
-                header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId&task_id=$taskId&user_id=$this->id"); // Redirect to volunteer dashboard
+                header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId&user_id=$this->id"); // Redirect to volunteer dashboard
                 exit();
             }
         }
