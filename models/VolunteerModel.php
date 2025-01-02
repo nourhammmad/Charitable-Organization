@@ -5,7 +5,7 @@ require_once $server."\controllers\VolunteerController.php";
 require_once $server."\controllers\VolunteerEventAssignmentController.php";
 
 
-class VolunteerModel{
+class VolunteerModel implements IObserver{
     private $skills;
     private const ALLOWED_SKILLS = ['Cooking', 'Teaching', 'Building'];
 
@@ -111,4 +111,9 @@ class VolunteerModel{
         }
         return false; // Volunteer is not assigned to the event
     }
+        public function update($eventId, $message) {
+            // The frontend will fetch this message via AJAX
+            echo json_encode(["eventId" => $eventId, "message" => $message]);
+        }
+ 
 }
