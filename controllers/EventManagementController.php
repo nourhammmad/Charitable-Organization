@@ -7,6 +7,7 @@ require_once $server."\models\VolunteerEventAssignmentModel.php";
 class EventManagementController{
     
     private $eventModel;
+    
 
     // Constructor initializes EventModel
     public function __construct() {
@@ -24,6 +25,7 @@ class EventManagementController{
             $event->tickets,
             $event->event_type_id
         );
+        
     }
 
     // Method to get details of an event by ID
@@ -59,7 +61,7 @@ class EventManagementController{
             $currentEvent['createdAt'],
             $currentEvent['event_type_id']
         );
-        $eventInstance->notifyObservers($message);
+  
 
         echo "Event updated and observers notified.<br>";
         return true;

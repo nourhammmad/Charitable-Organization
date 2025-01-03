@@ -161,6 +161,7 @@ $addresses = EventModel::GetAddresses();
         .close-btn:hover {
             color: #000;
         }
+
     </style>
 </head>
 <body>
@@ -364,7 +365,7 @@ $addresses = EventModel::GetAddresses();
             </table>
         `;
         // Fetch the events data
-        fetch('../controllers/EventManagementConroller.php?action=getEvents',{method: 'GET'})  // Adjust the URL to your API
+        fetch('../controllers/EventManagementController.php?action=getEvents',{method: 'GET'})  // Adjust the URL to your API
             .then(response => response.json())
             .then(data => {
                 const events = data.events;
@@ -392,42 +393,32 @@ $addresses = EventModel::GetAddresses();
         }
 
         function editEvent(eventId) {
-    // Fetch event details for editing
-    fetch(`../controllers/EventManagementConroller.php?action=getEventDetails&eventId=${eventId}`, { method: 'GET' })
-        .then(response => {
-            console.log('Raw Response:', response); // Log the raw response object
-            return response.json(); // Parse the response as JSON
-        })
+          fetch(`../controllers/EventManagementController.php?action=getEventDetails&eventId=${eventId}`, { method: 'GET' })
+        .then(response => response.json())
         .then(data => {
-            console.log('Parsed Data:', data); // Log the parsed data for debugging
-
             const event = data.event;
-
-            // Ensure the event data exists
             if (event) {
-                showEditModal(event); // Show modal with event details
-                modal.style.display = "flex"; 
+                showEditModal(event); // This already sets the modal display
             } else {
                 console.error('No event found.');
             }
         })
-        .catch(error => console.error('Error fetching event details:', error));
+        .catch(error => console.error('Error fetching event details:', error));
 }
 
 
 // Function to open the modal
 function showEditModal(event) {
-    const modal = document.getElementById("actionModal");
-    const title = document.getElementById("modalTitle");
-    const fields = document.getElementById("dynamicFields");
+    const section = document.getElementById("editEventSection");
+    const title = document.getElementById("editSectionTitle");
+    const fields = document.getElementById("editEventFields");
 
-    // Reset fields and ensure modal is visible
-    // fields.innerHTML = "";  // Clear any previous data
-    modal.style.display = "flex";  // Show the modal
+    // Reset fields and show the section
+    section.style.display = "block";
 
-    title.textContent = "Edit Event";  // Set the modal title
+    title.textContent = "Edit Event";
 
-    // Populate the modal with event details
+    // Populate the section with event details
     fields.innerHTML = `
         <label for="eventName">Event Name:</label>
         <input type="text" id="eventName" value="${event.eventName}" required>
@@ -440,15 +431,19 @@ function showEditModal(event) {
 
         <label for="tickets">Tickets:</label>
         <input type="number" id="tickets" value="${event.tickets}" required>
-        
-        <button id="saveChangesButton" onclick="saveEventChanges(${event.eventId})">Save Changes</button>
-    `;
 
+        <button id="saveChangesButton" onclick="saveEventChanges(${event.eventId})">Save Changes</button>
+        <button onclick="closeEditSection()">Cancel</button>
+    `;
+}
+
+// Function to hide the section after saving or canceling
+function closeEditSection() {
+    document.getElementById("editEventSection").style.display = "none";
 }
 
 // Ensure saveEventChanges keeps the modal open until changes are saved
 function saveEventChanges(eventId) {
-    // Gather updated event details
     const updatedEvent = {
         eventId: eventId,
         eventName: document.getElementById("eventName").value,
@@ -457,8 +452,7 @@ function saveEventChanges(eventId) {
         tickets: document.getElementById("tickets").value,
     };
 
-    // Make an API call to save changes (adjust URL as needed)
-    fetch(`../controllers/EventManagementConroller.php?action=updateEvent`, {
+    fetch('../controllers/EventManagementController.php?action=updateEvent', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -469,7 +463,7 @@ function saveEventChanges(eventId) {
         .then(data => {
             if (data.success) {
                 alert("Event updated successfully.");
-                document.getElementById("actionModal").style.display = "none";  // Close the modal only after successful save
+                closeModal();  // Close only after success
             } else {
                 alert("Failed to update event. Please try again.");
             }
@@ -477,7 +471,7 @@ function saveEventChanges(eventId) {
         .catch(error => {
             console.error("Error updating event:", error);
             alert("An error occurred while updating the event.");
-        });
+});
 }
 
 
@@ -509,7 +503,7 @@ function saveEventChanges(eventId) {
 // }    
 //         function editEvent(eventId) {
 //     // Fetch the event details for editing
-//     fetch(`../controllers/EventManagementConroller.php?action=getEventDetails&eventId=${eventId}`, {
+//     fetch(`../controllers/EventManagementController.php?action=getEventDetails&eventId=${eventId}`, {
 //         method: 'POST'
 //     })
 //     .then(response => response.json())
@@ -562,7 +556,7 @@ function saveEventChanges(eventId) {
 //     const form = document.getElementById('editEventForm');
 //     const formData = new FormData(form);
 
-//     fetch('../controllers/EventManagementConroller.php?action=getEventDetails', {
+//     fetch('../controllers/EventManagementController.php?action=getEventDetails', {
 //         method: 'POST',
 //         body: formData
 //     })

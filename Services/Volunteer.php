@@ -1,5 +1,9 @@
 <?php
-class Volunteer {
+
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server."\Database.php";
+require_once $server.'\Services/IObserver.php';
+class Volunteer implements IObserver{
     private $id;
     // //private $registeredUserId;
     // //private $organizationId;
@@ -26,5 +30,11 @@ class Volunteer {
 
     // // Set skills
     // public function setSkills($skills) { $this->skills = $skills; }
+        // Implement the notify method from IObserver
+        public function notify($message) {
+
+            // For testing purposes, let's just echo the message
+            echo "Notification for Volunteer $message\n";
+        }
 }
 ?>

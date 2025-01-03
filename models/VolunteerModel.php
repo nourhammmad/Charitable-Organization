@@ -4,11 +4,13 @@ require_once $server."\models\RegisteredUserModel.php";
 require_once $server."\controllers\VolunteerController.php";
 require_once $server."\controllers\VolunteerEventAssignmentController.php";
 require_once $server."\Services\IObserver.php";
+require_once $server."\models\OrganizationModel.php";
 
 
-class VolunteerModel implements IObserver{
+class VolunteerModel {
     private $skills;
     private const ALLOWED_SKILLS = ['Cooking', 'Teaching', 'Building'];
+    
 
     // Constructor that initializes volunteer-specific data, plus inherited data
     // public function __construct($id, $email, $userName, $passwordHash, $category, $createdAt, $skills = null) {
@@ -51,11 +53,23 @@ class VolunteerModel implements IObserver{
     
         // Optional debug print
         echo "Executing query: $query";
-    
+       
         // Run the query
-        return Database::run_query($query);
+        if (Database::run_query($query)) {
+            print "and fi create volunteer";
+            // EventModel::addVolunteerAsObserver("l@gmail.com");
+
+            return true;
+        }
+        return false;
     }
     
+    // Implement the notify method from IObserver
+    // public function notify($message) {
+
+    //     // For testing purposes, let's just echo the message
+    //     echo "Notification for Volunteer $message\n";
+    // }
     
     public static function getLastInsertVolunteerId() {
         $query = "SELECT `id` FROM Volunteer ORDER BY `id` DESC LIMIT 1;";
@@ -112,9 +126,6 @@ class VolunteerModel implements IObserver{
         }
         return false; // Volunteer is not assigned to the event
     }
-        public function update($eventId, $message) {
-            // The frontend will fetch this message via AJAX
-            echo json_encode(["eventId" => $eventId, "message" => $message]);
-        }
+
  
 }
