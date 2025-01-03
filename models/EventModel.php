@@ -339,12 +339,12 @@ public static function getAllEvents() {
             $this->observers[] = $observer;
         }
 
-        public function removeObserver(Volunteer $observer) {
-            $index = array_search($observer, $this->observers);
-            if ($index !== false) {
-                unset($this->observers[$index]);
-            }
-        }
+        // public function removeObserver(Volunteer $observer) {
+        //     $index = array_search($observer, $this->observers);
+        //     if ($index !== false) {
+        //         unset($this->observers[$index]);
+        //     }
+        // }
         //check on observers array 
         public function listObservers() {
             foreach ($this->observers as $observer) {
@@ -352,9 +352,10 @@ public static function getAllEvents() {
             }
         }
         
-        public function notifyObservers($message,Volunteer $observer) {
-           
+        public function notifyObservers($message) {
+            foreach ($this->observers as $observer) {
                 $observer->notify($message);
+            }
 
         }
 
