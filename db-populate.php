@@ -452,7 +452,8 @@ class Populate {
                     message TEXT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (volunteer_id) REFERENCES Volunteer(id),
-                    FOREIGN KEY (event_id) REFERENCES Event(eventId));",
+                    FOREIGN KEY (event_id) REFERENCES Event(eventId))
+                    DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
 
 

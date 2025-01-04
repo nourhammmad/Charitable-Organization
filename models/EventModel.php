@@ -361,7 +361,7 @@ public static function getAllEvents() {
                     echo"el email tmam";
                     $emailService->sendEmail($email, "New Event Notification", $message);
                     echo"el email sent";
-
+                    echo "event iddd =$this->eventId ";
                     // Save the notification in the database
                     $this->saveNotificationToDatabase(1, $this->eventId, $message);
                 } else {
@@ -372,10 +372,19 @@ public static function getAllEvents() {
 
         }
         private function saveNotificationToDatabase($volunteerId, $eventId, $message) {
-            $query = "INSERT INTO volunteer_notifications(volunteer_id, event_id, message) 
-                      VALUES (1, $eventId, '$message')";
+            // Escape single quotes in the message
+            $escapedMessage = str_replace("'", "\'", $message);
+        
+            $query = "INSERT INTO volunteer_notifications(`volunteer_id`, `event_id`, `message`) 
+                      VALUES ($volunteerId, $eventId, '$escapedMessage')";
+        
+            // Log the query for debugging
+            error_log("Executing query: $query");
+        
             Database::run_query($query);
         }
+        
+        
 
     // Delete an event
     public static function deleteEvent($eventId) {
