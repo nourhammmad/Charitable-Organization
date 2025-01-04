@@ -121,7 +121,7 @@ class EventManagementController{
             $event['createdAt'],
             $event['event_type_id']
         );
-        $eventInstance->removeObserver($observer);
+        // $eventInstance->removeObserver($observer);
 
         echo "Observer removed successfully from event ID: {$eventId}.<br>";
         return true;

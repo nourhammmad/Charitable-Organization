@@ -147,6 +147,18 @@ ORDER BY
         
         return null;  
     }
+    public static function getEmailById($id) {
+        $query = "SELECT `email` FROM `RegisteredUserType` WHERE `id` = '$id' LIMIT 1";
+        $result = Database::run_select_query($query);
+    
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['email'];
+        }
+    
+        return null; // Return null if no email is found
+    }
+    
     
 
 

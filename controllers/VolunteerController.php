@@ -1,6 +1,6 @@
 <?php
 $server=$_SERVER['DOCUMENT_ROOT'];
-require_once $server."\models\VolunteerModel.php";
+require_once $server."\Services\Volunteer.php";
 require_once $server."\controllers\VolunteerEventAssignmentController.php";
 require_once $server."\controllers\VolunteerTaskAssignmentController.php";
  
@@ -49,8 +49,22 @@ class VolunteerController {
         $result = VolunteerModel::addDescription($description, $this->volunteerModel->getId());
         echo $result ? "Description added successfully!" : "Failed to add description.";
     }
-    public function update($event, $message) {
-        echo "Notification for Volunteer {$this->volunteerModel->getId()}: {$message}<br>";
-}
+   
+    
+    public function getVolunteerNotifications($volunteerId) {
+        $notifications=Volunteer::getNotificationsByVolunteerId($volunteerId);
+        if (!empty($notifications)) {
+            echo json_encode([
+                'success' => true,
+                'notifications' => $notifications
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No notifications found.'
+            ]);
+        }
+    }
+
 }
  

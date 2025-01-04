@@ -114,6 +114,8 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
             text-decoration: none;
             cursor: pointer;
         }
+
+        
     </style>
 </head>
 <body>
@@ -127,6 +129,17 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
 <div class="button-container">
     <button class="fetch-button" onclick="fetchEvents()">View Events🎉</button>
     <button class="fetch-button" onclick="fetchTasks()">View Tasks📝</button>
+    <button class="fetch-button" onclick="openNotificationsModal()">New Events 🔔</button>
+
+</div>
+
+<!-- Notifications Modal -->
+<div id="notificationsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('notificationsModal')">&times;</span>
+        <h2>New Notifications</h2>
+        <ul id="notification-list"></ul>
+    </div>
 </div>
 
 <!-- Modal for event details -->
@@ -147,7 +160,72 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
     </div>
 </div>
 
+
+</div>
+
 <script>
+function openNotificationsModal() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('user_id');
+    if (!userId) {
+        alert("User ID is missing.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('action', 'view_notifications');
+    formData.append('userId', userId);
+
+    fetch("../controllers/VolunteerController.php", {
+    method: 'POST',
+    body: formData,
+})
+.then(response => response.text())
+.then(rawData => {
+    console.log("Raw server response:", rawData);  // Check the raw response
+    try {
+        const data = JSON.parse(rawData);
+        if (data.success) {
+            displayNotifications(data.notifications);
+        } else {
+            alert(data.message || 'Error fetching notifications.');
+        }
+    } catch (error) {
+        console.error("Error parsing JSON:", error);
+        alert("Invalid JSON format. Check the server response.");
+    }
+})
+.catch(error => {
+    console.error('Error fetching notifications:', error);
+    alert('An error occurred while fetching notifications.');
+});
+
+}
+
+function displayNotifications(notifications) {
+    const notificationList = document.getElementById("notification-list");
+    notificationList.innerHTML = '';
+
+    if (notifications && notifications.length > 0) {
+        notifications.forEach(notification => {
+            const li = document.createElement('li');
+            li.textContent = `${notification.senderName}: ${notification.message || 'No message available'} : ${notification.createdAt}`;
+            notificationList.appendChild(li);
+        });
+    } else {
+        const li = document.createElement('li');
+        li.textContent = 'No notifications found.';
+        notificationList.appendChild(li);
+    }
+
+    document.getElementById("notificationsModal").style.display = 'block';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+}
+
+
     function viewNotifications() {
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('user_id');

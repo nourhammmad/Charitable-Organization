@@ -64,13 +64,7 @@ class VolunteerModel {
         return false;
     }
     
-    // Implement the notify method from IObserver
-    // public function notify($message) {
-
-    //     // For testing purposes, let's just echo the message
-    //     echo "Notification for Volunteer $message\n";
-    // }
-    
+  
     public static function getLastInsertVolunteerId() {
         $query = "SELECT `id` FROM Volunteer ORDER BY `id` DESC LIMIT 1;";
         $res = Database::run_select_query(query: $query);

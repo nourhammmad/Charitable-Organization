@@ -7,6 +7,7 @@ require_once $server.'\models\RegisteredUserModel.php';
 require_once $server.'\Services/ISubject.php';
 require_once $server.'\models/VolunteerModel.php';
 require_once $server.'\Services/Volunteer.php';
+require_once $server.'\Services/EmailService.php';
 
 class EventModel implements ISubject {
     private $eventId;
@@ -17,8 +18,7 @@ class EventModel implements ISubject {
     private $tickets;
     private $createdAt;
     private $event_type_id;
-    public $observers=[]; 
-
+    public $observers=[];
     // Constructor
     public function __construct($eventId,$eventName,$date, $addressId, $EventAttendanceCapacity, $tickets, $createdAt,$event_type_id) {
         $this->eventId = $eventId;
@@ -90,7 +90,7 @@ class EventModel implements ISubject {
 
                     $lastVolunteerId = VolunteerModel::getLastInsertVolunteerId();
                     echo "da a5er id {$lastInsertId}";
-                    $volunteer = VolunteerModel::getVolunteerById($lastVolunteerId);
+                    $volunteer = VolunteerModel::getVolunteerById(1);
 
                     if ($volunteer) {
                         // Add the volunteer as an observer to the event
@@ -101,12 +101,9 @@ class EventModel implements ISubject {
                         // $volunteer->notify($message); // Assuming notify method is in VolunteerModel
     
                         echo "Notification sent to volunteer that {$eventData['eventName']}";
-    
-                        // Optionally: List observers (volunteers) for debugging
-                        $event->listObservers();
-    
+
                         // Notify all observers (volunteers) about the event creation
-                        $event->notifyObservers($message,$volunteer);
+                        $event->notifyObservers($message);
                         
                     } else {
                         echo "Volunteer not found.";
@@ -354,9 +351,30 @@ public static function getAllEvents() {
         
         public function notifyObservers($message) {
             foreach ($this->observers as $observer) {
-                $observer->notify($message);
-            }
+                // Fetch the email using the inherited method
+                $email = RegisterUserTypeModel::getEmailById(2);
+                echo "da el email{$email}";
+                
+                $emailService = new EmailService();
+                if ($email) {
+                    // Send the email notification
+                    echo"el email tmam";
+                    $emailService->sendEmail($email, "New Event Notification", $message);
+                    echo"el email sent";
 
+                    // Save the notification in the database
+                    $this->saveNotificationToDatabase(1, $this->eventId, $message);
+                } else {
+                    error_log("Email not found for observer ID: " . $observer->getId());
+                }
+            }
+            
+
+        }
+        private function saveNotificationToDatabase($volunteerId, $eventId, $message) {
+            $query = "INSERT INTO volunteer_notifications(volunteer_id, event_id, message) 
+                      VALUES (1, $eventId, '$message')";
+            Database::run_query($query);
         }
 
     // Delete an event

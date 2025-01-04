@@ -1,6 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT']."/Services/EmailService.php";
 require_once $_SERVER['DOCUMENT_ROOT']."/Services/IMailer.php";
+
 class MailerProxy implements IMailer {
     private $realMailer;
 
@@ -30,3 +31,4 @@ class MailerProxy implements IMailer {
         file_put_contents('mailer.log', date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
     }
 }
+?>
