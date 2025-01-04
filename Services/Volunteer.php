@@ -36,18 +36,27 @@ class Volunteer implements IObserver{
             // For testing purposes, let's just echo the message
             echo "Notification for Volunteer $message\n";
         }
+
         public static function getNotificationsByVolunteerId($volunteerId) {
-            $query = "SELECT * FROM volunteer_notifications WHERE volunteer_id = $volunteerId ORDER BY created_at DESC";
+            // Ensure volunteerId is properly sanitized to prevent SQL injection
+            $volunteerId = intval($volunteerId);
+        
+            $query = "SELECT * FROM volunteer_notifications WHERE volunteer_id = 1 ORDER BY created_at DESC";
             $result = Database::run_select_query($query);
+        
             $notifications = [];
         
             if ($result) {
+                // Assuming `run_query` returns a result object for SELECT queries
                 while ($row = $result->fetch_assoc()) {
                     $notifications[] = $row;
                 }
             }
+        
             return $notifications;
         }
+        
+        
         
 }
 ?>

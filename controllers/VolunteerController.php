@@ -49,14 +49,42 @@ class VolunteerController {
         $result = VolunteerModel::addDescription($description, $this->volunteerModel->getId());
         echo $result ? "Description added successfully!" : "Failed to add description.";
     }
+    public static function handleRequest() {
+        if (!isset($_POST['action']) || $_POST['action'] !== 'view_notifications') {
+            echo json_encode(['success' => false, 'message' => 'Invalid action or action missing 7asal haga 8alat   .']);
+            return;
+        }
+    
+        $volunteerId = $_POST['userId'] ?? null;
+    
+        if (!$volunteerId) {
+            echo json_encode(['success' => false, 'message' => 'Volunteer ID is missing.']);
+            return;
+        }
+        // Initialize the controller with the volunteer ID
+         $controller = new self($volunteerId);
+
+        // Call the getVolunteerNotifications method
+        $controller->getVolunteerNotifications($volunteerId);
+    }
+    
    
     
     public function getVolunteerNotifications($volunteerId) {
-        $notifications=Volunteer::getNotificationsByVolunteerId($volunteerId);
+        // Get the notifications by volunteer ID, but only select the 'message' column
+        $notifications = Volunteer::getNotificationsByVolunteerId($volunteerId);
+    
+        // Check if there are any notifications
         if (!empty($notifications)) {
+            // Create a new array to store only the messages
+            $messages = array_map(function($notification) {
+                return $notification['message'];  // Only return the message field
+            }, $notifications);
+    
+            // Return the success response with the messages
             echo json_encode([
                 'success' => true,
-                'notifications' => $notifications
+                'notifications' => $messages  // Send only the messages
             ]);
         } else {
             echo json_encode([
@@ -65,6 +93,10 @@ class VolunteerController {
             ]);
         }
     }
+    
+    
+
+
 
 }
  
