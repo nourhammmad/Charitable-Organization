@@ -1,9 +1,10 @@
 <?php
 // Include necessary files and classes
 require_once $_SERVER['DOCUMENT_ROOT'] .'/controllers/OrganizationController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/controllers/EventController.php';
 
 // Fetch addresses from the database
-$addresses = EventModel::GetAddresses();
+$addresses = EventController::getAllAddresses();
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -7,6 +7,8 @@ class EventController {
 
     private $eventModel;
 
+  
+
     public function __construct($eventModel) {
         $this->eventModel = $eventModel;
     }
@@ -35,7 +37,9 @@ class EventController {
         $this->eventModel->sendReminder();
     }
     
-
+    public static function getAllAddresses(){
+       return  EventModel::GetAddresses();
+    }
 
     // Retrieve all events
     // public function displayAllEvents() {
