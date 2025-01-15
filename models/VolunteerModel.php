@@ -1,13 +1,16 @@
 <?php
 $server=$_SERVER['DOCUMENT_ROOT'];
 require_once $server."\models\RegisteredUserModel.php";
-require_once $server."\controllers\VolunteerCotroller.php";
-require_once $server."\controllers\VolunteeEventAssignmentController.php";
+require_once $server."\controllers\VolunteerController.php";
+require_once $server."\controllers\VolunteerEventAssignmentController.php";
+require_once $server."\Services\IObserver.php";
+require_once $server."\models\OrganizationModel.php";
 
 
-class VolunteerModel{
+class VolunteerModel {
     private $skills;
     private const ALLOWED_SKILLS = ['Cooking', 'Teaching', 'Building'];
+    
 
     // Constructor that initializes volunteer-specific data, plus inherited data
     // public function __construct($id, $email, $userName, $passwordHash, $category, $createdAt, $skills = null) {
@@ -50,12 +53,18 @@ class VolunteerModel{
     
         // Optional debug print
         echo "Executing query: $query";
-    
+       
         // Run the query
-        return Database::run_query($query);
+        if (Database::run_query($query)) {
+            print "and fi create volunteer";
+            // EventModel::addVolunteerAsObserver("l@gmail.com");
+
+            return true;
+        }
+        return false;
     }
     
-    
+  
     public static function getLastInsertVolunteerId() {
         $query = "SELECT `id` FROM Volunteer ORDER BY `id` DESC LIMIT 1;";
         $res = Database::run_select_query(query: $query);
@@ -102,5 +111,15 @@ class VolunteerModel{
         return Database::run_query($query);
     }
 
-    // Additional data management methods could go here if needed
+    public static function isVolunteerAssignedToEvent($volunteerId, $eventId) {
+        $query = "SELECT * FROM EventVolunteer WHERE `volunteerId` = $volunteerId AND `eventId` = $eventId";
+        $result = Database::run_select_query($query);
+    
+        if ($result && $result->num_rows > 0) {
+            return true; // Volunteer is already assigned to the event
+        }
+        return false; // Volunteer is not assigned to the event
+    }
+
+ 
 }

@@ -1,5 +1,9 @@
 <?php
-class Volunteer {
+
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server."\Database.php";
+require_once $server.'\Services/IObserver.php';
+class Volunteer implements IObserver{
     private $id;
     // //private $registeredUserId;
     // //private $organizationId;
@@ -26,5 +30,33 @@ class Volunteer {
 
     // // Set skills
     // public function setSkills($skills) { $this->skills = $skills; }
+        // Implement the notify method from IObserver
+        public function notify($message) {
+
+            // For testing purposes, let's just echo the message
+            echo "Notification for Volunteer $message\n";
+        }
+
+        public static function getNotificationsByVolunteerId($volunteerId) {
+            // Ensure volunteerId is properly sanitized to prevent SQL injection
+            $volunteerId = intval($volunteerId);
+        
+            $query = "SELECT * FROM volunteer_notifications WHERE volunteer_id = 1 ORDER BY created_at DESC";
+            $result = Database::run_select_query($query);
+        
+            $notifications = [];
+        
+            if ($result) {
+                // Assuming `run_query` returns a result object for SELECT queries
+                while ($row = $result->fetch_assoc()) {
+                    $notifications[] = $row;
+                }
+            }
+        
+            return $notifications;
+        }
+        
+        
+        
 }
 ?>

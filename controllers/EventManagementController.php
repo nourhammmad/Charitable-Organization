@@ -1,10 +1,13 @@
 <?php
-require_once 'Database.php';
-require_once "models\EventModel.php";
+$server=$_SERVER['DOCUMENT_ROOT'];
+require_once $server.'\Database.php';
+require_once $server."\models\EventModel.php";
+require_once $server."\models\VolunteerEventAssignmentModel.php";
 
 class EventManagementController{
     
     private $eventModel;
+    
 
     // Constructor initializes EventModel
     public function __construct() {
@@ -22,6 +25,7 @@ class EventManagementController{
             $event->tickets,
             $event->event_type_id
         );
+        
     }
 
     // Method to get details of an event by ID
@@ -57,7 +61,7 @@ class EventManagementController{
             $currentEvent['createdAt'],
             $currentEvent['event_type_id']
         );
-        $eventInstance->notifyObservers($message);
+  
 
         echo "Event updated and observers notified.<br>";
         return true;
@@ -117,7 +121,7 @@ class EventManagementController{
             $event['createdAt'],
             $event['event_type_id']
         );
-        $eventInstance->removeObserver($observer);
+        // $eventInstance->removeObserver($observer);
 
         echo "Observer removed successfully from event ID: {$eventId}.<br>";
         return true;
@@ -200,8 +204,67 @@ class EventManagementController{
             return false;
         }
     }
+    public function getAvailableEvents() {
+        // Fetch events from the model
+        $events = VolunteerEventAssignementModel::fetchAllEvents();
+    
+        // Ensure fetchAllEvents() is returning an array and not a string
+        if (is_array($events) && !empty($events)) {
+            return $events;
+        } else {
+            return [];  // Return an empty array if no events
+}}
+
+public function getEventDetails($eventId){
+// Call the static method from the model to fetch event details
+$eventDetails = EventModel::getEventDetails($eventId);
+
+// Check if event details were retrieved
+if ($eventDetails) {
+    // Return the event details
+    return $eventDetails;
+} else {
+    // Return an error message or handle as needed
+    return ['message' => 'Event not found or error retrieving data.'];
+}
+}
+
+}
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+
+    $action = isset($_GET['action']) ? $_GET['action'] : null;
+
+    $handler = new EventManagementController();
+
+    if ($action === 'getEvents') {
+        $events = $handler->getAvailableEvents();
+        
+        if (empty($events)) {
+            echo json_encode(['message' => 'No events available.']);
+        } else {
+            echo json_encode(['events' => $events]);
+        }
+    }
+ 
+    
+       else if ($action === 'getEventDetails') {
+            $eventId = isset($_GET['eventId']) ? $_GET['eventId'] : null;
+            if ($eventId) {
+                $event = $handler->getEventDetails($eventId);
+        
+                // Convert to JSON response
+                echo json_encode(['event' => $event]);
+            } else {
+                echo 'Event ID is missing.';
+            }
+        }
 
 
 }
+
+
+
+
+?>
 
 

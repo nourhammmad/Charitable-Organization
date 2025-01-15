@@ -3,10 +3,13 @@
 $server=$_SERVER['DOCUMENT_ROOT'];
 require_once $server."\Database.php";
 require_once $server.'\Services/IService.php';
+require_once $server.'\models\RegisteredUserModel.php';
+require_once $server.'\Services/ISubject.php';
+require_once $server.'\models/VolunteerModel.php';
+require_once $server.'\Services/Volunteer.php';
+require_once $server.'\Services/EmailService.php';
 
-
-
-class EventModel {
+class EventModel implements ISubject {
     private $eventId;
     private $eventName;
     private $date;
@@ -15,8 +18,7 @@ class EventModel {
     private $tickets;
     private $createdAt;
     private $event_type_id;
-    
-    private $observers=[]; 
+    public $observers=[];
     // Constructor
     public function __construct($eventId,$eventName,$date, $addressId, $EventAttendanceCapacity, $tickets, $createdAt,$event_type_id) {
         $this->eventId = $eventId;
@@ -49,10 +51,8 @@ class EventModel {
             return [];
         }
     }
-    
-      
-    
 
+    
     // Create a new event
     public static function createEvent($eventName, $date, $EventAttendanceCapacity,$address ,$tickets, $event_type_id) {
         // Ensure the database connection is established
@@ -68,14 +68,56 @@ class EventModel {
     
         // Check if the query executed successfully
         if ($result) {
-            
+    
             // Use the new method to get the last inserted ID
             $lastInsertId = Database::get_last_inserted_id();
     
             if ($lastInsertId) {
                 // Return the last inserted ID for further use
+                $eventData = EventModel::getEventById($lastInsertId);
+                if ($eventData) {
+                    // Create an EventSubject instance with the required 8 arguments
+                    $event = new EventModel(
+                        $eventData['eventId'], 
+                        $eventData['eventName'], 
+                        $eventData['date'], 
+                        $eventData['addressId'], 
+                        $eventData['EventAttendanceCapacity'], 
+                        $eventData['tickets'], 
+                        $eventData['created_at'], 
+                        $eventData['event_type_id']
+                    );
+
+                    $lastVolunteerId = VolunteerModel::getLastInsertVolunteerId();
+                    echo "da a5er id {$lastInsertId}";
+                    $volunteer = VolunteerModel::getVolunteerById(1);
+
+                    if ($volunteer) {
+                        // Add the volunteer as an observer to the event
+                        $event->addObserver($volunteer);  // Assuming addObserver method is in EventModel
+    
+                        // Notify the volunteer about the new event
+                        $message = "A new event '{$eventData['eventName']}' has been created.";
+                        // $volunteer->notify($message); // Assuming notify method is in VolunteerModel
+    
+                        echo "Notification sent to volunteer that {$eventData['eventName']}";
+
+                        // Notify all observers (volunteers) about the event creation
+                        $event->notifyObservers($message);
+                        
+                    } else {
+                        echo "Volunteer not found.";
+                    }
+                    $message = "A new event '{$eventData['eventName']}' has been created.";
+                    echo ($message);
+             
+                  
+                    
+                // $message = "new event added" ;
+              
                 return $lastInsertId;
-            } else {
+            } 
+        }else {
                 return false;  // No valid event ID retrieved
             }
         } else {
@@ -146,29 +188,7 @@ return false;
         return false;
     }
 
-    // public static function CreateFoodBank($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters,$shelterLocation ,$capacity, $AccessLvl=0) 
-    // {
-    //     $event_type_id=1;
 
-    //     // Step 1: Create the event using the existing createEvent method
-    //     $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity, $shelterLocation, $tickets, $event_type_id);
-    // echo "$eventId";
-    //     // If event creation was successful (i.e., $eventId is returned)
-    //     if ($eventId) {
-    //         // Step 2: Insert into the FamilyShelterEvent table, including AccessLvl
-    //         $insertFamilyShelterEventQuery = "INSERT INTO foodbankevent (`eventId`, `numberOfShelters`, `shelterLocation`, `capacity`, `AccessLvl`, `event_type_id`)
-    //             VALUES ('$eventId', '$numberOfShelters',(SELECT addressId FROM Address WHERE city LIKE '$shelterLocation'), '$capacity', '$AccessLvl', '$event_type_id');
-    //         ";
-            
-    //         // Run the query to insert into the FamilyShelterEvent table
-    //         if (Database::run_query($insertFamilyShelterEventQuery)) {
-    //             return true;  // Return true if both queries were successful
-    //         }
-    //     }
-    
-    //     // Return false if either event creation or family shelter event insertion fails
-    //     return false;
-    // }
     // Method to retrieve all events
 public static function getAllEvents() {
     // Ensure the database connection is established
@@ -308,29 +328,64 @@ public static function getAllEvents() {
             echo "Failed to update the event.<br>";
             return false;
         }
-    
-        $message = "The following changes were made to the event: " . implode(', ', $changes);
-        $eventInstance = new  self($eventId, $eventName,$date, $addressId, $EventAttendanceCapacity, $tickets, $currentEvent['createdAt'], $currentEvent['event_type_id']);
-        $eventInstance->notifyObservers($message);
+
     
         return true;}
-        public function addObserver($observer) {
+
+        public function addObserver(Volunteer $observer) {
             $this->observers[] = $observer;
         }
-    
-        public function removeObserver($observer) {
-            $index = array_search($observer, $this->observers);
-            if ($index !== false) {
-                unset($this->observers[$index]);
-                $this->observers = array_values($this->observers); // Reindex the array
+
+        // public function removeObserver(Volunteer $observer) {
+        //     $index = array_search($observer, $this->observers);
+        //     if ($index !== false) {
+        //         unset($this->observers[$index]);
+        //     }
+        // }
+        //check on observers array 
+        public function listObservers() {
+            foreach ($this->observers as $observer) {
+                echo "Observer ID: ";
             }
         }
-    
+        
         public function notifyObservers($message) {
             foreach ($this->observers as $observer) {
-                $observer->update($this, $message); // Notify each observer
-    }
-    }
+                // Fetch the email using the inherited method
+                $email = RegisterUserTypeModel::getEmailById(2);
+                echo "da el email{$email}";
+                
+                $emailService = new EmailService();
+                if ($email) {
+                    // Send the email notification
+                    echo"el email tmam";
+                    $emailService->sendEmail($email, "New Event Notification", $message);
+                    echo"el email sent";
+                    echo "event iddd =$this->eventId ";
+                    // Save the notification in the database
+                    $this->saveNotificationToDatabase(1, $this->eventId, $message);
+                } else {
+                    error_log("Email not found for observer ID: " . $observer->getId());
+                }
+            }
+            
+
+        }
+        private function saveNotificationToDatabase($volunteerId, $eventId, $message) {
+            // Escape single quotes in the message
+            $escapedMessage = str_replace("'", "\'", $message);
+        
+            $query = "INSERT INTO volunteer_notifications(`volunteer_id`, `event_id`, `message`) 
+                      VALUES ($volunteerId, $eventId, '$escapedMessage')";
+        
+            // Log the query for debugging
+            error_log("Executing query: $query");
+        
+            Database::run_query($query);
+        }
+        
+        
+
     // Delete an event
     public static function deleteEvent($eventId) {
         // Ensure the connection is established
@@ -383,6 +438,45 @@ public static function getAllEvents() {
         $query = "SELECT * FROM EventVolunteer WHERE eventId = $eventId";
         return Database::run_select_query($query);
     }
+
+    public static function getEventDetails($eventId) {
+        // Ensure the database connection is established
+        if (Database::get_connection() === null) {
+            echo "No database connection established.";
+            return false;
+        }
+    
+        $query = "SELECT * FROM event WHERE eventId = '$eventId'";  // Use $eventId in the query directly
+        $result = Database::run_select_query($query);
+    
+        // Check if the query executed successfully
+        if ($result) {
+            // Fetch and return the event details as an associative array
+            return $result->fetch_assoc();
+        } else {
+            return false;  // Event not found or query failed
+    }
+    }
+
+    // public static function addVolunteerAsObserver($volunteerEmail) {
+    //     $volunteer =new VolunteerModel();
+    //     // Retrieve all events and make the volunteer an observer
+    //     $allEvents = self::getAllEvents();
+    //     foreach ($allEvents as $event) {
+    //         $eventModel = new EventModel(
+    //             $event['eventId'], 
+    //             $event['eventName'], 
+    //             $event['date'], 
+    //             $event['addressId'], 
+    //             $event['EventAttendanceCapacity'], 
+    //             $event['tickets'], 
+    //             $event['created_at'], 
+    //             $event['event_type_id']
+    //         );
+    //         $eventModel->addObserver($volunteer);
+    //     }
+    // }
+
 }
 
 $eventName = "Winter Family Shelter Event";
@@ -395,105 +489,4 @@ $shelterLocation = "123 Shelter St.";
 $capacity = 100;
 $facilities = "Heating, food, beds";
 //$AccessLvl = 2;  // Example access level
-
-// Create the FamilyShelterEvent
-// $success = EventModel::CreateFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $numberOfShelters, $shelterLocation, $capacity);
-
-// if ($success) {
-//     echo "Family Shelter Event created successfully.";
-// } else {
-//     echo "Failed to create Family Shelter Event.";
-// }
-
-
-// Ensure database connection is established
-//$db = Database::getInstance();
-// if (Database::get_connection() === null) {
-//     echo "No database connection established.";
-//     exit;
-// }
-
-// // Example of Address ID from the Address table (make sure this addressId exists in your DB)
-// $addressId = '29959131-9d80-11ef-b1d4-902e1627f5db  ';  // Replace this with an actual UUID from the Address table
-// $date = '$2024-12-01';
-// $EventAttendanceCapacity = 100;
-// $tickets = 50;
-
-// // Test creating an event
-// echo "<h3>Testing Event Creation</h3>";
-
-// $date = '2024-12-01';
-// $EventAttendanceCapacity = 200;
-// $tickets = 150;
-// $event_type_id = 1;// Food Bank event type
-// $addressId='hkhk';
-// // Create the event and check if it was successful
-// $eventId = EventModel::createEvent($date,$addressId,$EventAttendanceCapacity, $tickets, $event_type_id);
-// if ($eventId) {
-//     echo "Event created successfully with Event ID: $eventId<br/>";
-// } else {
-//     echo "Failed to create event.<br/>";
-// }
-
-// Test retrieving an event by ID
-// echo "<h3>Testing Retrieve Event by ID</h3>";
-
-// $event = EventModel::getEventById($eventId);
-// if ($event) {
-//     echo "Event found: <br/>";
-//     echo "Event ID: " . $event['eventId'] . "<br/>";
-//     echo "Date: " . $event['date'] . "<br/>";
-//     echo "Capacity: " . $event['EventAttendanceCapacity'] . "<br/>";
-//     echo "Tickets: " . $event['tickets'] . "<br/>";
-//     echo "Event Type ID: " . $event['event_type_id'] . "<br/>";
-// } else {
-//     echo "Event not found.<br/>";
-// }
-
-// Test updating an event
-// echo "<h3>Testing Event Update</h3>";
-
-// $newDate = '2024-12-05';
-// $newEventAttendanceCapacity = 250;
-// $newTickets = 200;
-// $updated = EventModel::updateEvent($eventId, $newDate, 'hkhk', $newEventAttendanceCapacity, $newTickets);
-// if ($updated) {
-//     echo "Event updated successfully.<br/>";
-// } else {
-//     echo "Failed to update event.<br/>";
-// }
-
-// // Test retrieving updated event details
-// echo "<h3>Testing Retrieve Updated Event</h3>";
-
-// $updatedEvent = EventModel::getEventById($eventId);
-// if ($updatedEvent) {
-//     echo "Updated Event Details: <br/>";
-//     echo "Date: " . $updatedEvent['date'] . "<br/>";
-//     echo "Capacity: " . $updatedEvent['EventAttendanceCapacity'] . "<br/>";
-//     echo "Tickets: " . $updatedEvent['tickets'] . "<br/>";
-// } else {
-//     echo "Error retrieving updated event.<br/>";
-// }
-
-// // Test deleting an event
-// echo "<h3>Testing Event Deletion</h3>";
-
-// $deleted = EventModel::deleteEvent($eventId);
-// if ($deleted) {
-//     echo "Event deleted successfully.<br/>";
-// } else {
-//     echo "Failed to delete event.<br/>";
-// }
-
-// // Test retrieving a deleted event
-// echo "<h3>Testing Retrieve Deleted Event</h3>";
-
-// $deletedEvent = EventModel::getEventById($eventId);
-// if ($deletedEvent) {
-//     echo "Deleted event found: <br/>";
-//     echo "Event ID: " . $deletedEvent['eventId'] . "<br/>";
-// } else {
-//     echo "Event successfully deleted, no record found.<br/>";
-// }
 ?>

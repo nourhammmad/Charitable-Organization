@@ -11,7 +11,7 @@ class Populate {
             [
                 "SET FOREIGN_KEY_CHECKS = 0;",
                 "DROP TABLE IF EXISTS donationtypes, address, books, Volunteer ,clothes, event, DonationLog,eventvolunteer, money, users, payments, donations, registeredusertype, events, tasks, donationitem, donationmanagement, donor
-                , organization, ipayment, cash, visa, stripe,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs, travel_plans,resources,Beneficiary;",
+                , organization, ipayment, cash, visa, stripe,FoodBankEvent,FamilyShelterEvent,EducationalCenterEvent,EventTypes, VolunteerTaskAssignments, sms_logs,volunteer_notifications, travel_plans,resources,Beneficiary;",
                 "SET FOREIGN_KEY_CHECKS = 1;",
  
                 // Create Users Table
@@ -445,6 +445,15 @@ class Populate {
                 ('Helping Hands Group', 2, 'Group');",
 
 
+                "CREATE TABLE volunteer_notifications (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    volunteer_id INT NOT NULL,
+                    event_id INT NOT NULL,
+                    message TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (volunteer_id) REFERENCES Volunteer(id),
+                    FOREIGN KEY (event_id) REFERENCES Event(eventId))
+                    DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
 
 
