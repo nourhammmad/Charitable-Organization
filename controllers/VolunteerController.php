@@ -52,7 +52,7 @@ class VolunteerController {
     public static function handleRequest() {
         error_log("handleRequest reached");
         if (!isset($_POST['action']) || $_POST['action'] !== 'view_notifications') {
-            echo json_encode(['success' => false, 'message' => 'Invalid action or action missing 7asal haga 8alat   .']);
+            echo json_encode(['success' => false, 'message' => 'Invalid action or action missing.']);
             return;
         }
     
@@ -62,14 +62,13 @@ class VolunteerController {
             echo json_encode(['success' => false, 'message' => 'Volunteer ID is missing.']);
             return;
         }
+    
         // Initialize the controller with the volunteer ID
-         $controller = new self($volunteerId);
-
+        $controller = new self($volunteerId);
+    
         // Call the getVolunteerNotifications method
         $controller->getVolunteerNotifications($volunteerId);
     }
-    
-   
     
     public function getVolunteerNotifications($volunteerId) {
         header('Content-Type: application/json'); // Set header for JSON response
