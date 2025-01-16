@@ -150,32 +150,5 @@ class VolunteerModel {
         return $notifications;
     }
     
-
-    public static function getAllVolunteers() {
-        // Query to select all volunteers
-        $query = "SELECT * FROM Volunteer";
-        $result = Database::run_select_query($query);
-    
-        // Initialize an empty array to store volunteer objects
-        $volunteers = [];
-    
-        if ($result && $result->num_rows > 0) {
-            // Loop through the result set and create Volunteer objects
-            while ($row = $result->fetch_assoc()) {
-                $volunteers[] = new Volunteer(
-                    $row['id'],
-                    $row['registered_user_id'],
-                    $row['organization_id'],
-                    $row['other_volunteer_specific_field'],
-                    $row['skills']
-                );
-            }
-        }
-    
-        // Return the array of volunteers (empty array if no volunteers found)
-        return $volunteers;
-    }
-    
-
  
 }

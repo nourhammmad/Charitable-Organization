@@ -87,27 +87,21 @@ class EventModel implements ISubject {
                         $eventData['created_at'], 
                         $eventData['event_type_id']
                     );
-
-                    $lastVolunteerId = VolunteerModel::getLastInsertVolunteerId();
-                    echo "da a5er id {$lastInsertId}";
-                    $volunteer = VolunteerModel::getVolunteerById(1);
-
-                    if ($volunteer) {
-                        // Add the volunteer as an observer to the event
-                        $event->addObserver($volunteer);  // Assuming addObserver method is in EventModel
-    
-                        // Notify the volunteer about the new event
+                    // Retrieve all volunteer IDs from RegisteredUserType
+                        $volunteers = RegisterUserTypeModel::getAllVolunteerIds();
+                        // if (!empty($volunteers)) {
+                        //     echo "Volunteer IDsssss: " . implode(", ", $volunteers);
+                        // } else {
+                        //     echo "No volunteers found.";
+                        // }
+                        // Add all volunteers as observers by passing their IDs
+                        $event->addObserver($volunteers);
                         $message = "A new event '{$eventData['eventName']}' has been created.";
-                        // $volunteer->notify($message); // Assuming notify method is in VolunteerModel
-    
-                        echo "Notification sent to volunteer that {$eventData['eventName']}";
-
-                        // Notify all observers (volunteers) about the event creation
                         $event->notifyObservers($message);
-                        
-                    } else {
-                        echo "Volunteer not found.";
-                    }
+
+                        echo "Notification sent to all volunteers about the new event: {$eventData['eventName']}";
+
+
                     $message = "A new event '{$eventData['eventName']}' has been created.";
                     echo ($message);
              
@@ -332,9 +326,25 @@ public static function getAllEvents() {
     
         return true;}
 
-        public function addObserver(Volunteer $observer) {
-            $this->observers[] = $observer;
+        public function addObserver($observers) {
+            // Debugging: Print the observers array
+            var_dump($observers);
+        
+            // Check if observers are passed as an array of volunteer IDs
+            if (is_array($observers)) {
+                // Loop through the array of volunteer IDs and add them as observers
+                foreach ($observers as $volunteerId) {
+                    // Directly add the volunteer ID to the observers list
+                    $this->observers[] = $volunteerId;
+                }
+            } else {
+                // If a single observer is passed, add it directly
+                $this->observers[] = $observers;
+            }
+                  
         }
+        
+        
 
         // public function removeObserver(Volunteer $observer) {
         //     $index = array_search($observer, $this->observers);
@@ -345,44 +355,54 @@ public static function getAllEvents() {
         //check on observers array 
         public function listObservers() {
             foreach ($this->observers as $observer) {
-                echo "Observer ID: ";
+                echo "Observer ID: $observer";
             }
         }
         
         public function notifyObservers($message) {
             foreach ($this->observers as $observer) {
-                // Fetch the email using the inherited method
-                $email = RegisterUserTypeModel::getEmailById(2);
-                echo "da el email{$email}";
+                echo "Observer ID: $observer , ";
+                // Trim and sanitize the observer ID
+                $observer = trim($observer); // Remove leading/trailing spaces
+                $observer = intval($observer); // Ensure it's an integer
                 
-                $emailService = new EmailService();
-                if ($email) {
-                    // Send the email notification
-                    echo"el email tmam";
-                    $emailService->sendEmail($email, "New Event Notification", $message);
-                    echo"el email sent";
-                    echo "event iddd =$this->eventId ";
-                    // Save the notification in the database
-                    $this->saveNotificationToDatabase(1, $this->eventId, $message);
-                } else {
-                    error_log("Email not found for observer ID: " . $observer->getId());
-                }
-            }
-            
+                // error_log("Processing observer ID: $observer");
+                $escapedMessage = str_replace("'", "\'", $message);
+        
+                $query = "INSERT INTO volunteer_notifications(`volunteer_id`, `event_id`, `message`) 
+                          VALUES ('$observer', '$this->eventId', '$escapedMessage')";
+        
+                error_log("Executing query: $query"); // Log the query for debugging.
 
+
+                $result = Database::run_query($query);
+                echo "result: $result";
+        
+                // Introduce a delay of 1 second (1,000,000 microseconds)
+               
+            }
         }
-        private function saveNotificationToDatabase($volunteerId, $eventId, $message) {
-            // Escape single quotes in the message
-            $escapedMessage = str_replace("'", "\'", $message);
         
-            $query = "INSERT INTO volunteer_notifications(`volunteer_id`, `event_id`, `message`) 
-                      VALUES ($volunteerId, $eventId, '$escapedMessage')";
         
-            // Log the query for debugging
-            error_log("Executing query: $query");
         
-            Database::run_query($query);
-        }
+        // public static function saveNotificationToDatabase($volunteerId, $eventId, $message) {
+        //     $volunteerId = intval($volunteerId); // Ensure it's an integer.
+        //     $escapedMessage = str_replace("'", "\'", $message); // Escape single quotes.
+        
+        //     $query = "INSERT INTO volunteer_notifications(`volunteer_id`, `event_id`, `message`) 
+        //               VALUES ('$volunteerId', '$eventId', '$escapedMessage')";
+        
+        //     error_log("Executing query: $query"); // Log the query for debugging.
+        
+        //     $result = Database::run_query($query);
+        
+        //     if (!$result) {
+        //         error_log("Failed to insert notification for volunteer ID: $volunteerId");
+        //     } else {
+        //         error_log("Successfully inserted notification for volunteer ID: $volunteerId");
+        //     }
+        // }
+        
         
         
 

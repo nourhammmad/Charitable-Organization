@@ -182,10 +182,10 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
 </div>
 
 <script>
-    userId=1;
+    // userId=1;
     function openVolunteerNotificationsModal() {
     // Replace with actual user ID retrieval
-    // const userId = new URLSearchParams(window.location.search).get('user_id');
+    const userId = new URLSearchParams(window.location.search).get('user_id');
     
     if (!userId) {
         alert("User ID is missing.");

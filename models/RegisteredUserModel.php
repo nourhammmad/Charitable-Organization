@@ -158,6 +158,38 @@ ORDER BY
     
         return null; // Return null if no email is found
     }
+    public static function getAllVolunteerIds() {
+        // Query to select ids of all volunteers from RegisteredUserType table where category is 'Volunteer'
+        $query = "SELECT `id` FROM `RegisteredUserType` WHERE `category` = 'Volunteer'";
+        $result = Database::run_select_query($query);
+        
+        // Debugging: Check if query is successful
+        if ($result === false) {
+            echo "Error: " . mysqli_error(Database::get_connection());
+            return [];
+        }
+    
+        // Initialize an empty array to store volunteer IDs
+        $volunteerIds = [];
+    
+        // Check if there are rows returned
+        if ($result && $result->num_rows > 0) {
+            // Loop through the result set and collect the IDs of the volunteers
+            while ($row = $result->fetch_assoc()) {
+                $volunteerIds[] = $row['id'];
+            }
+        } else {
+            echo "No volunteers found with category 'Volunteer'.<br>";
+        }
+    
+        // Print the volunteer IDs as a comma-separated string
+        echo "Volunteer IDs: " . implode(", ", $volunteerIds);
+        
+        // Return the array of volunteer IDs (empty array if no volunteers found)
+        return $volunteerIds;
+    }
+    
+    
     
     
 

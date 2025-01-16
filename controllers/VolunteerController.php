@@ -49,6 +49,7 @@ class VolunteerController {
         $result = VolunteerModel::addDescription($description, $this->volunteerModel->getId());
         echo $result ? "Description added successfully!" : "Failed to add description.";
     }
+    
     public static function handleRequest() {
         error_log("handleRequest reached");
         if (!isset($_POST['action']) || $_POST['action'] !== 'view_notifications') {
