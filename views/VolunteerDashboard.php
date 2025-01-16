@@ -88,20 +88,23 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
+            overflow: auto;
             background-color: rgba(0, 0, 0, 0.5);
+
         }
         .modal-content {
             background-color: #fff;
-            padding: 20px;
             margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
             width: 50%;
-            border-radius: 8px;
-        }
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
         .close {
             color: #aaa;
             float: right;
@@ -114,6 +117,10 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
             text-decoration: none;
             cursor: pointer;
         }
+        #volunteerNotificationsModal {
+         display: none;
+}
+
 
         
     </style>
@@ -129,7 +136,7 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
 <div class="button-container">
     <button class="fetch-button" onclick="fetchEvents()">View Events🎉</button>
     <button class="fetch-button" onclick="fetchTasks()">View Tasks📝</button>
-    <button class="fetch-button" onclick="openNotificationsModal()">New Events 🔔</button>
+    <button class="fetch-button" onclick="openVolunteerNotificationsModal()">New Events 🔔</button>
 
 </div>
 
@@ -141,6 +148,17 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
         <ul id="notification-list"></ul>
     </div>
 </div>
+<!-- Volunteer Notifications Modal -->
+
+<div id="volunteerNotificationsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('volunteerNotificationsModal')">&times;</span>
+        <h2>Volunteer Notifications</h2>
+        <ul id="volunteerNotification-list"></ul>
+    </div>
+</div>
+
+
 
 <!-- Modal for event details -->
 <div id="eventModal" class="modal">
@@ -164,9 +182,11 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
 </div>
 
 <script>
-function openNotificationsModal() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('user_id');
+    userId=1;
+    function openVolunteerNotificationsModal() {
+    // Replace with actual user ID retrieval
+    // const userId = new URLSearchParams(window.location.search).get('user_id');
+    
     if (!userId) {
         alert("User ID is missing.");
         return;
@@ -176,40 +196,39 @@ function openNotificationsModal() {
     formData.append('action', 'view_notifications');
     formData.append('userId', userId);
 
-    fetch("../controllers/VolunteerController.php", {
-    method: 'POST',
-    body: formData,
-})
-.then(response => response.text())
-.then(rawData => {
-    console.log("Raw server response:", rawData);  // Check the raw response
-    try {
-        const data = JSON.parse(rawData);
-        if (data.success) {
-            displayNotifications(data.notifications);
-        } else {
-            alert(data.message || 'Error fetching notifications.');
+    fetch("../Services/volunteerRoute.php", {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.text())
+    .then(rawData => {
+        console.log("Raw server response:", rawData);  // Log the raw response
+        try {
+            const data = JSON.parse(rawData);  // Parse the JSON response
+            if (data.success) {
+                displayVolunteerNotifications(data.notifications);
+            } else {
+                alert(data.message || 'Error fetching notifications.');
+            }
+        } catch (error) {
+            console.error("Error parsing JSON:", error);
+            alert("Invalid JSON format. Check the server response.");
         }
-    } catch (error) {
-        console.error("Error parsing JSON:", error);
-        alert("Invalid JSON format. Check the server response.");
-    }
-})
-.catch(error => {
-    console.error('Error fetching notifications:', error);
-    alert('An error occurred while fetching notifications.');
-});
-
+    })
+    .catch(error => {
+        console.error("Error fetching notifications:", error);
+        alert("An error occurred while fetching notifications.");
+    });
 }
 
-function displayNotifications(notifications) {
-    const notificationList = document.getElementById("notification-list");
-    notificationList.innerHTML = '';
+function displayVolunteerNotifications(notifications) {
+    const notificationList = document.getElementById("volunteerNotification-list");
+    notificationList.innerHTML = ''; // Clear previous notifications
 
     if (notifications && notifications.length > 0) {
         notifications.forEach(notification => {
             const li = document.createElement('li');
-            li.textContent = `${notification.senderName}: ${notification.message || 'No message available'} : ${notification.createdAt}`;
+            li.innerHTML = `${notification}`;
             notificationList.appendChild(li);
         });
     } else {
@@ -218,8 +237,11 @@ function displayNotifications(notifications) {
         notificationList.appendChild(li);
     }
 
-    document.getElementById("notificationsModal").style.display = 'block';
+    // Show the modal
+    document.getElementById("volunteerNotificationsModal").style.display = 'block';
 }
+
+
 
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = "none";

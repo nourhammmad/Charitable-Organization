@@ -50,6 +50,7 @@ class VolunteerController {
         echo $result ? "Description added successfully!" : "Failed to add description.";
     }
     public static function handleRequest() {
+        error_log("handleRequest reached");
         if (!isset($_POST['action']) || $_POST['action'] !== 'view_notifications') {
             echo json_encode(['success' => false, 'message' => 'Invalid action or action missing 7asal haga 8alat   .']);
             return;
@@ -71,22 +72,22 @@ class VolunteerController {
    
     
     public function getVolunteerNotifications($volunteerId) {
-        // Get the notifications by volunteer ID, but only select the 'message' column
-        $notifications = Volunteer::getNotificationsByVolunteerId($volunteerId);
+        header('Content-Type: application/json'); // Set header for JSON response
+        error_log("v id: $volunteerId");
+        // Get notifications by volunteer ID
+        $notifications = VolunteerModel::getNotificationsByVolunteerId($volunteerId);
     
-        // Check if there are any notifications
         if (!empty($notifications)) {
-            // Create a new array to store only the messages
-            $messages = array_map(function($notification) {
-                return $notification['message'];  // Only return the message field
-            }, $notifications);
-    
-            // Return the success response with the messages
+            // Extract only the 'message' column
+            $messages = array_column($notifications, 'message');
+
+            // Return success response in JSON format
             echo json_encode([
                 'success' => true,
-                'notifications' => $messages  // Send only the messages
+                'notifications' => $messages
             ]);
         } else {
+            // Return failure response
             echo json_encode([
                 'success' => false,
                 'message' => 'No notifications found.'
@@ -94,9 +95,6 @@ class VolunteerController {
         }
     }
     
-    
-
-
 
 }
  
