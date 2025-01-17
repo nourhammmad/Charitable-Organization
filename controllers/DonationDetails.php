@@ -5,22 +5,20 @@ session_start(); // Start the session at the beginning
 
 class DonationDetails {
 
-    // Method to retrieve the user ID from the session
+
     function getUserID() { 
-        // Check if the user ID is set in the session
+    
         if (isset($_SESSION['user_id'])) {
-            //echo "User ID found: " . $_SESSION['user_id'];  // You can remove echo later for debugging
-            return $_SESSION['user_id'];  // Return the user ID stored in the session
+            return $_SESSION['user_id']; 
         } else {
-          //  echo "No user ID found in session.";  // For debugging purposes
-            return null;  // If no user ID is found, return null
+            return null; 
         }
     }
 
   
     function show() {
         if (isset($_POST['getid'])) {
-            $id = $this->getUserID(); // Get the user ID
+            $id = $this->getUserID(); 
   
 
             if ($id) {

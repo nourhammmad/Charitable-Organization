@@ -135,25 +135,25 @@ class OrganizationController{
      
         session_start();
         session_unset(); 
-        session_destroy(); // Destroy the session
+        session_destroy(); 
 
-    // Redirect to loginView.php
+
     header("Location: ../index.php");
     require_once "../index.php";
-    exit(); // 
+    exit(); 
 
         
     }
 
     function handleGetTravelPlans() {
         try {
-            // Instantiate the TravelPlanController
+            
             $travelController = new TravelPlanController();
 
             // Fetch all travel plans
             $travelPlans = $travelController->getAllPlans();
            
-            // Return as JSON response
+            
             header('Content-Type: application/json');
             echo json_encode($travelPlans);
         } catch (Exception $e) {
@@ -169,7 +169,7 @@ class OrganizationController{
                 // Instantiate TravelManagement
                 $travelManagement = new TravelManagement();
     
-                // Call the executeTravelPlan method
+            
                 $travelManagement->executeTravelPlan($planId);
             } else {
                 echo "Plan ID is required to execute a travel plan.";
@@ -214,7 +214,7 @@ class OrganizationController{
         $signLangInterpret = isset($_POST['signLang']) ? true : false;
         $wheelchair = isset($_POST['wheelchair']) ? true : false;
     
-        // Validate required fields
+        
         if (!$date || !$shelterLocation || !$capacity || !$tickets || !$service) {
             echo "Missing required fields: date, address, capacity, tickets, and service are mandatory.";
             return;
@@ -236,7 +236,7 @@ class OrganizationController{
         $isEventCreated = false;
         $eventData = [];
     
-        // Create the event based on the selected service type
+    
         if ($service === 'familyShelter') {
             $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
                 $name,
@@ -274,19 +274,19 @@ class OrganizationController{
         if ($isEventCreated) {
             echo "$service Event created successfully.";
         
-            // Prepare event data for notifications
+            
             $eventData = [
                 'eventName' => $name,
                 'eventId' => Database::get_Last_Inserted_Id(), 
             ];
         
-            // Get the list of observers
+          
             $observers = RegisterUserTypeModel::getAllVolunteerIds();
         
-            // Initialize the Publisher class
+         
             $publisher = new Publisher($observers, $eventData['eventId']);
         
-            // Notify observers
+            
             $message = "A new event '{$eventData['eventName']}' has been created.";
             $publisher->notifyObservers($message);
         } else {
@@ -302,7 +302,6 @@ class OrganizationController{
         $timeSlot = $_POST['timeSlot'] ?? null;
         $location = $_POST['location'] ?? null;
     
-        // Validate required fields
         if (!$name || !$description || !$requiredSkill || !$timeSlot || !$location) {
             echo "Missing required fields: name, description, requiredSkill, timeSlot, and location are mandatory.";
             return;
@@ -310,8 +309,7 @@ class OrganizationController{
     
         // Call the createTask method in TaskManagementController
         $taskCreationMessage = TaskManagementController::createTask($name, $description, $requiredSkill, $timeSlot, $location);
-    
-        // Echo the response message from createTask
+
         echo $taskCreationMessage;
     }
     

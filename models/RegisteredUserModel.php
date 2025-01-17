@@ -57,27 +57,7 @@ ORDER BY
     }
     
 
-        // // Check if notifications were found
-        
-        // if (count($notifications) > 0) {
-        //     // Return the notifications as a JSON response with success
-        //    // echo count($notifications);
-        //   // echo $notifications[0]->message;
-        //   $i=0;
-        //   while($i<count($notifications)){
-        //     return json_encode([
-        //         'success' => true,
-        //         'notifications' => $notifications[0]->message
-        //     ]);
-        //     $i++;
-        // }
-        // } else {
-        //     // If no notifications are found, return a failure message
-        //     return json_encode([
-        //         'success' => false,
-        //         'message' => 'No notifications found.'
-        //     ]);
-        // }
+    
     
     
 
@@ -108,7 +88,6 @@ ORDER BY
     }
 
     public static function findByEmail($email) {
-        echo "email:: ". $email;
         $query = "SELECT u.id As user_id,r.id AS registered_user_id , u.created_at, r.email, r.userName, r.category ,r.passwordHash
                   FROM Users u 
                   JOIN RegisteredUserType r ON u.id = r.id 

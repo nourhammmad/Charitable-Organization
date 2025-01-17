@@ -3,9 +3,7 @@
 require_once 'TravelPlanTemplate.php';
 
 class ResourceDeliveryTravel extends TravelPlanTemplate {
-    // Validate the plan details
     protected function validatePlan($details) {
-        // Check if "numOfVechile" and "typeOfTruck" are present
         if (empty($details['numOfVechile']) || empty($details['typeOfTruck'])|| empty($details['resources'])) {
             throw new Exception("Validation failed: numOfVechile or typeOfTruck are missing.");
         }
@@ -15,9 +13,9 @@ class ResourceDeliveryTravel extends TravelPlanTemplate {
 
     // Allocate numOfVechile to typeOfTruck
     protected function allocateMeans($details) {
-        $numOfVechile = intval($details['numOfVechile']); // Number of vehicles
-        $typeOfTruck = $details['typeOfTruck']; // Type of truck (user-defined string)
-        $resources = $details['resources']; // Array of resource IDs
+        $numOfVechile = intval($details['numOfVechile']); 
+        $typeOfTruck = $details['typeOfTruck']; 
+        $resources = $details['resources']; 
     
         // Check if there are vehicles and resources
         if ($numOfVechile <= 0) {

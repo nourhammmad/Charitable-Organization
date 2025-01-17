@@ -6,7 +6,6 @@ class VolunteerTaskAssignmentModel {
 
     // Assign a task to a user
     public static function assignTaskToUser($taskId, $userId): bool {
-        // Ensure taskId and userId are properly escaped to avoid SQL injection
     
  
 
@@ -36,7 +35,7 @@ public static function isVolunteerAssignedToTask($volunteerId, $taskId) {
 
     // Check if the result contains any rows
     if ($result && $result->num_rows > 0) {
-        return true; // Volunteer is already assigned to the task
+        return true; 
     }
     
     return false; // Volunteer is not assigned to the task

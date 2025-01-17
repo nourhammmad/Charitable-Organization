@@ -4,7 +4,7 @@ abstract class TravelPlanTemplate {
     // Template method: defines the workflow
     public final function executeTravelPlan($details) {
         $this->validatePlan($details);       // Step 1: Validate the plan
-        $this->allocateMeans($details); // Step 2: Allocate resources
+        $this->allocateMeans($details);     // Step 2: Allocate resources
         $this->executeTravel($details);     // Step 3: Execute the travel
         $this->logCompletion($details);     // Step 4: Log the completion
     }
@@ -13,9 +13,9 @@ abstract class TravelPlanTemplate {
     protected abstract function validatePlan($details);
     protected abstract function allocateMeans($details);
     protected function executeTravel($details) {
-        $numOfVechile = intval($details['numOfVechile']); // Number of vehicles
-        $typeOfTruck = $details['typeOfTruck']; // Type of truck (user-defined string)
-        $destination = $details['destination']; // Destination
+        $numOfVechile = intval($details['numOfVechile']); 
+        $typeOfTruck = $details['typeOfTruck']; 
+        $destination = $details['destination']; 
     
         // Check if there are vehicles available
         if ($numOfVechile <= 0) {
@@ -48,12 +48,9 @@ abstract class TravelPlanTemplate {
             echo "$typeOfTruck $i has arrived at $destination.\n";
         }
     }
-    
-    /**
-     * Simulates a travel delay.
-     */
+  
     private function simulateTravelDelay() {
-        sleep(1); // Simulate a 1-second delay
+        sleep(1); 
     }
 
   

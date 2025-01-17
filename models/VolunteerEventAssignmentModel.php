@@ -14,9 +14,9 @@ class VolunteerEventAssignementModel{
         $result = $connection->query($query);
 
         if ($result) {
-            return $result->fetch_all(MYSQLI_ASSOC);  // Return events as an associative array
+            return $result->fetch_all(MYSQLI_ASSOC); 
         } else {
-            return [];  // Return an empty array if no events
+            return [];  
         }    }
    
 

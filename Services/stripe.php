@@ -25,7 +25,7 @@ class StripeAPI {
                 "amount" => $amount,
                 "currency" => $currency, 
                 "source" => $source, 
-                //"description" => $description 
+            
             ]));
 
             // Add the API key to the request headers
@@ -42,10 +42,8 @@ class StripeAPI {
     
             // Handle the response
             if ($httpStatus === 200) {
-               // echo $response; 
-                return true; // Successful response
+                return true; 
             } else {
-                // Handle errors
                 $error = json_decode($response, true);
                 throw new Exception("Stripe Charge Error: " . $error['error']['message']);
             }

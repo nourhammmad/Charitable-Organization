@@ -45,7 +45,6 @@ class visa implements Ipayment {
         $this->currency=$currency;
     }
     public function processPayment($donorid):bool{
-        echo "in visa \n";
         $transactionNumber = 'TRANS' . uniqid() . random_int(1000, 9999);
         $paymentDetails = [
             'donor_id' => $donorid, 
@@ -86,7 +85,6 @@ class StripeAdapter implements IPayment {
         $res= $this->stripe->charge($this->amount, $this->currency,$this->source);
         //after that db save
         if($res){
-            echo "in stripe \n";
             $paymentDetails = [
                 'donor_id' => $donorId, 
                 'transaction_reference' => $this->source,

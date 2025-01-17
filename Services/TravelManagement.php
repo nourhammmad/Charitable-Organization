@@ -18,19 +18,11 @@ class TravelManagement {
 
             if($type == 'beneficiary_travel'){
                 $destination = Beneficiary::getBeneficiaryAddressID($destination);
-              //  $this->travelController->createPlan($type, $destination, $attributes);
             }
             $this->travelController->createPlan($type, $destination, $attributes);
 
-            // Instantiate the appropriate travel plan type based on $type
-           // $travelPlanInstance = $this->instantiateTravelPlan($type);
-
-            //if ($travelPlanInstance) {
-                echo "Successfully created a travel plan of type: $type.\n";
-               // return $travelPlanInstance;
-            //} else {
-               // throw new Exception("Failed to instantiate the travel plan type: $type.");
-           // }
+            echo "Successfully created a travel plan of type: $type.\n";
+               
         } catch (Exception $e) {
             echo "Error while creating travel plan: " . $e->getMessage();
         }
@@ -41,7 +33,7 @@ class TravelManagement {
         switch ($type) {
             case 'resource_delivery':
                 return new ResourceDeliveryTravel();
-            // Add more cases as new types are introduced
+ 
             case 'beneficiary_travel':
                 return new BeneficiaryTravel();
                 
@@ -50,32 +42,7 @@ class TravelManagement {
         }
     }
 
-    // Execute a travel plan by fetching it from the database
-    // public function executeTravelPlan($planId) {
-    //     try {
-    //         // Fetch the plan details from the database
-    //         $plan = $this->travelController->getTravelPlanById($planId);
-
-    //         if (!$plan) {
-    //             throw new Exception("Travel plan with ID $planId not found.");
-    //         }
-
-    //         // Decode attributes and determine the travel type
-    //         $details = [
-    //             'destination' => $plan['destination'],                // Directly use destination
-    //             'means' => $plan['attributes']['resources'] ?? [],   // Extract resources
-    //             'vehicles' => $plan['attributes']['vehicles'] ?? []  // Extract vehicles
-    //         ];
-
-    //         $travelPlanInstance = $this->instantiateTravelPlan($plan['type']);
-
-    //         // Execute the travel plan
-    //         echo "Executing travel plan (ID: $planId)...\n";
-    //         $travelPlanInstance->executeTravelPlan($details);
-    //     } catch (Exception $e) {
-    //         echo "Error while executing travel plan: " . $e->getMessage();
-    //     }
-    // }
+   
     public function executeTravelPlan($planId) {
         try {
             // Fetch the plan details from the database
@@ -114,10 +81,8 @@ class TravelManagement {
             default:
                 throw new Exception("Unknown travel plan type: {$plan['type']}");
         }
-            // Instantiate the correct travel plan
             $travelPlanInstance = $this->instantiateTravelPlan($plan['type']);
     
-            // Execute the travel plan
             echo "Executing travel plan (ID: $planId)...\n";
             $travelPlanInstance->executeTravelPlan($details);
         } catch (Exception $e) {

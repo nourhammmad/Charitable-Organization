@@ -13,7 +13,6 @@ class MailerProxy implements IMailer {
     }
 
     public function sendEmail($toemail, $subject, $body): bool {
-        // Log email sending details
         $this->log("Attempting to send email to: $toemail with subject: $subject");
 
         $realMailer = $this->getinstance();

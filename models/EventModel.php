@@ -206,10 +206,7 @@ public static function getAllEvents() {
 
         // Query to fetch event details by event ID
         $eventQuery = "SELECT * FROM Event WHERE eventId = $eventId";
-    
-        // Debugging: Output the query to check if it's correct
-        //echo "Executing Query: $eventQuery<br>";
-    
+
         // Execute the query
         $eventResult = Database::run_select_query($eventQuery);
         
@@ -217,8 +214,7 @@ public static function getAllEvents() {
             // Fetch the event details as an associative array
             return $eventResult->fetch_assoc();
         } else {
-            // If no rows were returned, output an error message
-            //echo "Error retrieving event details or no event found for ID: $eventId<br>";
+        
             return false;
         }
     }
@@ -227,7 +223,7 @@ public static function getAllEvents() {
     }
     
     public static function getLastInsertedEvent() {
-        // Ensure the database connection is established
+        
         if (Database::get_connection() === null) {
             echo "No database connection established.<br>";
             return false;
@@ -325,8 +321,7 @@ public static function getAllEvents() {
 }
     // Get the event's associated volunteers
     public static function getVolunteersByEvent($eventId) {
-        // Ensure the connection is established
-       // $db = Database::getInstance();
+      
         if (Database::get_connection() === null) {
             echo "No database connection established.";
             return null;
@@ -347,16 +342,15 @@ public static function getAllEvents() {
         $query = "SELECT * FROM event WHERE eventId = '$eventId'";  // Use $eventId in the query directly
         $result = Database::run_select_query($query);
     
-        // Check if the query executed successfully
+       
         if ($result) {
-            // Fetch and return the event details as an associative array
+
             return $result->fetch_assoc();
         } else {
-            return false;  // Event not found or query failed
+            return false; 
     }
     }
     public static function saveNotificationToDatabase($observer,$message,$eventId){
-        // error_log("Processing observer ID: $observer");
         $escapedMessage = str_replace("'", "\'", $message);
  
         $query = "INSERT INTO volunteer_notifications(`volunteer_id`, `event_id`, `message`) 
@@ -380,5 +374,5 @@ $numberOfShelters = 5;
 $shelterLocation = "123 Shelter St.";
 $capacity = 100;
 $facilities = "Heating, food, beds";
-//$AccessLvl = 2;  // Example access level
+
 ?>

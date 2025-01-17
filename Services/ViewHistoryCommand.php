@@ -25,13 +25,13 @@ class ViewHistoryCommand implements ActionCommand {
             $iterator = $donationLogIterable->getIterator();
 
             if ($this->action === 'view_history_clothes') {
-                $iterator->filterByType(3); // Filter for clothes
+                $iterator->filterByType(3); 
             } elseif ($this->action === 'view_history_books') {
-                $iterator->filterByType(2); // Filter for books
+                $iterator->filterByType(2); 
             } elseif ($this->action === 'view_history_money') {
-                $iterator->filterByType(1); // Filter for money
+                $iterator->filterByType(1); 
             } else {
-                $iterator->filterByType(null); // No filter, all donations
+                $iterator->filterByType(null); 
             }
 
             $donationArray = [];
@@ -46,8 +46,7 @@ class ViewHistoryCommand implements ActionCommand {
                 $donationArray[] = array_merge($donation->toArray(), ['description' => $description]);
             }
 
-            // Clean output buffer and return JSON response
-            ob_clean();  // Clean any previous output buffer
+            ob_clean(); 
             $jsonResponse = json_encode(['success' => true, 'donations' => $donationArray]);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -56,7 +55,7 @@ class ViewHistoryCommand implements ActionCommand {
             } else {
                 echo $jsonResponse;
             }
-            exit; // Prevent further output
+            exit;
 
         } catch (Exception $e) {
             echo json_encode([

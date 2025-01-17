@@ -8,10 +8,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $donorId = $_POST['donorId'] ?? null;
     $userId=$_POST['userId'] ?? null;
     $logId = $_POST['log_id'] ?? null;
-    $donationType = $_POST['donationType'] ?? null;  // Donation type for 'add_donation'
+    $donationType = $_POST['donationType'] ?? null;  
     $donationData = null;
 
-    // Collect donation data if donationType is provided
     if ($donationType) {
 
         $action='add_donation';

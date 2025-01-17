@@ -13,10 +13,10 @@ class SMSModel {
         $result = Database::run_select_query($query);
         if ($result && $result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            return $row['id'];  // Return the user ID
+            return $row['id'];  
         }
     
-        // Return null if no user is found
+
         return null;
     }
     

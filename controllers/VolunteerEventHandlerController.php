@@ -42,10 +42,7 @@ class VolunteerEventHandlerController {
                         $eventData['created_at'], 
                         $eventData['event_type_id']
                     );
-                  
-                   // $event->addObserver($this->volunteerModel);
-                    // echo "Current Observers for Event ID " . $eventId . ":<br>";
-                    // $event->listObservers();
+                
     
                     return "Successfully applied to the event and registered as an observer.";
                 } else {

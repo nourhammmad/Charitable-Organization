@@ -34,7 +34,6 @@ class Beneficiary {
        
         while ($row = $result->fetch_assoc()) {
             $address = Beneficiary::getBeneficiaryAddress($row['address']);
-           // echo"$address";
             $beneficiaries[] = [
                 'address' => $address,
                 'name' => $row['name'],

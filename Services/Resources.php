@@ -31,9 +31,7 @@ class resource{
         return ResourceModel::createResource($name);
     }
 
-    // public static function transferResource($resourceId, $destination) {
-    //     return ResourceModel::transferResource($resourceId, $destination);
-    // }
+
 
     public static function getAllResources() {
         return ResourceModel::getAllResources();

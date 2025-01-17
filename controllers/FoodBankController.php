@@ -12,7 +12,7 @@ class FoodBankController {
         $foodQuantity=12;
         $foodType="VeggiesProtein";
   
-        $foodbankService = new FoodBank($foodQuantity,$foodType, $shelterLocation); // Example values for family shelter
+        $foodbankService = new FoodBank($foodQuantity,$foodType, $shelterLocation); 
 
         if ($signLangInterpret) {
             $foodbankService = new SignLangInterpret($foodbankService);

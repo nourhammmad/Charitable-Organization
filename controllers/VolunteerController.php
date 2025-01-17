@@ -29,7 +29,7 @@ class VolunteerController {
     public function applyForEvent($eventId) {
         if ($this->volunteerModel) {
             $result = $this->assignEventController->assignVolunteer((int)$this->volunteerModel->getId(), $eventId);
-            echo $result;  // Send the result back (e.g., success or failure message)
+            echo $result;  
         } else {
             echo "Volunteer not found.";  // Send an error if volunteer doesn't exist
         }

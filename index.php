@@ -9,10 +9,9 @@ $db = Database::getInstance();
 
 // Check if the 'db_populated.flag' file exists
 if (!file_exists("db_populated.flag")) {
-    // If the flag file does not exist, run the populate function
     Populate::populate();
     
-    // After populating the database, create the flag file
+
     file_put_contents("db_populated.flag", "Database populated successfully.");
 }
 

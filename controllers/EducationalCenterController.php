@@ -8,11 +8,6 @@ require_once $_SERVER['DOCUMENT_ROOT']."\models\EventModel.php";
 class EducationalCenterController {
 
     public static function createEducationalCenterEvent($eventName ,$date,$capacity ,$EventAttendanceCapacity, $tickets, $shelterLocation ,$signLangInterpret, $wheelchair) {
-       // $eventName="Educational Center";
-       // $capacity=10;
-
- echo"dcbhjgdcjhdbckjdbc";
- echo $shelterLocation;
         $EducationalCentersService = new EducationalCenters($EventAttendanceCapacity, $capacity, $shelterLocation); 
 
         if ($signLangInterpret) {

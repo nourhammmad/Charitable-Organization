@@ -9,13 +9,11 @@ class EventManagementController{
     private $eventModel;
     
 
-    // Constructor initializes EventModel
     public function __construct() {
         // Initialize the EventModel
         $this->eventModel = new EventModel(null, null, null, null, 0, 0, null, null);
     }
 
-    // Method to create a new event
     public function createEvent($event) {
         return EventModel::createEvent(
             $event->date,
@@ -28,7 +26,7 @@ class EventManagementController{
         
     }
 
-    // Method to get details of an event by ID
+
     public function getEventById($eventId) {
         return EventModel::getEventById($eventId);
     }
@@ -49,7 +47,6 @@ class EventManagementController{
             return false;
         }
 
-        // Notify observers if the update is successful
         $message = "Event {$eventName} (ID: {$eventId}) has been updated.";
         $eventInstance = new EventModel(
             $eventId,
@@ -99,13 +96,11 @@ class EventManagementController{
     }
 
     public function handleEventRegistration($event, $volunteerId) {
-        // Step 1: Check remaining capacity
         $remainingCapacity = $event->EventAttendanceCapacity - count($event->showEventCapacity());
         if ($remainingCapacity <= 0) {
             echo "Registration failed: Event is at full capacity.<br>";
             return false;
         }
-         // Step 2: Check if volunteer is already registered
     $volunteers = $event->getVolunteersByEvent($event->eventId);
     foreach ($volunteers as $volunteer) {
         if ($volunteer['volunteerId'] == $volunteerId) {
@@ -122,17 +117,17 @@ class EventManagementController{
     }
     }
     public function manageEventTickets($event, $ticketsRequested) {
-        // Step 1: Check if tickets are available
+    
         $availableTickets = $event->tickets;
         if ($ticketsRequested > $availableTickets) {
             echo "Ticket purchase failed: Not enough tickets available.<br>";
             return false;
         }
     
-        // Step 2: Deduct requested tickets from available tickets
+    
         $event->tickets -= $ticketsRequested;
     
-        // Step 3: Update the database with the new ticket count
+
         if (EventModel::updateEvent($event->eventId,$event->eventName,$event->date, $event->addressId, 
         $event->EventAttendanceCapacity, $event->tickets)) {
             echo "Tickets purchased successfully.<br>";
@@ -143,7 +138,7 @@ class EventManagementController{
         }
     }
     public function trackAttendance($event, $volunteerId) {
-        // Step 1: Check if the volunteer is registered for the event
+    
         $volunteers = $event->getVolunteersByEvent($event->eventId);
         $isRegistered = false;
     
@@ -169,26 +164,23 @@ class EventManagementController{
         }
     }
     public function getAvailableEvents() {
-        // Fetch events from the model
+
         $events = VolunteerEventAssignementModel::fetchAllEvents();
     
-        // Ensure fetchAllEvents() is returning an array and not a string
+    
         if (is_array($events) && !empty($events)) {
             return $events;
         } else {
-            return [];  // Return an empty array if no events
+            return []; 
 }}
 
 public function getEventDetails($eventId){
-// Call the static method from the model to fetch event details
 $eventDetails = EventModel::getEventDetails($eventId);
 
-// Check if event details were retrieved
+
 if ($eventDetails) {
-    // Return the event details
     return $eventDetails;
 } else {
-    // Return an error message or handle as needed
     return ['message' => 'Event not found or error retrieving data.'];
 }
 }

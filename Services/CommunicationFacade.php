@@ -24,17 +24,7 @@ class CommunicationFacade{
         }
     }
   
-    // static function sendSMS($recipientPhoneNumber, $message) {
-    //     $SMS = new SMScontroller();
 
-    //     // Call sendSMS directly with dynamic sender ID
-    //     $result = $SMS->sendSMS(null, $recipientPhoneNumber, $message);
-
-    //     // Handle the result or log success/failure
-    //     if (!$result['success']) {
-    //         throw new Exception($result['message']);
-    //     }
-    // }
     
 
 

@@ -1,6 +1,5 @@
 <?php
 
-// Assuming you already have the IPurpose interface
 require_once ('./Services/IPurpose.php');
 // Implementing the FoodBank class
 class FoodBank implements IPurpose {

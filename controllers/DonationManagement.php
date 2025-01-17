@@ -4,11 +4,7 @@ require_once $server."\models\DonationModel.php";
 
 class DonationManagement {
     public static function handelTrack($type) {
-       
-        // $bookDescription = ''; 
-        // $clothesDescription = '';
-        // $moneyDescription = '';
-
+    
    
         if ($type==2) {
             $result = DonationModel::getDonationsByType($type);//2
@@ -42,15 +38,6 @@ class DonationManagement {
             }
         }
 
-        // Handle the Clear action to reset all donation descriptions
-        // elseif (isset($_POST['clear'])) {
-        //     $bookDescription = '';
-        //     $clothesDescription = '';
-        //     $moneyDescription = '';
-        // }
-
-        // Include the view
-       // require_once "D:/SDP/project/Charitable-Organization/views/testOrganization.php";
     }
 
     public function getUserinfo(DonationDetails $don) {

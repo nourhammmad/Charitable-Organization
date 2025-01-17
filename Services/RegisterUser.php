@@ -38,7 +38,6 @@ class RegisterUser extends user {
     public function login() {
         $_SESSION['user_id'] = $this->id;
         $_SESSION['user_type'] = $this->type;
-        //$regUser=RegisterUserTypeModel::findById($this->id);
         if($this->category=='Donor'){
             $res=DonarModel::getDonorByRegisteredId($_SESSION['user_id']);
             if($res){
@@ -47,9 +46,8 @@ class RegisterUser extends user {
                 header("Location: ./views/HomeView.php?donor_id=$donorId&user_id=$this->id");
             }
         } else if ($this->category=='Volunteer'){
-            echo"hoa ana hena?";
+
             $Volid = VolunteerModel::getVolunteerId($this->id);
-           // $Volunteer = VolunteerModel::getVolunteerById($Volid);
             header("Location: ./views/VolunteerDashboard.php?volunteer_id=$Volid&user_id=$this->id"); 
             exit();
         }
@@ -59,20 +57,15 @@ class RegisterUser extends user {
     public function signUp(){
         $_SESSION['user_id'] = $this->id;
         $_SESSION['user_category'] = $this->category;
-        echo("kjdhfjdg");
-        echo($this->category);
+
         if($this->category === 'Donor'){
-            echo ("2ay araf");
         if(DonarModel::createDonor($this->id,1)){
-            echo("AAAAAAAAAAAAAAAAAAA");
             $donorId = DonarModel::getLastInsertDonorId();
-            echo("jdhadiyfgidasgf");
            header("Location: ./views/HomeView.php?donor_id=$donorId&user_id=$this->id");
         exit();
         }}
         elseif ($this->category === 'Volunteer') {
             if (VolunteerModel::createVolunteer($this->id,1)) { 
-                echo "dakhalt";
                 $volunteerId = VolunteerModel::getLastInsertVolunteerId();
                 header("Location: ./views/VolunteerDashboard.php?volunteer_id=$volunteerId&user_id=$this->id"); // Redirect to volunteer dashboard
                 exit();

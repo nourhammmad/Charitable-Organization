@@ -14,11 +14,9 @@ class UndoDonationCommand implements ActionCommand {
     }
 
     public function execute() {
-        // Undo logic
         $donor = DonarModel::getDonorById($this->donorId);
         $donationLog = donarLogFile::getLogById($this->logId);
 
-        // Check if donor and donation log exist and if it's allowed to undo
         if ($donor && $donationLog) {
             if ($donationLog->getDonationState()->canUndo()) {
                 $donor->setDonationCommand(new UndoDonationCommandAction($donationLog));
@@ -33,7 +31,7 @@ class UndoDonationCommand implements ActionCommand {
             echo json_encode(['success' => false, 'message' => 'Donor not found!']);
         }
 
-        exit; // Ensure no additional output after this response
+        exit; 
     }
 }
 ?>
