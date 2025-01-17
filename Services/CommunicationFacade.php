@@ -8,8 +8,8 @@ require_once $_SERVER['DOCUMENT_ROOT']."\controllers\SMScontroller.php";
 
 class CommunicationFacade{
     static function SendAll($toemail, $subject, $body, $recipientPhoneNumber) {
-        $Remail = new EmailService($toemail, $subject, $body);
-        $Pemail = new MailerProxy($Remail);
+       // $Remail = new EmailService($toemail, $subject, $body);
+        $Pemail = new MailerProxy();
         $SMS = new SMScontroller();
 
         // Send Email
