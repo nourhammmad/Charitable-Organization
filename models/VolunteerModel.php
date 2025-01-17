@@ -7,7 +7,7 @@ require_once $server."\Services\IObserver.php";
 require_once $server."\models\OrganizationModel.php";
 
 
-class VolunteerModel {
+class VolunteerModel implements IObserver{
     private $skills;
     private const ALLOWED_SKILLS = ['Cooking', 'Teaching', 'Building'];
     
@@ -120,13 +120,10 @@ class VolunteerModel {
         }
         return false; // Volunteer is not assigned to the event
     }
-
-
     
-    public static function getNotificationsByVolunteerId($volunteerId) {
+    public static function notify($volunteerId) {
         // Ensure volunteerId is properly sanitized to prevent SQL injection
         $volunteerId = intval($volunteerId);
-        error_log("notificationsssss: $volunteerId");
     
         // Update the query to fetch notifications for the given volunteerId
         $query = "SELECT * FROM volunteer_notifications WHERE volunteer_id = $volunteerId ORDER BY created_at DESC";
@@ -143,9 +140,6 @@ class VolunteerModel {
                 $notifications[] = $row;
             }
         }
-    
-        // Log the notifications array
-        error_log("Notifications array: " . var_export($notifications, true));
     
         return $notifications;
     }

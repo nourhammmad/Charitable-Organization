@@ -49,7 +49,7 @@ class VolunteerController {
         $result = VolunteerModel::addDescription($description, $this->volunteerModel->getId());
         echo $result ? "Description added successfully!" : "Failed to add description.";
     }
-    
+
     public static function handleRequest() {
         error_log("handleRequest reached");
         if (!isset($_POST['action']) || $_POST['action'] !== 'view_notifications') {
@@ -70,12 +70,13 @@ class VolunteerController {
         // Call the getVolunteerNotifications method
         $controller->getVolunteerNotifications($volunteerId);
     }
+
     
     public function getVolunteerNotifications($volunteerId) {
         header('Content-Type: application/json'); // Set header for JSON response
         error_log("v id: $volunteerId");
         // Get notifications by volunteer ID
-        $notifications = VolunteerModel::getNotificationsByVolunteerId($volunteerId);
+        $notifications = VolunteerModel::notify($volunteerId);
     
         if (!empty($notifications)) {
             // Extract only the 'message' column
