@@ -19,114 +19,22 @@ require_once $server."\controllers\TravelplanController.php";
 class OrganizationController{
  
     function handleRequest(){
-  if (isset($_GET['action'])) {
-        $action = $_GET['action'];
-        switch ($action) {
-            case 'getOrganizations':
-               $this->handleGetOrganizations();
-                break;
-    
-            case 'getDonors':
-                $this->handleGetDonors();
-                break;
-    
-            case 'createEvent':
-                $this->handleCreateEvent();
-                break;
-            case 'createTask':
-                $this->handleCreateTask();
-                break;    
+        if (isset($_GET['action'])) {
+            $action = $_GET['action']??null;
 
-            case 'trackBooks':
-                $this->handleBooks();
-                break;
-    
-            case 'trackClothes':
-                $this->handleClothes();
-                break;
-    
-            case 'trackMoney':
-                $this->handleMoney();
-                break;
-               
-            case 'sendAll':
-                $this->SendNotification();
-                break; 
+            // Collect donation data if donationType is provided
 
-            case 'getResources':
-                    header('Content-Type: application/json');
-                    echo json_encode(resource::getAllResources());
-                    break;
-        
-            case 'createResource':
-                    $name = $_POST['resourceName'] ?? null;
-                    if ($name) {
-                        if (resource::createResource($name)) {
-                            echo "Resource created successfully.";
-                        } else {
-                            echo "Failed to create resource.";
-                        }
-                    } else {
-                        echo "Resource name is required.";
-                    }
-                    break;      
-            case 'addPlan':
-                $travel =new TravelManagement();
-                $type=$_POST['type']??null;
-                $dest=$_POST['destination']??null;
-                $atrr=$_POST['attributes']??null;
-
-                if( $type && $dest && $atrr){
-                 
-                    $travel->createTravelPlan($type,$dest,$atrr);
-                      
-                }
-                else{
-                    print("Some fields are missing");
-                }
-                break; 
-
-            case 'logout':
-                $this->logout();
-                break;  
-
-
-            case 'Executeplan':
-                $this->Executeplan();
-                break; 
-
-                
-            case 'addBeneficiary':
-                $name = $_POST['name'];
-                $address = $_POST['address'];
-                $beneficiaryType = $_POST['beneficiaryType'];
-                print($name."  ".$address."  ".$beneficiaryType);
-                $res=Beneficiary::createBeneficiary($name,$address,$beneficiaryType);
-                if ($res) {
-                    echo "Beneficiary created successfully!";
-                } else {
-                    echo "Error creating beneficiary.";
-                }
-
-            case 'getBeneficiary':
-
-                header('Content-Type: application/json');
-                echo json_encode(Beneficiary::getBeneficiaries());
-                break;
-                 
-            case 'viewtravelplans':
-              
-                    $this-> handleGetTravelPlans();
-
-                    break;
-     
-    
-            default:
-                echo "Invalid action.";
-                break;
+            // Ensure action and donorId are provided
+            if ($action) {
+                CommandHandler::handleRequest($action, null,null, null,null);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Action is missing.']);
+            }
         }
-    }
-}
+        
+
+
+        }
 
 
 
@@ -206,7 +114,6 @@ class OrganizationController{
     function handleCreateEvent() {
         $name = $_POST['name'] ?? null; 
         $date = $_POST['date'] ?? null;
-       // $address = $_POST['address'] ?? null;
         $capacity = $_POST['capacity'] ?? null;
         $tickets = $_POST['tickets'] ?? null;
         $shelterLocation = $_POST['address'] ?? null;
@@ -220,9 +127,7 @@ class OrganizationController{
             return;
         }
     
-        echo"======================";
-        echo"$shelterLocation";
-        echo"======================";
+
           // Fetch all addresses (optional use case)
             $allAddresses = EventModel::GetAddresses();
 
@@ -243,8 +148,7 @@ class OrganizationController{
     
         // Call the method to create the event, passing in the necessary parameters
         if($service === 'familyShelter'){
-            //echo"yatara ana da5alt hena ?  ";
-           $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
+             $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
              $name,
              $date,
              $capacity,
