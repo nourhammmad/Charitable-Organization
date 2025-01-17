@@ -172,6 +172,7 @@ $addresses = EventController::getAllAddresses();
         <div class="option" onclick="openModal('donors')">Get Donors</div>
         <div class="option" onclick="openModal('clothes')">Track Clothes</div>
         <div class="option" onclick="openModal('money')">Track Money</div>
+        <div class="option" onclick="openModal('books')">Track Books</div>
         <div class="option" onclick="openModal('sendAll')">Send Notification</div>
         <div class="option" onclick="openModal('addResource')">Add Resource</div>
         <div class="option" onclick="openModal('addPlan')">Add Plan</div>
@@ -181,7 +182,6 @@ $addresses = EventController::getAllAddresses();
         <div class="option" onclick="openModal('viewtravelplans')">View Travel Plans</div>
         <div class="option" onclick="openModal('addBeneficiary')"> Add Beneficiary</div>
         <div class="option" onclick="openModal('getBeneficiary')"> Get all beneficiaries</div>
-        <div class="option" onclick="openModal('update_event')">Update Event</div>
     </div>
     <form action="/controllers/OrganizationController.php?action=logout" method="POST">
         <button type="submit">Logout</button>

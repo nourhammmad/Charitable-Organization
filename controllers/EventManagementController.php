@@ -67,18 +67,6 @@ class EventManagementController{
         return true;
     }
 
-    // Method to delete an event
-    public function deleteEvent($eventId) {
-        $deleted = EventModel::deleteEvent($eventId);
-        if ($deleted) {
-            echo "Event deleted successfully.<br>";
-            return true;
-        } else {
-            echo "Failed to delete event.<br>";
-            return false;
-        }
-    }
-
     // Method to add an observer to an event
     public function addObserver($eventId, $observer) {
         $event = EventModel::getEventById($eventId);
@@ -97,35 +85,11 @@ class EventManagementController{
             $event['createdAt'],
             $event['event_type_id']
         );
-        $eventInstance->addObserver($observer);
 
-        echo "Observer added successfully to event ID: {$eventId}.<br>";
+
         return true;
     }
 
-    // Method to remove an observer from an event
-    public function removeObserver($eventId, $observer) {
-        $event = EventModel::getEventById($eventId);
-        if (!$event) {
-            echo "Event not found.<br>";
-            return false;
-        }
-
-        $eventInstance = new EventModel(
-            $event['eventId'],
-            $event['eventName'],
-            $event['date'],
-            $event['addressId'],
-            $event['EventAttendanceCapacity'],
-            $event['tickets'],
-            $event['createdAt'],
-            $event['event_type_id']
-        );
-        // $eventInstance->removeObserver($observer);
-
-        echo "Observer removed successfully from event ID: {$eventId}.<br>";
-        return true;
-    }
 
 
     public function trackEvents($events) {

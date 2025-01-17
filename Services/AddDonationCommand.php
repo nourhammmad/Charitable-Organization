@@ -69,19 +69,6 @@ class AddDonationCommand implements ICommand {
                     return;
             }
 
-            // Execute the donation strategy (save to DB, etc.)
-            if ($donationStrategy ) {
-                echo json_encode([
-                    'success' => true,
-                    'message' => 'Donation successfully added.'
-                ]);
-            } else {
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Failed to process donation.'
-                ]);
-            }
-
         } catch (Exception $e) {
             // Handle exceptions
             echo json_encode([

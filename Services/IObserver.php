@@ -1,4 +1,4 @@
 <?php
 interface IObserver {
-    public function notify($message);
+    public static function notify($volunteerId);
 }

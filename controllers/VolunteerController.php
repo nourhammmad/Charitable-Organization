@@ -75,7 +75,7 @@ class VolunteerController {
         header('Content-Type: application/json'); // Set header for JSON response
         error_log("v id: $volunteerId");
         // Get notifications by volunteer ID
-        $notifications = VolunteerModel::getNotificationsByVolunteerId($volunteerId);
+        $notifications = Volunteer::notify($volunteerId);
     
         if (!empty($notifications)) {
             // Extract only the 'message' column

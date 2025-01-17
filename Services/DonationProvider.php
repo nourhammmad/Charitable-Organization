@@ -1,6 +1,6 @@
 <?php
-require_once "../Services/Donation.php";
-require_once "../models/DonationModel.php";
+require_once $_SERVER['DOCUMENT_ROOT'] ."/Services/Donation.php";
+require_once $_SERVER['DOCUMENT_ROOT'] ."/models/DonationModel.php";
 
 
 class BooksDonation extends DonationType {

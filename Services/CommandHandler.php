@@ -7,9 +7,11 @@ require_once $_SERVER['DOCUMENT_ROOT']."/Services/ActionCommand.php";
 require_once $_SERVER['DOCUMENT_ROOT']."/Services/ViewHistoryCommand.php";
 require_once $_SERVER['DOCUMENT_ROOT']."/Services/FeesDonationFactory.php";
 require_once $_SERVER['DOCUMENT_ROOT']."/Services/ClothesDonationFactory.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/Services/AddDonationCommand.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/Services/ViewNotificationCommand.php";
 
 class CommandHandler {
-    public static function handleRequest($action, $donorId, $logId = null, $donationType=null, $donationData=null) {
+    public static function handleRequest($action, $donorId, $logId = null, $donationType, $donationData=null,$userId) {
         $command = null;
 
         switch ($action) {
@@ -26,7 +28,7 @@ class CommandHandler {
                 $command = new RedoDonationCommand($donorId, $logId);
                 break;
             case 'view_notifications':
-                $command = new ViewNotificationsCommand($donorId);
+                $command = new ViewNotificationsCommand($userId);
                 break;
             case 'add_donation':  // Example of a command for donation
                 $command = new AddDonationCommand($donorId, $donationType, $donationData);  // Customize as per your needs

@@ -13,6 +13,7 @@ require_once $server."\Services\CommunicationFacade.php";
 require_once $server."\Services\Resources.php";
 require_once $server."\Services\TravelManagement.php";
 require_once $server."\controllers\TravelplanController.php";
+require_once $server."\Services\publisher.php";
 
 
 
@@ -206,7 +207,6 @@ class OrganizationController{
     function handleCreateEvent() {
         $name = $_POST['name'] ?? null; 
         $date = $_POST['date'] ?? null;
-       // $address = $_POST['address'] ?? null;
         $capacity = $_POST['capacity'] ?? null;
         $tickets = $_POST['tickets'] ?? null;
         $shelterLocation = $_POST['address'] ?? null;
@@ -215,69 +215,51 @@ class OrganizationController{
         $wheelchair = isset($_POST['wheelchair']) ? true : false;
     
         // Validate required fields
-        if (!$date || !$shelterLocation || !$capacity || !$tickets ||  !$service) {
+        if (!$date || !$shelterLocation || !$capacity || !$tickets || !$service) {
             echo "Missing required fields: date, address, capacity, tickets, and service are mandatory.";
             return;
         }
     
-        echo"======================";
-        echo"$shelterLocation";
-        echo"======================";
-          // Fetch all addresses (optional use case)
-            $allAddresses = EventModel::GetAddresses();
-
-            // Check if the provided address is valid
-            $addressExists = array_filter($allAddresses, function($addr) use ($shelterLocation) {
-                return $addr['addressId'] == $shelterLocation;
-            });
-
-            if (empty($addressExists)) {
-                echo "Invalid address selected.";
-                return;
-            }
-       
-        $familyShelter = ($service === 'familyShelter');
-        $educationalCenter = ($service === 'educationalCenter');
-        $foodBank = ($service === 'foodBank');
-        //public static function createFamilyShelterEvent($eventName, $date, $EventAttendanceCapacity, $tickets, $signLangInterpret, $wheelchair) {
+        // Fetch all addresses
+        $allAddresses = EventModel::GetAddresses();
     
-        // Call the method to create the event, passing in the necessary parameters
-        if($service === 'familyShelter'){
-            //echo"yatara ana da5alt hena ?  ";
-           $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
-             $name,
-             $date,
-             $capacity,
-             $capacity,
-             $tickets,
-             $shelterLocation,
-             $signLangInterpret,
-             $wheelchair
+        // Check if the provided address is valid
+        $addressExists = array_filter($allAddresses, function($addr) use ($shelterLocation) {
+            return $addr['addressId'] == $shelterLocation;
+        });
+    
+        if (empty($addressExists)) {
+            echo "Invalid address selected.";
+            return;
+        }
+    
+        $isEventCreated = false;
+        $eventData = [];
+    
+        // Create the event based on the selected service type
+        if ($service === 'familyShelter') {
+            $isEventCreated = FamilyShelterController::createFamilyShelterEvent(
+                $name,
+                $date,
+                $capacity,
+                $capacity,
+                $tickets,
+                $shelterLocation,
+                $signLangInterpret,
+                $wheelchair
             );
-            if ($isEventCreated) {
-              echo "$service Event created successfully.";
-              } else {
-              echo "Failed to create event. Please try again.";
-              }
-        }elseif($service === 'educationalCenter'){
-            print($shelterLocation);
-             $isEventCreated = EducationalCenterController::createEducationalCenterEvent(
-             $name,
-             $date,
-             $capacity,
-             $capacity,
-             $tickets,
-             $shelterLocation,
-             $signLangInterpret,
-             $wheelchair
-             );
-            if ($isEventCreated) {
-             echo "$service Event created successfully.";
-             } else {
-             echo "Failed to create event. Please try again.";
-             }
-    
-        }elseif($service === 'foodBank'){
+        } elseif ($service === 'educationalCenter') {
+            $isEventCreated = EducationalCenterController::createEducationalCenterEvent(
+                $name,
+                $date,
+                $capacity,
+                $capacity,
+                $tickets,
+                $shelterLocation,
+                $signLangInterpret,
+                $wheelchair
+            );
+        } elseif ($service === 'foodBank') {
             $isEventCreated = FoodBankController::createFoodBankEvent(
                 $name,
                 $date,
@@ -286,16 +268,33 @@ class OrganizationController{
                 $shelterLocation,
                 $signLangInterpret,
                 $wheelchair
-                );
-               if ($isEventCreated) {
-                echo "$service Event created successfully.";
-                } else {
-                echo "Failed to create event. Please try again.";
-                }
-    
+            );
         }
     
+        if ($isEventCreated) {
+            echo "$service Event created successfully.";
+        
+            // Prepare event data for notifications
+            $eventData = [
+                'eventName' => $name,
+                'eventId' => Database::get_Last_Inserted_Id(), 
+            ];
+        
+            // Get the list of observers
+            $observers = RegisterUserTypeModel::getAllVolunteerIds();
+        
+            // Initialize the Publisher class
+            $publisher = new Publisher($observers, $eventData['eventId']);
+        
+            // Notify observers
+            $message = "A new event '{$eventData['eventName']}' has been created.";
+            $publisher->notifyObservers($message);
+        } else {
+            echo "Failed to create event. Please try again.";
+        }
+        
     }
+    
     function handleCreateTask() {
         $name = $_POST['name'] ?? null;
         $description = $_POST['description'] ?? null;

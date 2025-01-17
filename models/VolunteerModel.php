@@ -123,32 +123,30 @@ class VolunteerModel {
 
 
     
-    public static function getNotificationsByVolunteerId($volunteerId) {
-        // Ensure volunteerId is properly sanitized to prevent SQL injection
-        $volunteerId = intval($volunteerId);
-        error_log("notificationsssss: $volunteerId");
-    
-        // Update the query to fetch notifications for the given volunteerId
-        $query = "SELECT * FROM volunteer_notifications WHERE volunteer_id = $volunteerId ORDER BY created_at DESC";
+    // public static function getNotificationsByVolunteerId($volunteerId) {
+    //     // Ensure volunteerId is properly sanitized to prevent SQL injection
+    //     $volunteerId = intval($volunteerId);    
+    //     // Update the query to fetch notifications for the given volunteerId
+    //     $query = "SELECT * FROM volunteer_notifications WHERE volunteer_id = $volunteerId ORDER BY created_at DESC";
         
-        // Run the query and get the result
-        $result = Database::run_select_query($query);
+    //     // Run the query and get the result
+    //     $result = Database::run_select_query($query);
         
-        $notifications = [];
+    //     $notifications = [];
         
-        // Check if the query returned results
-        if ($result) {
-            // Loop through the result set and store notifications
-            while ($row = $result->fetch_assoc()) {
-                $notifications[] = $row;
-            }
-        }
+    //     // Check if the query returned results
+    //     if ($result) {
+    //         // Loop through the result set and store notifications
+    //         while ($row = $result->fetch_assoc()) {
+    //             $notifications[] = $row;
+    //         }
+    //     }
     
-        // Log the notifications array
-        error_log("Notifications array: " . var_export($notifications, true));
+    //     // Log the notifications array
+    //     error_log("Notifications array: " . var_export($notifications, true));
     
-        return $notifications;
-    }
+    //     return $notifications;
+    // }
     
  
 }

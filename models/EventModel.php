@@ -9,7 +9,7 @@ require_once $server.'\models/VolunteerModel.php';
 require_once $server.'\Services/Volunteer.php';
 require_once $server.'\Services/EmailService.php';
 
-class EventModel implements ISubject {
+class EventModel {
     private $eventId;
     private $eventName;
     private $date;
@@ -87,26 +87,8 @@ class EventModel implements ISubject {
                         $eventData['created_at'], 
                         $eventData['event_type_id']
                     );
-                    // Retrieve all volunteer IDs from RegisteredUserType
-                        $volunteers = RegisterUserTypeModel::getAllVolunteerIds();
-                        // if (!empty($volunteers)) {
-                        //     echo "Volunteer IDsssss: " . implode(", ", $volunteers);
-                        // } else {
-                        //     echo "No volunteers found.";
-                        // }
-                        // Add all volunteers as observers by passing their IDs
-                        $event->addObserver($volunteers);
-                        $message = "A new event '{$eventData['eventName']}' has been created.";
-                        $event->notifyObservers($message);
 
-                        echo "Notification sent to all volunteers about the new event: {$eventData['eventName']}";
-
-
-                    $message = "A new event '{$eventData['eventName']}' has been created.";
-                    echo ($message);
-             
-                  
-                    
+                                
                 // $message = "new event added" ;
               
                 return $lastInsertId;
@@ -144,8 +126,6 @@ class EventModel implements ISubject {
         $event_type_id=3;
         // Step 1: Create the event using the existing createEvent method
         $eventId = self::createEvent($eventName, $date, $EventAttendanceCapacity,$shelterLocation , $tickets,$event_type_id);
-        echo"bbbbbbbbbbbbbbbbbbbbbb";
-        echo "$shelterLocation";
         // If event creation was successful (i.e., $eventId is returned)
         if ($eventId) {
             // Step 2: Insert into the FamilyShelterEvent table, including AccessLvl
@@ -324,103 +304,9 @@ public static function getAllEvents() {
         }
 
     
-        return true;}
+        return true;}              
 
-        public function addObserver($observers) {
-            // Debugging: Print the observers array
-            var_dump($observers);
-        
-            // Check if observers are passed as an array of volunteer IDs
-            if (is_array($observers)) {
-                // Loop through the array of volunteer IDs and add them as observers
-                foreach ($observers as $volunteerId) {
-                    // Directly add the volunteer ID to the observers list
-                    $this->observers[] = $volunteerId;
-                }
-            } else {
-                // If a single observer is passed, add it directly
-                $this->observers[] = $observers;
-            }
-                  
-        }
-        
-        
-
-        // public function removeObserver(Volunteer $observer) {
-        //     $index = array_search($observer, $this->observers);
-        //     if ($index !== false) {
-        //         unset($this->observers[$index]);
-        //     }
-        // }
-        //check on observers array 
-        public function listObservers() {
-            foreach ($this->observers as $observer) {
-                echo "Observer ID: $observer";
-            }
-        }
-        
-        public function notifyObservers($message) {
-            foreach ($this->observers as $observer) {
-                echo "Observer ID: $observer , ";
-                // Trim and sanitize the observer ID
-                $observer = trim($observer); // Remove leading/trailing spaces
-                $observer = intval($observer); // Ensure it's an integer
-                
-                // error_log("Processing observer ID: $observer");
-                $escapedMessage = str_replace("'", "\'", $message);
-        
-                $query = "INSERT INTO volunteer_notifications(`volunteer_id`, `event_id`, `message`) 
-                          VALUES ('$observer', '$this->eventId', '$escapedMessage')";
-        
-                error_log("Executing query: $query"); // Log the query for debugging.
-
-
-                $result = Database::run_query($query);
-                echo "result: $result";
-        
-                // Introduce a delay of 1 second (1,000,000 microseconds)
-               
-            }
-        }
-        
-        
-        
-        // public static function saveNotificationToDatabase($volunteerId, $eventId, $message) {
-        //     $volunteerId = intval($volunteerId); // Ensure it's an integer.
-        //     $escapedMessage = str_replace("'", "\'", $message); // Escape single quotes.
-        
-        //     $query = "INSERT INTO volunteer_notifications(`volunteer_id`, `event_id`, `message`) 
-        //               VALUES ('$volunteerId', '$eventId', '$escapedMessage')";
-        
-        //     error_log("Executing query: $query"); // Log the query for debugging.
-        
-        //     $result = Database::run_query($query);
-        
-        //     if (!$result) {
-        //         error_log("Failed to insert notification for volunteer ID: $volunteerId");
-        //     } else {
-        //         error_log("Successfully inserted notification for volunteer ID: $volunteerId");
-        //     }
-        // }
-        
-        
-        
-
-    // Delete an event
-    public static function deleteEvent($eventId) {
-        // Ensure the connection is established
-       // $db = Database::getInstance();
-        if (Database::get_connection() === null) {
-            echo "No database connection established.";
-            return false;
-        }
-
-        // Query to delete event
-        $query = "DELETE FROM Event WHERE eventId = $eventId";
-        return Database::run_query($query);
-    }
-
-    // Associate a volunteer with an event
+           // Associate a volunteer with an event
     public static function addVolunteerToEvent($eventId, $volunteerId) {
         // Ensure the connection is established
         //$db = Database::getInstance();
@@ -436,15 +322,7 @@ public static function getAllEvents() {
         return Database::run_query($query);
 
         $result = Database::run_query($query);
-
-        // Check if the insertion was successful
-        if ($result) {
-            // Call addObserver if insertion is successful
-            self::addObserver($eventId, $volunteerId);
 }
-
-}
-
     // Get the event's associated volunteers
     public static function getVolunteersByEvent($eventId) {
         // Ensure the connection is established
@@ -477,25 +355,19 @@ public static function getAllEvents() {
             return false;  // Event not found or query failed
     }
     }
+    public static function saveNotificationToDatabase($observer,$message,$eventId){
+        // error_log("Processing observer ID: $observer");
+        $escapedMessage = str_replace("'", "\'", $message);
+ 
+        $query = "INSERT INTO volunteer_notifications(`volunteer_id`, `event_id`, `message`) 
+                  VALUES ('$observer', '$eventId', '$escapedMessage')";
 
-    // public static function addVolunteerAsObserver($volunteerEmail) {
-    //     $volunteer =new VolunteerModel();
-    //     // Retrieve all events and make the volunteer an observer
-    //     $allEvents = self::getAllEvents();
-    //     foreach ($allEvents as $event) {
-    //         $eventModel = new EventModel(
-    //             $event['eventId'], 
-    //             $event['eventName'], 
-    //             $event['date'], 
-    //             $event['addressId'], 
-    //             $event['EventAttendanceCapacity'], 
-    //             $event['tickets'], 
-    //             $event['created_at'], 
-    //             $event['event_type_id']
-    //         );
-    //         $eventModel->addObserver($volunteer);
-    //     }
-    // }
+        error_log("Executing query: $query"); // Log the query for debugging.
+
+        Database::run_query($query);
+ }
+
+   
 
 }
 

@@ -139,6 +139,9 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
     <button class="fetch-button" onclick="openVolunteerNotificationsModal()">New Events 🔔</button>
 
 </div>
+<form action="/controllers/OrganizationController.php?action=logout" method="POST">
+        <button type="submit">Logout</button>
+    </form>
 
 <!-- Notifications Modal -->
 <div id="notificationsModal" class="modal">

@@ -18,10 +18,8 @@ require_once  $_SERVER['DOCUMENT_ROOT']."\Services\DonationLogIterable.php";
 class FeesDonationFactory extends DonationFactory{
     static function createDonation($donationType, $donorId, $type, $size, $color, $quantity, $title, $author, $year, $amount, $currency, $cardNumber){
       $donationStrategy=null;
-      echo"before all";
       echo $donationType;
         if($donationType=='cash'){
-            echo"ana fel cash";
         $donationStrategy = new FeesDonation($amount,new cash($amount,$currency) );
         }
 
