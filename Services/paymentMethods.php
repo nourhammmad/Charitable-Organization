@@ -1,5 +1,5 @@
 <?php
-require_once "../Services/IPayment.php";
+require_once $_SERVER['DOCUMENT_ROOT']."./Services/IPayment.php";
 require_once  $_SERVER['DOCUMENT_ROOT']."\Services\stripe.php";
 
 class cash implements Ipayment {

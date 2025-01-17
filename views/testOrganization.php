@@ -181,7 +181,6 @@ $addresses = EventController::getAllAddresses();
         <div class="option" onclick="openModal('viewtravelplans')">View Travel Plans</div>
         <div class="option" onclick="openModal('addBeneficiary')"> Add Beneficiary</div>
         <div class="option" onclick="openModal('getBeneficiary')"> Get all beneficiaries</div>
-        <div class="option" onclick="openModal('update_event')">Update Event</div>
     </div>
     <form action="/controllers/OrganizationController.php?action=logout" method="POST">
         <button type="submit">Logout</button>
@@ -348,47 +347,6 @@ $addresses = EventController::getAllAddresses();
                 `;
 
             }
- if(type=="update_event"){   
-        title.textContent = "Update Event";
-        fields.innerHTML = `
-            <table border="1" style="width:100%; border-collapse:collapse; text-align:center;">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Event Name</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="eventTableBody">
-                    <!-- Event rows will be populated dynamically -->
-                </tbody>
-            </table>
-        `;
-        // Fetch the events data
-        fetch('../controllers/EventManagementController.php?action=getEvents',{method: 'GET'})  // Adjust the URL to your API
-            .then(response => response.json())
-            .then(data => {
-                const events = data.events;
-                // console.log(data.events);
-                const eventTableBody = document.getElementById('eventTableBody');
-                eventTableBody.innerHTML = '';  // Clear any existing rows
-                
-                events.forEach(event => {
-                    const row = document.createElement('tr');
-                    
-                    row.innerHTML = `
-                        <td>${event.eventId}</td>
-                        <td>${event.eventName}</td>
-                        <td>${event.date}</td>
-                        <td><button onclick="editEvent(${event.eventId})">Edit</button></td>
-                    `;
-                    
-                    eventTableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error('Error fetching events:', error));       
-}
 
             modal.style.display = "flex";
         }
@@ -405,74 +363,6 @@ $addresses = EventController::getAllAddresses();
             }
         })
         .catch(error => console.error('Error fetching event details:', error));
-}
-
-
-// Function to open the modal
-function showEditModal(event) {
-    const section = document.getElementById("editEventSection");
-    const title = document.getElementById("editSectionTitle");
-    const fields = document.getElementById("editEventFields");
-
-    // Reset fields and show the section
-    section.style.display = "block";
-
-    title.textContent = "Edit Event";
-
-    // Populate the section with event details
-    fields.innerHTML = `
-        <label for="eventName">Event Name:</label>
-        <input type="text" id="eventName" value="${event.eventName}" required>
-
-        <label for="date">Event Date:</label>
-        <input type="date" id="date" value="${event.date}" required>
-
-        <label for="capacity">Attendance Capacity:</label>
-        <input type="number" id="capacity" value="${event.EventAttendanceCapacity}" required>
-
-        <label for="tickets">Tickets:</label>
-        <input type="number" id="tickets" value="${event.tickets}" required>
-
-        <button id="saveChangesButton" onclick="saveEventChanges(${event.eventId})">Save Changes</button>
-        <button onclick="closeEditSection()">Cancel</button>
-    `;
-}
-
-// Function to hide the section after saving or canceling
-function closeEditSection() {
-    document.getElementById("editEventSection").style.display = "none";
-}
-
-// Ensure saveEventChanges keeps the modal open until changes are saved
-function saveEventChanges(eventId) {
-    const updatedEvent = {
-        eventId: eventId,
-        eventName: document.getElementById("eventName").value,
-        date: document.getElementById("date").value,
-        EventAttendanceCapacity: document.getElementById("capacity").value,
-        tickets: document.getElementById("tickets").value,
-    };
-
-    fetch('../controllers/EventManagementController.php?action=updateEvent', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedEvent),
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Event updated successfully.");
-                closeModal();  // Close only after success
-            } else {
-                alert("Failed to update event. Please try again.");
-            }
-        })
-        .catch(error => {
-            console.error("Error updating event:", error);
-            alert("An error occurred while updating the event.");
-});
 }
 
         function executePlan(planId) {
