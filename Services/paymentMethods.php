@@ -31,22 +31,18 @@ class cash implements Ipayment {
         return 'Cash Payement method of '.$this->amount .' '.$this->currencyType;
     }
 
-   // public function refund($amount): Bool;
+   
 }
 class visa implements Ipayment {
     private $amount;
     private $cardNumber;
     private $currency;
-    // private $expiryDate;
-    // private $CVV;
+
     public function __construct($amount,$cardNumber,$currency)
     {
         $this->amount=$amount;
         $this->cardNumber=$cardNumber;
         $this->currency=$currency;
-        // $this->cardHolderName=$cardHolderName;
-        // $this->expiryDate=$expiryDate;
-        // $this->CVV=$CVV;
     }
     public function processPayment($donorid):bool{
         echo "in visa \n";

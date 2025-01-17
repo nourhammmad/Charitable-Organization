@@ -21,7 +21,6 @@ class FeesDonationFactory extends DonationFactory{
       echo"before all";
       echo $donationType;
         if($donationType=='cash'){
-            echo"ana fel cash";
         $donationStrategy = new FeesDonation($amount,new cash($amount,$currency) );
         }
 

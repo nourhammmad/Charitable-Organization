@@ -25,7 +25,7 @@ class RedoDonationCommand implements ActionCommand {
         } else {
             echo json_encode(['success' => false, 'message' => 'Redo not allowed or donor not found.']);
         }
-        exit; // Ensure no additional output after this response
+        exit;
     }
 }
 ?>
