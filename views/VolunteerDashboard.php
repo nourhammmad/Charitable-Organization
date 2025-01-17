@@ -185,6 +185,7 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
     // userId=1;
     function openVolunteerNotificationsModal() {
     // Replace with actual user ID retrieval
+
     const userId = new URLSearchParams(window.location.search).get('user_id');
     
     if (!userId) {
@@ -195,14 +196,14 @@ $volunteerId = isset($_GET['volunteer_id']) ? $_GET['volunteer_id'] : null;
     const formData = new FormData();
     formData.append('action', 'view_notifications');
     formData.append('userId', userId);
-
+    alert(userId);
     fetch("../Services/volunteerRoute.php", {
         method: 'POST',
         body: formData,
     })
     .then(response => response.text())
     .then(rawData => {
-        console.log("Raw server response:", rawData);  // Log the raw response
+        alert("Raw server response:", rawData);  // Log the raw response
         try {
             const data = JSON.parse(rawData);  // Parse the JSON response
             if (data.success) {
@@ -268,11 +269,10 @@ function closeModal(modalId) {
     .then(response => response.text())  
     .then(rawData => {
         try {
-            alert(rawData);
+           
             const data = JSON.parse(rawData);  
             if (data.success) {
-                alert("da5alt");
-                alert(data.notifications);
+              
                 displayNotifications(data.notifications); 
             } else {
                 alert(data.message || 'Error fetching notifications.');
@@ -294,11 +294,11 @@ function displayNotifications(notifications) {
 
    
     notificationList.innerHTML = '';
-    alert (notifications);
-    alert(notifications.length);
+    // alert (notifications);
+    // alert(notifications.length);
     
     if (notifications && notifications.length > 0) {
-        alert("goa el if");
+       
         notifications.forEach(notification => {
             const li = document.createElement('li');
             
@@ -425,7 +425,7 @@ function applyForEvent(eventId, button) {
     })
     .then(response => response.text())
     .then(data => {
-        alert(data);  // Show success or failure message from the server
+     
         button.innerText = "Applied";  // Change button text
         button.disabled = true;  // Disable the button to prevent further clicks
         button.style.backgroundColor = 'grey';  // Change button color
@@ -448,7 +448,7 @@ function applyForTasks(taskId, button) {
     })
     .then(response => response.text())
     .then(data => {
-        alert(data);  // Show success or failure message from the server
+        
         button.innerText = "Applied";  // Change button text
         button.disabled = true;  // Disable the button to prevent further clicks
         button.style.backgroundColor = 'grey';  // Change button color

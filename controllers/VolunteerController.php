@@ -73,7 +73,7 @@ class VolunteerController {
     
     public function getVolunteerNotifications($volunteerId) {
         header('Content-Type: application/json'); // Set header for JSON response
-        error_log("v id: $volunteerId");
+        error_log(" id: $volunteerId");
         // Get notifications by volunteer ID
         $notifications = VolunteerModel::getNotificationsByVolunteerId($volunteerId);
     

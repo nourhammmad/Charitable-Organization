@@ -1,18 +1,20 @@
 <?php 
 class ViewNotificationsCommand implements ICommand {
-    private $donorId;
+    private $userId;
 
-    public function __construct($donorId) {
-        $this->donorId = $donorId;
+    public function __construct($userId) {
+        $this->userId = $userId;
     }
 
     public function execute() {
         try {
             // Fetch notifications for the donor
-            $notifications = RegisterUserTypeModel::getNotifications($this->donorId);
-            
+            $notifications = RegisterUserTypeModel::getNotifications($this->userId);
+            // print "ana hena";
+            // echo "ANA HENAAA";
             // Check if notifications exist
             if ($notifications) {
+                
                 echo json_encode([
                     'success' => true,
                     'notifications' => $notifications

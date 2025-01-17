@@ -14,7 +14,7 @@ class AddDonationCommand implements ICommand {
         try {
             // Create the appropriate donation strategy based on the type
             $donationStrategy = null;
-
+            print($this->donationType);
             switch ($this->donationType) {
                 case 'book':
                     $donationStrategy =  BooksDonationFactory::createDonation($this->donationType,$this->donorId,null, null, null, $_POST['quantity'], $_POST['bookTitle'], $_POST['author'], $_POST['publicationYear'],null, null, null );
@@ -70,17 +70,17 @@ class AddDonationCommand implements ICommand {
             }
 
             // Execute the donation strategy (save to DB, etc.)
-            if ($donationStrategy ) {
-                echo json_encode([
-                    'success' => true,
-                    'message' => 'Donation successfully added.'
-                ]);
-            } else {
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Failed to process donation.'
-                ]);
-            }
+            // if ($donationStrategy ) {
+            //     echo json_encode([
+            //         'success' => true,
+            //         'message' => 'Donation successfully added.'
+            //     ]);
+            // } else {
+            //     echo json_encode([
+            //         'success' => false,
+            //         'message' => 'Failed to process donation.'
+            //     ]);
+            // }
 
         } catch (Exception $e) {
             // Handle exceptions

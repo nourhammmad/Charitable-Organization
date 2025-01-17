@@ -273,6 +273,7 @@
 
 <script>
 function viewNotifications() {
+   
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('user_id');
     if (!userId) {
@@ -292,6 +293,7 @@ function viewNotifications() {
     .then(response => response.text())  
     .then(rawData => {
         try {
+           
             const data = JSON.parse(rawData);  
             if (data.success) {
                 displayNotifications(data.notifications); 

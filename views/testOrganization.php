@@ -170,6 +170,7 @@ $addresses = EventController::getAllAddresses();
     <div class="action-options">
         <div class="option" onclick="openModal('organization')">Get Organization</div>
         <div class="option" onclick="openModal('donors')">Get Donors</div>
+        <div class="option" onclick="openModal('books')">Track Books</div>
         <div class="option" onclick="openModal('clothes')">Track Clothes</div>
         <div class="option" onclick="openModal('money')">Track Money</div>
         <div class="option" onclick="openModal('sendAll')">Send Notification</div>
