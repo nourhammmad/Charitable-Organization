@@ -3,18 +3,22 @@ require_once $_SERVER['DOCUMENT_ROOT']."/Services/EmailService.php";
 require_once $_SERVER['DOCUMENT_ROOT']."/Services/IMailer.php";
 
 class MailerProxy implements IMailer {
-    private $realMailer;
+    private $realMailer = null;
 
-    public function __construct(EmailService $mailer) {
-        $this->realMailer = $mailer;
+    public function getinstance(){
+        if($this->realMailer == null){
+            $realMailer = new EmailService();
+        }
+        return $realMailer;
     }
 
     public function sendEmail($toemail, $subject, $body): bool {
         // Log email sending details
         $this->log("Attempting to send email to: $toemail with subject: $subject");
 
+        $realMailer = $this->getinstance();
         // Delegate the task to the real mailer
-        $success = $this->realMailer->sendEmail($toemail, $subject, $body);
+        $success = $realMailer->sendEmail($toemail, $subject, $body);
 
         // Log the result
         if ($success) {

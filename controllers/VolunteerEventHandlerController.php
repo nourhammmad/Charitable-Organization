@@ -1,8 +1,8 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] .'./models/VolunteerModel.php';
-require_once $_SERVER['DOCUMENT_ROOT'] .'./models/VolunteerTaskAssignmentModel.php';
-require_once $_SERVER['DOCUMENT_ROOT'] .'./controllers/VolunteerEventAssignmentController.php';
-require_once $_SERVER['DOCUMENT_ROOT'] .'./models/EventModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/models/VolunteerModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/models/VolunteerTaskAssignmentModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/controllers/VolunteerEventAssignmentController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/models/EventModel.php';
 
 class VolunteerEventHandlerController {
     private $volunteerModel;
