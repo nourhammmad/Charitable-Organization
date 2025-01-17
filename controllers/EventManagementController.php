@@ -33,99 +33,40 @@ class EventManagementController{
         return EventModel::getEventById($eventId);
     }
 
-    // Method to update an event and notify observers
-    public function updateEventAndNotify($eventId, $eventName, $date, $addressId, $EventAttendanceCapacity, $tickets) {
-        // Fetch the current event
-        $currentEvent = EventModel::getEventById($eventId);
-        if (!$currentEvent) {
-            echo "Event not found.<br>";
-            return false;
-        }
 
-        // Update the event
-        $updated = EventModel::updateEvent($eventId, $eventName, $date, $addressId, $EventAttendanceCapacity, $tickets);
-        if (!$updated) {
-            echo "Failed to update the event.<br>";
-            return false;
-        }
-
-        // Notify observers if the update is successful
-        $message = "Event {$eventName} (ID: {$eventId}) has been updated.";
-        $eventInstance = new EventModel(
-            $eventId,
-            $eventName,
-            $date,
-            $addressId,
-            $EventAttendanceCapacity,
-            $tickets,
-            $currentEvent['createdAt'],
-            $currentEvent['event_type_id']
-        );
-  
-
-        echo "Event updated and observers notified.<br>";
-        return true;
+// Method to add an observer to an event
+public function addObserver($eventId, $observer) {
+    // Get the event by ID
+    $event = EventModel::getEventById($eventId);
+    if (!$event) {
+        echo "Event not found.<br>";
+        return false;
     }
 
-    // Method to delete an event
-    public function deleteEvent($eventId) {
-        $deleted = EventModel::deleteEvent($eventId);
-        if ($deleted) {
-            echo "Event deleted successfully.<br>";
-            return true;
-        } else {
-            echo "Failed to delete event.<br>";
-            return false;
-        }
+    // Create an instance of the event
+    $eventInstance = new EventModel(
+        $event['eventId'],
+        $event['eventName'],
+        $event['date'],
+        $event['addressId'],
+        $event['EventAttendanceCapacity'],
+        $event['tickets'],
+        $event['createdAt'],
+        $event['event_type_id']
+    );
+
+    // Get the list of all volunteer IDs
+    $volunteerIds = RegisterUserTypeModel::getAllVolunteerIds();
+
+    // Add each volunteer as an observer
+    foreach ($volunteerIds as $volunteerId) {
+        $eventInstance->addObserver($volunteerId);
     }
 
-    // Method to add an observer to an event
-    public function addObserver($eventId, $observer) {
-        $event = EventModel::getEventById($eventId);
-        if (!$event) {
-            echo "Event not found.<br>";
-            return false;
-        }
-
-        $eventInstance = new EventModel(
-            $event['eventId'],
-            $event['eventName'],
-            $event['date'],
-            $event['addressId'],
-            $event['EventAttendanceCapacity'],
-            $event['tickets'],
-            $event['createdAt'],
-            $event['event_type_id']
-        );
-        $eventInstance->addObserver($observer);
-
-        echo "Observer added successfully to event ID: {$eventId}.<br>";
-        return true;
-    }
-
-    // Method to remove an observer from an event
-    public function removeObserver($eventId, $observer) {
-        $event = EventModel::getEventById($eventId);
-        if (!$event) {
-            echo "Event not found.<br>";
-            return false;
-        }
-
-        $eventInstance = new EventModel(
-            $event['eventId'],
-            $event['eventName'],
-            $event['date'],
-            $event['addressId'],
-            $event['EventAttendanceCapacity'],
-            $event['tickets'],
-            $event['createdAt'],
-            $event['event_type_id']
-        );
-        // $eventInstance->removeObserver($observer);
-
-        echo "Observer removed successfully from event ID: {$eventId}.<br>";
-        return true;
-    }
+    // Add the specific observer passed to the function
+    $eventInstance->addObserver($observer);
+    return true;
+}
 
 
     public function trackEvents($events) {

@@ -3,7 +3,8 @@ $server=$_SERVER['DOCUMENT_ROOT'];
 require_once $server."\Services\Volunteer.php";
 require_once $server."\controllers\VolunteerEventAssignmentController.php";
 require_once $server."\controllers\VolunteerTaskAssignmentController.php";
- 
+require_once  $_SERVER['DOCUMENT_ROOT']."\Services\CommandHandler.php";
+
 class VolunteerController {
     private $volunteerModel;
     private $assignEventController;
@@ -49,33 +50,31 @@ class VolunteerController {
         $result = VolunteerModel::addDescription($description, $this->volunteerModel->getId());
         echo $result ? "Description added successfully!" : "Failed to add description.";
     }
-    
+
     public static function handleRequest() {
-        error_log("handleRequest reached");
-        if (!isset($_POST['action']) || $_POST['action'] !== 'view_notifications') {
-            echo json_encode(['success' => false, 'message' => 'Invalid action or action missing.']);
-            return;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $action = $_POST['action'] ?? null;
+            $userId = $_POST['userId'] ?? null;
+  
+            // Collect donation data if donationType is provided
+
+        
+            // Ensure action and donorId are provided
+            if ($action && $userId) {
+                CommandHandler::handleRequest($action, $userId, null, null, null);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Action or donorId is missing.']);
+            }
         }
-    
-        $volunteerId = $_POST['userId'] ?? null;
-    
-        if (!$volunteerId) {
-            echo json_encode(['success' => false, 'message' => 'Volunteer ID is missing.']);
-            return;
-        }
-    
-        // Initialize the controller with the volunteer ID
-        $controller = new self($volunteerId);
-    
-        // Call the getVolunteerNotifications method
-        $controller->getVolunteerNotifications($volunteerId);
+        
     }
+
     
     public function getVolunteerNotifications($volunteerId) {
         header('Content-Type: application/json'); // Set header for JSON response
         error_log(" id: $volunteerId");
         // Get notifications by volunteer ID
-        $notifications = VolunteerModel::getNotificationsByVolunteerId($volunteerId);
+        $notifications = VolunteerModel::notify($volunteerId);
     
         if (!empty($notifications)) {
             // Extract only the 'message' column
